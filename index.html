@@ -689,7 +689,7 @@ const MAS_OPS = {
     label: 'Tomadoras ARS',
     hint: '📋 Sheet "Saldo pesos": Comitente | Nombre | Moneda | CI (saldo)',
     params: [
-      {id:'plazo', label:'Plazo', type:'sel', opts:['1D','2D','3D','5D','7D','10D','14D','30D']},
+      {id:'plazo', label:'Plazo (días)', type:'txt', placeholder:'ej: 1 / 3 / 7'},
       {id:'tna', label:'TNA / Precio', type:'txt', placeholder:'ej: mkt / 42%'},
     ],
     parse(lines) {
@@ -718,7 +718,7 @@ const MAS_OPS = {
     label: 'Tomadoras USD MEP',
     hint: '📋 Sheet "Cta Cte Cohen" (Dolar MEP): Comitente | Nombre | Moneda | CI',
     params: [
-      {id:'plazo', label:'Plazo', type:'sel', opts:['1D','2D','3D','5D','7D','11D','14D']},
+      {id:'plazo', label:'Plazo (días)', type:'txt', placeholder:'ej: 1 / 3 / 7'},
       {id:'tna', label:'TNA / Precio', type:'txt', placeholder:'ej: mkt / 0.74%'},
     ],
     parse(lines) { return MAS_OPS.tomadora_ars.parse(lines); },
@@ -982,11 +982,10 @@ const IND_MSGS = {
   tom_ind: {
     title:'Tomadora individual', sub:'Para la mesa del ALYC',
     fields:[
-      {id:'comit',label:'N° Comitente',ph:'ej: 105530'},
-      {id:'nombre',label:'Nombre',ph:'ej: Unamuno Federico'},
+      {id:'comit',label:'Comitente',type:'client'},
       {id:'monto',label:'Monto',ph:'ej: 3.500.000'},
       {id:'moneda',label:'Moneda',type:'sel',opts:['ARS','USD MEP','USD cable']},
-      {id:'plazo',label:'Plazo',type:'sel',opts:['1D','2D','3D','5D','7D','10D','14D','30D']},
+      {id:'plazo',label:'Plazo (días)',ph:'ej: 1 / 3 / 7 / 30'},
       {id:'tna',label:'TNA / Precio',ph:'ej: mkt / 39%'},
     ],
     build:f=>`Buen día! Les pido una tomadora${f.moneda!=='ARS'?' '+f.moneda:''} a ${f.plazo||'—'} - ${f.tna||'mkt'}\n${f.comit||'—'}\t${f.nombre||'—'}\t-$'+fmtInput(f.monto||'')+'`
@@ -994,46 +993,42 @@ const IND_MSGS = {
   compra_ind: {
     title:'Compra individual', sub:'Para la mesa del ALYC',
     fields:[
-      {id:'comit',label:'N° Comitente',ph:'ej: 105803'},
-      {id:'nombre',label:'Nombre',ph:'ej: Olivero Enrique'},
+      {id:'comit',label:'Comitente',type:'client'},
       {id:'ticker',label:'Ticker',ph:'ej: AL30D, IRCPO'},
       {id:'valor',label:'Monto / VN',ph:'ej: 5.000.000 ARS / 100 VN'},
       {id:'plazo',label:'Liquidación',type:'sel',opts:['mkt 24hs','mkt CI','mkt t+1','límite']},
     ],
-    build:f=>`Buen día! Les pido una compra:\n${f.comit||'—'} - ${f.nombre||'—'}\n${f.ticker||'—'} - ${f.valor||'—'}\n${f.plazo||'—'}`
+    build:f=>`Buen día! Les pido una compra:\n${f.comit||'—'}\n${f.ticker||'—'} - ${f.valor||'—'}\n${f.plazo||'—'}`
   },
   venta_ind: {
     title:'Venta individual', sub:'Para la mesa del ALYC',
     fields:[
-      {id:'comit',label:'N° Comitente',ph:'ej: 105914'},
-      {id:'nombre',label:'Nombre',ph:'ej: nombre cliente'},
+      {id:'comit',label:'Comitente',type:'client'},
       {id:'ticker',label:'Ticker',ph:'ej: ABT, PAMP, GD30'},
       {id:'valor',label:'VN / Cantidad',ph:'ej: 173 CEDEAR / 11.764 nominales'},
       {id:'plazo',label:'Liquidación',type:'sel',opts:['mkt 24hs','mkt CI','mkt t+1']},
     ],
-    build:f=>`Buen día! Les pido una venta:\n${f.comit||'—'} - ${f.nombre||'—'}\n${f.ticker||'—'} - ${f.valor||'—'}\n${f.plazo||'—'}`
+    build:f=>`Buen día! Les pido una venta:\n${f.comit||'—'}\n${f.ticker||'—'} - ${f.valor||'—'}\n${f.plazo||'—'}`
   },
   cancelar: {
     title:'Cancelar orden', sub:'Para la mesa del ALYC',
     fields:[
-      {id:'comit',label:'N° Comitente',ph:'ej: 105630'},
-      {id:'nombre',label:'Nombre',ph:'ej: Iribarne'},
+      {id:'comit',label:'Comitente',type:'client'},
       {id:'ticker',label:'Ticker / Instrumento',ph:'ej: AL30D'},
       {id:'tipo',label:'Tipo',type:'sel',opts:['COMPRA','VENTA']},
       {id:'hora',label:'Hora ingresada',ph:'ej: 11:42 hs'},
     ],
-    build:f=>`Buen día! Solicito CANCELAR la siguiente orden:\nComitente: ${f.comit||'—'} - ${f.nombre||'—'}\nInstrumento: ${f.ticker||'—'}\nTipo: ${f.tipo||'—'}\nOrden ingresada: ${f.hora||'—'}\n\nConfirmar cancelación.`
+    build:f=>`Buen día! Solicito CANCELAR la siguiente orden:\nComitente: ${f.comit||'—'}\nInstrumento: ${f.ticker||'—'}\nTipo: ${f.tipo||'—'}\nOrden ingresada: ${f.hora||'—'}\n\nConfirmar cancelación.`
   },
   mep: {
     title:'MEP / CCL cerrado', sub:'Para la mesa del ALYC',
     fields:[
-      {id:'comit',label:'N° Comitente',ph:'ej: 105695'},
-      {id:'nombre',label:'Nombre',ph:'ej: Izaguirre Demarchi'},
+      {id:'comit',label:'Comitente',type:'client'},
       {id:'monto',label:'Monto ARS',ph:'ej: 9.999.242'},
       {id:'tc',label:'TC cerrado',ph:'ej: 1330'},
       {id:'tipo',label:'Tipo',type:'sel',opts:['MEP','CCL cable']},
     ],
-    build:f=>`Buen día! Les pido ${f.tipo||'MEP'} cerrado:\n${f.comit||'—'} - ${f.nombre||'—'}\n$$'+fmtInput(f.monto||'')+' ARS · TC ${f.tc||'—'}\nOperan con disponible.`
+    build:f=>`Buen día! Les pido ${f.tipo||'MEP'} cerrado:\n${f.comit||'—'}\n$$'+fmtInput(f.monto||'')+' ARS · TC ${f.tc||'—'}\nOperan con disponible.`
   },
   subasta_ind: {
     title:'Subasta MAV', sub:'Masivo o individual — Para la mesa del ALYC',
@@ -1063,7 +1058,7 @@ const IND_MSGS = {
     fields:[
       {id:'nombre', label:'Cliente', type:'client'},
       {id:'importe', label:'Importe ($)', ph:'ej: 3950000'},
-      {id:'operacion', label:'Operación', type:'sel', opts:['Caución ARS','Caución USD','Venta activos','Compra activos','Suscripción FCI','Retiro saldo']},
+      {id:'operacion', label:'Operación', type:'sel', opts:['Caución ARS','Caución USD','Venta activos','Compra activos','Suscripción FCI','Rescate FCI','Retiro saldo']},
       {id:'medio', label:'Medio', type:'sel', opts:['Transferencia bancaria','Echeq','Transferencia o echeq']},
       {id:'banco', label:'Banco / CBU destino', ph:'completar con datos bancarios'},
       {id:'plazo', label:'Plazo', ph:'ej: antes de las 15 hs / hoy'},
