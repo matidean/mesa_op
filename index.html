@@ -1140,6 +1140,112 @@ const IND_MSGS = {
   },
 };
 
+
+// ══════════════════════════════════
+// BUSCADOR DE CLIENTES DESDE SHEET
+// ══════════════════════════════════
+const SHEET_ID = '1ChBgibJFcO_bvpw1MSW9KNRPJt46LxCbLIYKmmtWeN0';
+const SHEET_TAB = 'BASE DE DATOS QTM CAPITAL';
+let clientesDB = [];
+let clientesLoaded = false;
+
+async function loadClientes() {
+  if (clientesLoaded) return;
+  try {
+    const url = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID + '/gviz/tq?tqx=out:json&sheet=' + encodeURIComponent(SHEET_TAB);
+    const res = await fetch(url);
+    const text = await res.text();
+    const jsonStr = text.replace(/^[^(]+\(/, '').replace(/\);?$/, '');
+    const json = JSON.parse(jsonStr);
+    const cols = json.table.cols.map(c => c.label);
+    const rows = json.table.rows;
+    // Buscar columna Auxiliar NumeroNombreAlyc
+    let useIdx = cols.findIndex(c => c.includes('NumeroNombre'));
+    if (useIdx < 0) useIdx = cols.findIndex(c => c === 'CTTE');
+    clientesDB = rows.map(r => {
+      const v = r.c[useIdx] ? String(r.c[useIdx].v || r.c[useIdx].f || '').trim() : '';
+      return v ? { label: v } : null;
+    }).filter(Boolean);
+    clientesLoaded = true;
+  } catch(e) {
+    console.warn('No se pudo cargar clientes:', e.message);
+  }
+}
+
+function renderClientSearch(fieldId, container, onSelect) {
+  const wrap = document.createElement('div');
+  wrap.className = 'client-search-wrap';
+
+  const input = document.createElement('input');
+  input.className = 'client-search-input';
+  input.placeholder = 'Buscar N° comitente o nombre...';
+  input.autocomplete = 'off';
+
+  const dropdown = document.createElement('div');
+  dropdown.className = 'client-dropdown';
+
+  const badge = document.createElement('div');
+  badge.style.display = 'none';
+
+  const hidden = document.createElement('input');
+  hidden.type = 'hidden';
+  hidden.dataset.field = fieldId;
+
+  function showOptions(query) {
+    dropdown.innerHTML = '';
+    if (!query || query.length < 1) { dropdown.classList.remove('open'); return; }
+    if (!clientesLoaded) {
+      dropdown.innerHTML = '<div class="client-loading">⏳ Cargando...</div>';
+      dropdown.classList.add('open');
+      loadClientes().then(() => showOptions(input.value));
+      return;
+    }
+    const q = query.toLowerCase();
+    const matches = clientesDB.filter(c => c.label.toLowerCase().includes(q)).slice(0, 12);
+    if (!matches.length) {
+      dropdown.innerHTML = '<div class="client-loading">Sin resultados</div>';
+      dropdown.classList.add('open');
+      return;
+    }
+    matches.forEach(c => {
+      const opt = document.createElement('div');
+      opt.className = 'client-option';
+      opt.textContent = c.label;
+      opt.onclick = () => {
+        hidden.value = c.label;
+        input.value = '';
+        dropdown.classList.remove('open');
+        badge.style.display = 'flex';
+        badge.className = 'client-badge';
+        badge.innerHTML = '<span>' + c.label + '</span><span class="client-badge-clear" onclick="clearClient(this,\''+fieldId+'\')">✕</span>';
+        if (onSelect) onSelect(c.label);
+      };
+      dropdown.appendChild(opt);
+    });
+    dropdown.classList.add('open');
+  }
+
+  input.addEventListener('focus', loadClientes);
+  input.addEventListener('input', () => showOptions(input.value));
+  document.addEventListener('click', e => { if (!wrap.contains(e.target)) dropdown.classList.remove('open'); });
+
+  wrap.appendChild(input);
+  wrap.appendChild(dropdown);
+  wrap.appendChild(badge);
+  wrap.appendChild(hidden);
+  container.appendChild(wrap);
+  return hidden;
+}
+
+function clearClient(btn, fieldId) {
+  const wrap = btn.closest('.client-search-wrap');
+  wrap.querySelector('.client-badge').style.display = 'none';
+  wrap.querySelector('.client-search-input').value = '';
+  const h = wrap.querySelector('[data-field="' + fieldId + '"]');
+  if (h) h.value = '';
+  indBuild();
+}
+
 function setInd(id) {
   indMsg = id;
   document.querySelectorAll('.ind-btn').forEach(b => b.classList.toggle('active', b.id === 'ind-' + id));
