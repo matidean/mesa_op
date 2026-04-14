@@ -240,7 +240,25 @@ html,body{height:100%;font-family:var(--sans);background:var(--bg);color:var(--t
 .client-badge-clear{cursor:pointer;color:var(--text3);font-size:13px;line-height:1}
 .client-badge-clear:hover{color:var(--red)}
 
+/* ── FCI BUSCADOR ── */
+.fci-wrap{display:flex;flex-direction:column;gap:14px;max-width:700px}
+.fci-search-bar{display:flex;gap:10px;flex-wrap:wrap}
+.fci-input{flex:1;min-width:160px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:var(--mono);font-size:13px;padding:9px 12px;outline:none;transition:border-color .15s}
+.fci-input:focus{border-color:var(--accent)}
+.fci-select{background:var(--bg3);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:var(--mono);font-size:13px;padding:9px 12px;outline:none;cursor:pointer;appearance:none;min-width:130px}
+.fci-table{width:100%;border-collapse:collapse;background:var(--bg2);border-radius:12px;overflow:hidden;border:1px solid var(--border)}
+.fci-table th{background:var(--bg3);color:var(--text3);font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.1em;padding:10px 16px;text-align:left;border-bottom:1px solid var(--border)}
+.fci-table td{padding:9px 16px;font-family:var(--mono);font-size:12px;color:var(--text2);border-bottom:1px solid var(--border)}
+.fci-table tr:last-child td{border-bottom:none}
+.fci-table tr:hover td{background:rgba(59,130,246,.05);color:var(--text)}
+.fci-hora{font-weight:600;color:var(--gold2) !important}
+.fci-hora.urgente{color:var(--red) !important}
+.fci-hora.ok{color:var(--green) !important}
+.fci-status{font-family:var(--mono);font-size:11px;color:var(--text3);padding:8px 0}
+.fci-loading{color:var(--text3);font-family:var(--mono);font-size:12px;padding:20px;text-align:center}
+
 /* ── TOAST ── */
+
 .toast{
   position:fixed;bottom:20px;right:20px;background:var(--green);color:white;
   padding:10px 18px;border-radius:10px;font-family:var(--display);font-size:13px;font-weight:600;
@@ -529,6 +547,8 @@ html,body{height:100%;font-family:var(--sans);background:var(--bg);color:var(--t
           <button class="info-cat-btn" id="icat-apertura_juridica" onclick="setInfoCat('apertura_juridica')">🏢 Apertura Persona Jurídica</button>
           <button class="info-cat-btn" id="icat-apertura_epyme" onclick="setInfoCat('apertura_epyme')">🏭 Apertura ePyme</button>
           <button class="info-cat-btn" id="icat-matrix_usuario" onclick="setInfoCat('matrix_usuario')">🔐 Crear usuario Cohen</button>
+          <div class="info-cat">FCI</div>
+          <button class="info-cat-btn" id="icat-fci" onclick="setInfoCat('fci')">📊 Horarios de Fondos</button>
         </div>
       </div>
       <div class="col" style="overflow-y:auto;border-right:none">
@@ -542,59 +562,71 @@ html,body{height:100%;font-family:var(--sans);background:var(--bg);color:var(--t
 
   <!-- ── PANEL AUTOMATIZACIONES ── -->
   <div class="panel" id="panel-automatizaciones">
-    <div style="flex:1;overflow-y:auto;padding:28px 24px;display:flex;flex-direction:column;gap:24px;max-width:700px;margin:0 auto;width:100%">
+    <div style="flex:1;overflow-y:auto;padding:24px;display:flex;flex-direction:column;gap:20px;max-width:740px;margin:0 auto;width:100%">
 
       <div>
         <div style="font-family:var(--display);font-size:20px;font-weight:800;color:var(--text)">🚀 Automatizaciones</div>
         <div style="font-family:var(--mono);font-size:11px;color:var(--text3);margin-top:4px">Disparadores de Google Apps Script · QTM Capital</div>
       </div>
 
-      <div style="display:flex;flex-direction:column;gap:12px" id="auto-cards">
-
-        <div class="auto-card">
-          <div class="auto-card-left">
-            <div class="auto-icon">📧</div>
-            <div>
-              <div class="auto-title">SGR — Persona Jurídica</div>
-              <div class="auto-desc">Envía mail con documentación requerida para calificación SGR (empresa). Lee datos desde Sheet.</div>
-            </div>
+      <!-- SGR JURÍDICA con formulario -->
+      <div class="auto-card" style="flex-direction:column;align-items:stretch;gap:14px">
+        <div class="auto-card-left">
+          <div class="auto-icon">📧</div>
+          <div>
+            <div class="auto-title">SGR — Financiamiento PYME</div>
+            <div class="auto-desc">Escribe en la Sheet los datos del destinatario, elige adjuntos y envía el mail de documentación SGR.</div>
           </div>
-          <button class="auto-btn" onclick="runScript('enviarMailConSeleccion', this)">Enviar</button>
         </div>
-
-        <div class="auto-card">
-          <div class="auto-card-left">
-            <div class="auto-icon">👤</div>
-            <div>
-              <div class="auto-title">SGR — Persona Física</div>
-              <div class="auto-desc">Envía mail con requisitos SGR para persona física. Lee datos desde Sheet.</div>
-            </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div class="field-group">
+            <div class="field-label">Nombre destinatario</div>
+            <input class="field-input" id="sgr-nombre" placeholder="ej: Gabriel Spinazzola">
           </div>
-          <button class="auto-btn" onclick="runScript('enviarSgrPersonaFisica', this)">Enviar</button>
-        </div>
-
-        <div class="auto-card">
-          <div class="auto-card-left">
-            <div class="auto-icon">🏦</div>
-            <div>
-              <div class="auto-title">Apertura — Persona Física</div>
-              <div class="auto-desc">Envía instrucciones de apertura de cuenta comitente en Cohen para persona física.</div>
-            </div>
+          <div class="field-group">
+            <div class="field-label">Mail destinatario</div>
+            <input class="field-input" id="sgr-mail" placeholder="ej: gabriel@hotmail.com" type="email">
           </div>
-          <button class="auto-btn" onclick="runScript('enviarAperturaFisica', this)">Enviar</button>
         </div>
-
-        <div class="auto-card">
-          <div class="auto-card-left">
-            <div class="auto-icon">🏢</div>
-            <div>
-              <div class="auto-title">Apertura — Persona Jurídica</div>
-              <div class="auto-desc">Envía instrucciones de apertura de cuenta comitente en Cohen para empresa/SRL/SA.</div>
-            </div>
+        <div class="field-group">
+          <div class="field-label">Archivos adjuntos (Sheet: Configuracion)</div>
+          <div id="sgr-adjuntos" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:4px">
+            <div style="font-family:var(--mono);font-size:11px;color:var(--text3)">⏳ Cargando archivos...</div>
           </div>
-          <button class="auto-btn" onclick="runScript('enviarAperturaJuridica', this)">Enviar</button>
         </div>
+        <div style="display:flex;gap:10px;align-items:center">
+          <button class="auto-btn" id="btn-sgr-jur" onclick="runSGR('enviarMailConSeleccion','jur',this)" style="flex:1">📧 Enviar SGR Jurídica</button>
+          <button class="auto-btn" id="btn-sgr-fis" onclick="runSGR('enviarSgrPersonaFisica','fis',this)" style="flex:1;background:var(--bg3);border:1px solid var(--border2);color:var(--text2)">👤 Enviar SGR Física</button>
+        </div>
+      </div>
 
+      <!-- APERTURAS con formulario -->
+      <div class="auto-card" style="flex-direction:column;align-items:stretch;gap:14px">
+        <div class="auto-card-left">
+          <div class="auto-icon">🏦</div>
+          <div>
+            <div class="auto-title">Apertura de cuenta Cohen</div>
+            <div class="auto-desc">Completa los datos y envía el mail de instrucciones de apertura (física o jurídica).</div>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
+          <div class="field-group">
+            <div class="field-label">Nombre</div>
+            <input class="field-input" id="aper-nombre" placeholder="ej: Victor">
+          </div>
+          <div class="field-group">
+            <div class="field-label">Email</div>
+            <input class="field-input" id="aper-mail" placeholder="ej: victor@mail.com" type="email">
+          </div>
+          <div class="field-group">
+            <div class="field-label">Tipo de persona</div>
+            <select class="field-select" id="aper-tipo">
+              <option value="Física">Física</option>
+              <option value="Jurídica">Jurídica</option>
+            </select>
+          </div>
+        </div>
+        <button class="auto-btn" id="btn-aper" onclick="runApertura(this)" style="align-self:flex-start;padding:10px 28px">Enviar instrucciones</button>
       </div>
 
       <div id="auto-log" style="display:none;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:14px 16px;font-family:var(--mono);font-size:12px;line-height:1.7"></div>
@@ -824,9 +856,9 @@ const MAS_OPS = {
       {id:'cuits', label:'CUITs terceros (uno por línea)', type:'ta', placeholder:'Solo si es TERCEROS\nej: 30-123456789 Empresa A\n20-987654321 Juan Pérez', showIf:'TERCEROS'},
       {id:'monto', label:'Monto', type:'txt', placeholder:'ej: 50000000'},
       {id:'cantidad', label:'Cantidad echeqs', type:'txt', placeholder:'ej: 10'},
-      {id:'moneda', label:'Moneda', type:'sel', opts:['ARS','USD']},
+      {id:'moneda', label:'Moneda', type:'sel', opts:['ARS','USD BCRA','USD A3500','USD MEP']},
       {id:'estado', label:'Estado', type:'sel', opts:['PENDIENTE DE ACEPTACION','PENDIENTE DE AVAL']},
-      {id:'comitente', label:'Comitente vendedor', type:'txt', placeholder:'ej: 106631 - LAS PAIVA SA'},
+      {id:'comitente', label:'Comitente vendedor', type:'client'},
     ],
     parse(lines) { return []; },
     build(rows) {
@@ -1038,9 +1070,9 @@ const IND_MSGS = {
       {id:'cuits',label:'CUITs terceros (uno por línea)',type:'ta',ph:'Solo si es TERCEROS\nej: 30-123456789 Empresa A\n20-987654321 Juan Pérez'},
       {id:'monto',label:'Monto',ph:'ej: 50000000'},
       {id:'cantidad',label:'Cantidad echeqs',ph:'ej: 10'},
-      {id:'moneda',label:'Moneda',type:'sel',opts:['ARS','USD']},
+      {id:'moneda',label:'Moneda',type:'sel',opts:['ARS','USD BCRA','USD A3500','USD MEP']},
       {id:'estado',label:'Estado',type:'sel',opts:['PENDIENTE DE ACEPTACION','PENDIENTE DE AVAL']},
-      {id:'comitente',label:'Comitente vendedor',ph:'ej: 106631 - LAS PAIVA SA'},
+      {id:'comitente',label:'Comitente vendedor',type:'client'},
     ],
     build: f => {
       const tipo = f.tipo || 'PROPIOS';
@@ -1567,39 +1599,28 @@ No dudes en contactarnos si tenés alguna duda. ¡Éxitos! 💰`
   }],
 
   apertura_epyme:[{
-    title:'Apertura ePyme — Cohen', icon:'🏭', tag:'Instructivo',
+    title:'Apertura ePyme — Caja de Valores', icon:'🏭', tag:'Instructivo',
     fields:[
-      ['Link','aperturaempresas.cohen.com.ar'],
-      ['Mail asesor','matias@qtmcapital.com.ar'],
+      ['Link','epyme.cajadevalores.com.ar'],
       ['',''],
-      ['Paso 1','Ingresar al link con CUIT de la empresa'],
-      ['Paso 2','Completar datos de la empresa y representantes legales'],
-      ['Paso 3','Cada firmante recibe mail individual para firma digital'],
-      ['Paso 4','Enviar documentación a info@qtmcapital.com.ar'],
+      ['Paso 1','Ingresá a https://epyme.cajadevalores.com.ar/'],
+      ['Paso 2','Seleccioná "Registrar nuevo participante"'],
+      ['Paso 3','Seleccioná "Si sos Pyme ingresa aquí"'],
+      ['Paso 4','Completá los datos de la sociedad'],
+      ['Paso 5','Subí la nota modelo (datos de la empresa, impresa y firmada o con firma digital)'],
       ['',''],
-      ['Documentación','Estatuto + Acta de cargos + DNIs firmantes + Constancia AFIP ePyme'],
+      ['Nota','Te pasamos el modelo de nota cuando lo necesites'],
     ],
-    copy:`🏭 Apertura ePyme — Cohen (ALyC)
-
-Para abrir tu cuenta como ePyme en COHEN debés iniciar el trámite en:
-👉 aperturaempresas.cohen.com.ar
-
-📌 En el campo "mail asesor" colocar: matias@qtmcapital.com.ar
+    copy:`🏭 Apertura ePyme — Caja de Valores
 
 Pasos:
-1. Ingresá con el CUIT de la empresa y completá los datos requeridos
-2. Cada firmante recibirá un mail individual para firmar digitalmente
-3. Una vez completado, enviar la documentación a info@qtmcapital.com.ar
+1. Ingresá a https://epyme.cajadevalores.com.ar/
+2. Seleccioná "Registrar nuevo participante"
+3. Seleccioná "Si sos Pyme ingresa aquí"
+4. Completá los datos de la sociedad
+5. Te pedirá que subas una nota modelo — te la pasamos nosotros, la completás con los datos de la empresa, la imprimís y firmás (o usás firma digital) y la subís cuando te lo solicite
 
-📨 Documentación necesaria:
-✅ Estatuto certificado
-✅ Acta de cargos vigente
-✅ DNIs de firmantes y autorizados
-✅ Constancia de inscripción AFIP
-✅ Certificado ePyme vigente (AFIP)
-✅ Estados contables o 6 DDJJ IVA
-
-Ante cualquier duda, contactanos. ¡Éxitos! 💰`
+Cualquier duda, avisanos. ¡Éxitos! 💰`
   }],
 
   matrix_usuario:[{
@@ -1636,7 +1657,8 @@ const HI_FIELDS = ['CBU','ALIAS','CUIT','Swift','Account','ABA','N° Depositante
 function setInfoCat(id) {
   infoCat = id;
   document.querySelectorAll('.info-cat-btn').forEach(b => b.classList.toggle('active', b.id === 'icat-' + id));
-  renderInfo();
+  if (id === 'fci') renderFCI();
+  else renderInfo();
 }
 
 function renderInfo() {
@@ -1723,6 +1745,96 @@ function runScript(func, btn) {
         btn.classList.remove('err');
         btn.disabled = false;
       }, 4000);
+    });
+}
+
+
+// ══════════════════════════════════
+// AUTOMATIZACIONES CON FORMULARIO
+// ══════════════════════════════════
+let adjuntosConfig = [];
+let adjuntosLoaded = false;
+
+async function loadAdjuntos() {
+  if (adjuntosLoaded) return;
+  try {
+    const url = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID + '/gviz/tq?tqx=out:json&sheet=Configuracion';
+    const res = await fetch(url);
+    const text = await res.text();
+    const jsonStr = text.replace(/^[^(]+\(/, '').replace(/\);?$/, '');
+    const json = JSON.parse(jsonStr);
+    adjuntosConfig = json.table.rows
+      .slice(1)
+      .map((r, i) => ({
+        idx: i+2,
+        nombre: r.c[0] ? String(r.c[0].v||'').trim() : '',
+        id: r.c[1] ? String(r.c[1].v||'').trim() : '',
+        checked: r.c[2] ? Boolean(r.c[2].v) : false,
+      }))
+      .filter(r => r.nombre && r.id);
+    adjuntosLoaded = true;
+    renderAdjuntos();
+  } catch(e) {
+    const cont = document.getElementById('sgr-adjuntos');
+    if (cont) cont.innerHTML = '<span style="font-family:var(--mono);font-size:11px;color:var(--text3)">No se pudieron cargar los adjuntos</span>';
+  }
+}
+
+function renderAdjuntos() {
+  const cont = document.getElementById('sgr-adjuntos');
+  if (!cont || !adjuntosConfig.length) return;
+  cont.innerHTML = adjuntosConfig.map((a, i) =>
+    '<label style="display:flex;align-items:center;gap:6px;cursor:pointer;background:var(--bg3);border:1px solid var(--border);border-radius:7px;padding:5px 10px;font-family:var(--mono);font-size:11px;color:var(--text2)">' +
+    '<input type="checkbox" id="adj-' + i + '" ' + (a.checked?'checked':'') + ' style="accent-color:var(--accent)">' +
+    a.nombre + '</label>'
+  ).join('');
+}
+
+async function runSGR(func, tipo, btn) {
+  const nombre = (document.getElementById('sgr-nombre')||{}).value||'';
+  const mail = (document.getElementById('sgr-mail')||{}).value||'';
+  if (!nombre.trim() || !mail.trim()) { alert('Completá nombre y mail del destinatario.'); return; }
+  const orig = btn.textContent;
+  btn.textContent = '⏳ Enviando...'; btn.classList.add('running'); btn.disabled = true;
+  const log = document.getElementById('auto-log');
+  log.style.display = 'block';
+  log.innerHTML = '<span style="color:var(--gold2)">⏳ Enviando mail a ' + nombre + '...</span>';
+  const url = SCRIPT_URL + '?func=' + func + '&mail=' + encodeURIComponent(mail) + '&nombre=' + encodeURIComponent(nombre);
+  fetch(url, { method:'GET', mode:'no-cors' })
+    .then(() => {
+      btn.textContent = '✅ Enviado'; btn.classList.remove('running'); btn.classList.add('ok');
+      log.innerHTML = '<span style="color:var(--green)">✅ Mail enviado a ' + nombre + ' (' + mail + '). Verificá tu bandeja.</span>';
+      setTimeout(() => { btn.textContent = orig; btn.classList.remove('ok'); btn.disabled = false; }, 3500);
+    })
+    .catch(e => {
+      btn.textContent = '❌ Error'; btn.classList.remove('running'); btn.classList.add('err');
+      log.innerHTML = '<span style="color:var(--red)">❌ ' + e.message + '</span>';
+      setTimeout(() => { btn.textContent = orig; btn.classList.remove('err'); btn.disabled = false; }, 3000);
+    });
+}
+
+async function runApertura(btn) {
+  const nombre = (document.getElementById('aper-nombre')||{}).value||'';
+  const mail = (document.getElementById('aper-mail')||{}).value||'';
+  const tipo = (document.getElementById('aper-tipo')||{}).value||'Física';
+  if (!nombre.trim() || !mail.trim()) { alert('Completá nombre y mail.'); return; }
+  const func = tipo === 'Física' ? 'enviarAperturaFisica' : 'enviarAperturaJuridica';
+  const orig = btn.textContent;
+  btn.textContent = '⏳ Enviando...'; btn.classList.add('running'); btn.disabled = true;
+  const log = document.getElementById('auto-log');
+  log.style.display = 'block';
+  log.innerHTML = '<span style="color:var(--gold2)">⏳ Enviando instrucciones de apertura...</span>';
+  const url = SCRIPT_URL + '?func=' + func + '&mail=' + encodeURIComponent(mail) + '&nombre=' + encodeURIComponent(nombre) + '&tipo=' + encodeURIComponent(tipo);
+  fetch(url, { method:'GET', mode:'no-cors' })
+    .then(() => {
+      btn.textContent = '✅ Enviado'; btn.classList.remove('running'); btn.classList.add('ok');
+      log.innerHTML = '<span style="color:var(--green)">✅ Instrucciones de apertura ' + tipo + ' enviadas a ' + nombre + ' (' + mail + ')</span>';
+      setTimeout(() => { btn.textContent = orig; btn.classList.remove('ok'); btn.disabled = false; }, 3500);
+    })
+    .catch(e => {
+      btn.textContent = '❌ Error'; btn.classList.remove('running'); btn.classList.add('err');
+      log.innerHTML = '<span style="color:var(--red)">❌ ' + e.message + '</span>';
+      setTimeout(() => { btn.textContent = orig; btn.classList.remove('err'); btn.disabled = false; }, 3000);
     });
 }
 
