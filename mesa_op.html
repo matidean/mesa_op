@@ -695,6 +695,11 @@ html,body{height:100%;font-family:var(--sans);background:var(--bg);color:var(--t
         <div class="field-label">Contraseña</div>
         <input class="field-input" type="password" id="links-pwd" placeholder="Ingresá la contraseña" onkeydown="if(event.key==='Enter') linksLogin()">
       </div>
+      <div class="field-group" style="margin-bottom:12px">
+        <div class="field-label">GitHub Token (ghp_...)</div>
+        <input class="field-input" type="password" id="links-token" placeholder="Pegá tu Personal Access Token">
+        <div style="font-family:var(--mono);font-size:10px;color:var(--text3);margin-top:4px">Solo queda en tu navegador, nunca se envía a ningún servidor.</div>
+      </div>
       <div id="links-login-err" style="font-family:var(--mono);font-size:11px;color:var(--red);display:none;margin-bottom:8px">Contraseña incorrecta</div>
       <div style="display:flex;gap:8px">
         <button class="btn-primary" onclick="linksLogin()" style="flex:1">Ingresar</button>
@@ -2019,20 +2024,26 @@ function renderLinksTable(rows){
 
 
 // ══════════════════════════════════
-// ADMIN LINKS — con contraseña hasheada
+// ADMIN LINKS — GitHub API
 // ══════════════════════════════════
 const ADMIN_HASH = '3d62c0bfceafedf059781bffdc09c3551bab4974b2483400b9bc5271585010d4';
+const GH_USER = 'matidean';
+const GH_REPO = 'mesa_op';
+const GH_FILE = 'mesa_op.html';
+const GH_BRANCH = 'main';
+
 let adminUnlocked = false;
-let linksCustom = JSON.parse(localStorage.getItem('qtm_links_custom') || '[]');
+let ghToken = '';
 
-// Links combinados: base + custom
-function getLinks() { return LINKS_DATA.concat(linksCustom); }
+function getLinks() { return LINKS_DATA; }
 
-function initLinks() { setTimeout(function(){ renderLinksTable(getLinks()); }, 80); }
+function initLinks() { setTimeout(function(){ renderLinksTable(LINKS_DATA); }, 80); }
+
 function filterLinks() {
   var q=(document.getElementById('links-search')||{value:''}).value.toLowerCase();
   var emp=(document.getElementById('links-empresa')||{value:''}).value;
-  var rows=getLinks().filter(function(r){
+  var rows=LINKS_DATA.filter(function(r){
+    if(r.e==='__deleted__') return false;
     if(emp && !r.e.toLowerCase().includes(emp.toLowerCase())) return false;
     if(q && !r.d.toLowerCase().includes(q) && !r.e.toLowerCase().includes(q) && !(r.o||'').toLowerCase().includes(q)) return false;
     return true;
@@ -2058,9 +2069,12 @@ function linksAdminOpen() {
 
 async function linksLogin() {
   const pwd = document.getElementById('links-pwd').value;
+  const token = document.getElementById('links-token').value.trim();
+  if (!token) { alert('Ingresá el GitHub Token.'); return; }
   const hash = await sha256(pwd);
   if (hash === ADMIN_HASH) {
     adminUnlocked = true;
+    ghToken = token;
     document.getElementById('links-pwd').value = '';
     document.getElementById('links-login-err').style.display = 'none';
     showAdminPane();
@@ -2073,61 +2087,118 @@ function showAdminPane() {
   document.getElementById('links-login-pane').style.display = 'none';
   const pane = document.getElementById('links-admin-pane');
   pane.style.display = 'flex';
-  // Llenar selector de eliminar
   const sel = document.getElementById('del-link-idx');
   sel.innerHTML = '';
-  const all = getLinks();
-  all.forEach((r, i) => {
+  LINKS_DATA.forEach((r, i) => {
+    if (r.e === '__deleted__') return;
     const opt = document.createElement('option');
     opt.value = i;
-    opt.textContent = '[' + r.e + '] ' + r.d.substring(0, 45);
+    opt.textContent = '[' + r.e + '] ' + r.d.substring(0, 50);
     sel.appendChild(opt);
   });
 }
 
-function linksAdd() {
+// ── GitHub API: leer SHA del archivo actual ──
+async function getFileSHA() {
+  const res = await fetch(
+    'https://api.github.com/repos/' + GH_USER + '/' + GH_REPO + '/contents/' + GH_FILE + '?ref=' + GH_BRANCH,
+    { headers: { 'Authorization': 'token ' + ghToken, 'Accept': 'application/vnd.github.v3+json' } }
+  );
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || 'Error al leer el archivo de GitHub');
+  return { sha: data.sha, content: atob(data.content.replace(/\n/g,'')) };
+}
+
+// ── GitHub API: escribir archivo actualizado ──
+async function pushFile(newContent, message) {
+  const { sha } = await getFileSHA();
+  const encoded = btoa(unescape(encodeURIComponent(newContent)));
+  const res = await fetch(
+    'https://api.github.com/repos/' + GH_USER + '/' + GH_REPO + '/contents/' + GH_FILE,
+    {
+      method: 'PUT',
+      headers: { 'Authorization': 'token ' + ghToken, 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message, content: encoded, sha, branch: GH_BRANCH })
+    }
+  );
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || 'Error al guardar en GitHub');
+  return data;
+}
+
+function setAdminMsg(txt, color) {
+  const msg = document.getElementById('links-admin-msg');
+  msg.textContent = txt;
+  msg.style.color = color || 'var(--green)';
+  msg.style.display = 'block';
+  setTimeout(() => msg.style.display = 'none', 4000);
+}
+
+// ── Agregar link: modifica LINKS_DATA en el HTML y pushea a GitHub ──
+async function linksAdd() {
   const emp = document.getElementById('new-link-emp').value;
   const det = document.getElementById('new-link-det').value.trim();
   const url = document.getElementById('new-link-url').value.trim();
   const obs = document.getElementById('new-link-obs').value.trim();
   if (!det) { alert('Ingresá el nombre del link.'); return; }
-  linksCustom.push({e:emp, d:det, l:url, o:obs});
-  localStorage.setItem('qtm_links_custom', JSON.stringify(linksCustom));
-  document.getElementById('new-link-det').value = '';
-  document.getElementById('new-link-url').value = '';
-  document.getElementById('new-link-obs').value = '';
-  const msg = document.getElementById('links-admin-msg');
-  msg.textContent = '✅ Link agregado correctamente';
-  msg.style.display = 'block';
-  setTimeout(() => msg.style.display = 'none', 2500);
-  showAdminPane();
-  renderLinksTable(getLinks());
+
+  setAdminMsg('⏳ Guardando en GitHub...', 'var(--gold2)');
+
+  try {
+    const { content: htmlContent } = await getFileSHA();
+    // Insertar nueva entrada en LINKS_DATA antes del cierre ];
+    const newEntry = '  {e:' + JSON.stringify(emp) + ',d:' + JSON.stringify(det) + ',l:' + JSON.stringify(url) + ',o:' + JSON.stringify(obs) + '},\n';
+    const marker = '];\n\nfunction empClass';
+    const updated = htmlContent.replace(marker, newEntry + marker);
+    await pushFile(updated, 'Hub: agregar link — ' + det);
+    // Actualizar local también
+    LINKS_DATA.push({e:emp, d:det, l:url, o:obs});
+    document.getElementById('new-link-det').value = '';
+    document.getElementById('new-link-url').value = '';
+    document.getElementById('new-link-obs').value = '';
+    setAdminMsg('✅ Link agregado. Netlify republica en ~2 minutos.', 'var(--green)');
+    showAdminPane();
+    renderLinksTable(LINKS_DATA);
+  } catch(e) {
+    setAdminMsg('❌ Error: ' + e.message, 'var(--red)');
+  }
 }
 
-function linksDelete() {
+// ── Eliminar link: quita la entrada del HTML y pushea a GitHub ──
+async function linksDelete() {
   const idx = parseInt(document.getElementById('del-link-idx').value);
-  const all = getLinks();
-  const base = LINKS_DATA.length;
-  if (idx < base) {
-    if (!confirm('Este es un link predefinido. ¿Seguro que querés eliminarlo? Se guardará como excluido.')) return;
-    linksCustom.push({e:'__deleted__', d:all[idx].d, l:'', o:''});
-  } else {
-    linksCustom.splice(idx - base, 1);
+  const link = LINKS_DATA[idx];
+  if (!link) return;
+  if (!confirm('¿Eliminar [' + link.e + '] ' + link.d + '?')) return;
+
+  setAdminMsg('⏳ Eliminando en GitHub...', 'var(--gold2)');
+
+  try {
+    const { content: htmlContent } = await getFileSHA();
+    // Construir la línea exacta a eliminar
+    const linePattern = new RegExp(
+      '  \\{e:' + escReg(JSON.stringify(link.e)) +
+      ',d:' + escReg(JSON.stringify(link.d)) +
+      '.*?\\},\\n',
+      's'
+    );
+    const updated = htmlContent.replace(linePattern, '');
+    await pushFile(updated, 'Hub: eliminar link — ' + link.d);
+    LINKS_DATA.splice(idx, 1);
+    setAdminMsg('🗑 Link eliminado. Netlify republica en ~2 minutos.', 'var(--green)');
+    showAdminPane();
+    renderLinksTable(LINKS_DATA);
+  } catch(e) {
+    setAdminMsg('❌ Error: ' + e.message, 'var(--red)');
   }
-  localStorage.setItem('qtm_links_custom', JSON.stringify(linksCustom));
-  const msg = document.getElementById('links-admin-msg');
-  msg.textContent = '🗑 Link eliminado';
-  msg.style.display = 'block';
-  setTimeout(() => msg.style.display = 'none', 2000);
-  showAdminPane();
-  renderLinksTable(getLinks());
 }
+
+function escReg(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
 
 function linksModalClose() {
   document.getElementById('links-modal').style.display = 'none';
 }
 
-// Cerrar modal al clickar fuera
 document.addEventListener('click', function(e) {
   const modal = document.getElementById('links-modal');
   if (modal && modal.style.display === 'flex' && e.target === modal) linksModalClose();
