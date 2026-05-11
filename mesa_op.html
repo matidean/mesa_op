@@ -737,6 +737,30 @@ html,body{height:100%;font-family:var(--sans);background:var(--bg);color:var(--t
         </div>
         <button class="btn-primary" onclick="linksAdd()" style="align-self:flex-start;padding:8px 20px;font-size:12px">➕ Agregar</button>
       </div>
+      <!-- EDITAR URL -->
+      <div style="background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:10px">
+        <div style="font-family:var(--mono);font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.1em">Editar URL de un link</div>
+        <div class="field-group">
+          <div class="field-label">Buscar link</div>
+          <input class="field-input" id="edit-search" placeholder="Escribí para buscar..." oninput="filterEditList()">
+        </div>
+        <div id="edit-links-list" style="max-height:140px;overflow-y:auto;display:flex;flex-direction:column;gap:3px"></div>
+        <div id="edit-form" style="display:none;flex-direction:column;gap:8px;padding-top:8px;border-top:1px solid var(--border)">
+          <div style="font-family:var(--mono);font-size:11px;color:var(--accent2)" id="edit-link-name"></div>
+          <div class="field-group">
+            <div class="field-label">Nueva URL</div>
+            <input class="field-input" id="edit-link-url" placeholder="https://...">
+          </div>
+          <div class="field-group">
+            <div class="field-label">Observación (opcional)</div>
+            <input class="field-input" id="edit-link-obs" placeholder="ej: Solo socios">
+          </div>
+          <div style="display:flex;gap:8px">
+            <button class="btn-primary" onclick="linksEdit()" style="flex:1;padding:8px">💾 Guardar</button>
+            <button class="btn-sec" onclick="closeEditForm()" style="padding:8px 12px">Cancelar</button>
+          </div>
+        </div>
+      </div>
       <!-- ELIMINAR -->
       <div style="background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:10px">
         <div style="display:flex;align-items:center;justify-content:space-between">
@@ -2115,6 +2139,7 @@ function showAdminPane() {
   const pane = document.getElementById('links-admin-pane');
   pane.style.display = 'flex';
   renderDelList();
+  renderEditList('');
 }
 
 function renderDelList() {
@@ -2242,6 +2267,99 @@ async function linksDelete() {
     renderLinksTable(getLinks());
   } catch(e) {
     linksExtra.deleted = prevDeleted;
+    linksExtra.added = prevAdded;
+    setAdminMsg('❌ Error: ' + e.message, 'var(--red)');
+  }
+}
+
+function filterEditList() {
+  const q = (document.getElementById('edit-search')||{value:''}).value.toLowerCase();
+  renderEditList(q);
+}
+
+let editingIdx = -1;
+
+function renderEditList(q) {
+  const list = document.getElementById('edit-links-list');
+  if (!list) return;
+  list.innerHTML = '';
+  const all = getLinks();
+  const filtered = all
+    .map((r, i) => ({r, i}))
+    .filter(({r}) => !q || r.d.toLowerCase().includes(q) || r.e.toLowerCase().includes(q))
+    .slice(0, 15);
+  filtered.forEach(({r, i}) => {
+    const row = document.createElement('div');
+    row.style.cssText = 'display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:6px;font-family:var(--mono);font-size:11px;color:var(--text2);background:var(--bg2);border:1px solid var(--border);cursor:pointer';
+    const hasUrl = r.l && r.l.startsWith('http');
+    row.innerHTML = '<span style="color:var(--text3);min-width:80px;flex-shrink:0">[' + r.e + ']</span>'
+      + '<span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + r.d + '</span>'
+      + '<span style="flex-shrink:0;font-size:10px;color:' + (hasUrl ? 'var(--green)' : 'var(--red)') + '">' + (hasUrl ? '✓ URL' : '✗ Sin URL') + '</span>'
+      + '<button style="flex-shrink:0;padding:3px 8px;background:var(--bg3);border:1px solid var(--border2);border-radius:5px;color:var(--accent2);font-family:var(--mono);font-size:10px;cursor:pointer" onclick="openEditForm(' + i + ')">Editar</button>';
+    list.appendChild(row);
+  });
+  if (!filtered.length) list.innerHTML = '<div style="color:var(--text3);font-family:var(--mono);font-size:11px;padding:8px">Sin resultados</div>';
+}
+
+function openEditForm(idx) {
+  editingIdx = idx;
+  const link = getLinks()[idx];
+  document.getElementById('edit-link-name').textContent = '[' + link.e + '] ' + link.d;
+  document.getElementById('edit-link-url').value = link.l || '';
+  document.getElementById('edit-link-obs').value = link.o || '';
+  document.getElementById('edit-form').style.display = 'flex';
+}
+
+function closeEditForm() {
+  editingIdx = -1;
+  document.getElementById('edit-form').style.display = 'none';
+  document.getElementById('edit-link-url').value = '';
+  document.getElementById('edit-link-obs').value = '';
+}
+
+async function linksEdit() {
+  if (editingIdx < 0) return;
+  const newUrl = document.getElementById('edit-link-url').value.trim();
+  const newObs = document.getElementById('edit-link-obs').value.trim();
+  const link = getLinks()[editingIdx];
+  setAdminMsg('⏳ Guardando en GitHub...', 'var(--gold2)');
+
+  // Determinar si es link base o agregado
+  const baseVisible = LINKS_DATA.filter((r,i) => !linksExtra.deleted.includes(i));
+  const isBase = editingIdx < baseVisible.length;
+
+  const prevAdded = JSON.parse(JSON.stringify(linksExtra.added));
+  try {
+    if (isBase) {
+      // Agregar como override en linksExtra.added con flag de edición
+      // Buscar si ya existe un override para este link
+      const existingOverride = linksExtra.added.findIndex(a => a._editOf === link.d && a._editOfE === link.e);
+      const entry = {e: link.e, d: link.d, l: newUrl, o: newObs, _editOf: link.d, _editOfE: link.e};
+      if (existingOverride >= 0) {
+        linksExtra.added[existingOverride] = entry;
+        // Ocultar el original si no está ya
+        const realBaseIdx = LINKS_DATA.findIndex(r => r.d === link.d && r.e === link.e);
+        if (realBaseIdx >= 0 && !linksExtra.deleted.includes(realBaseIdx)) {
+          linksExtra.deleted.push(realBaseIdx);
+        }
+      } else {
+        linksExtra.added.push(entry);
+        const realBaseIdx = LINKS_DATA.findIndex(r => r.d === link.d && r.e === link.e);
+        if (realBaseIdx >= 0) linksExtra.deleted.push(realBaseIdx);
+      }
+    } else {
+      // Es un link agregado — editarlo directamente
+      const addedIdx = editingIdx - baseVisible.length;
+      linksExtra.added[addedIdx].l = newUrl;
+      linksExtra.added[addedIdx].o = newObs;
+    }
+    await pushJSON('Hub: editar URL — ' + link.d);
+    closeEditForm();
+    setAdminMsg('✅ URL actualizada. Visible al instante.', 'var(--green)');
+    renderEditList(document.getElementById('edit-search').value.toLowerCase());
+    renderLinksTable(getLinks());
+    renderDelList();
+  } catch(e) {
     linksExtra.added = prevAdded;
     setAdminMsg('❌ Error: ' + e.message, 'var(--red)');
   }
