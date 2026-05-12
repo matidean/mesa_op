@@ -1,5 +1,12 @@
 {
-  "added": [],
+  "added": [
+    {
+      "e": "Cohen",
+      "d": "Registro usuario Connect",
+      "l": "https://connect.cohen.com.ar/comoregistrarme",
+      "o": "Procedimiento de Cohen para registrar usuario Cohen Connect"
+    }
+  ],
   "deleted": [
     19,
     20,
