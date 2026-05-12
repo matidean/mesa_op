@@ -377,6 +377,13 @@ html,body{height:100%;font-family:var(--sans);background:var(--bg);color:var(--t
       <div class="hcard-tag">próximamente</div>
     </button>
   </div>
+    <button class="hcard" onclick="aranAuth()">
+      <div class="hcard-icon">📊</div>
+      <div class="hcard-title">Control de Aranceles</div>
+      <div class="hcard-desc">Dashboard de comisiones y aranceles. Acceso restringido a socios.</div>
+      <div class="hcard-arrow" style="color:var(--gold2)">🔒</div>
+    </button>
+  </div>
   <div class="home-footer">QTM Capital · Agente Matriculado CNV · Uso exclusivamente interno</div>
 </div>
 
@@ -774,6 +781,26 @@ html,body{height:100%;font-family:var(--sans);background:var(--bg);color:var(--t
         <button class="btn-sec" onclick="linksDelete()" style="border-color:var(--red);color:var(--red);align-self:flex-start;padding:8px 16px">🗑 Eliminar seleccionados</button>
       </div>
       <div id="links-admin-msg" style="font-family:var(--mono);font-size:11px;color:var(--green);display:none"></div>
+    </div>
+  </div>
+</div>
+
+
+<!-- MODAL AUTH ARANCELES -->
+<div id="aran-modal" style="display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.75);align-items:center;justify-content:center">
+  <div style="background:var(--bg2);border:1px solid var(--border2);border-radius:16px;padding:28px;width:min(380px,90vw);display:flex;flex-direction:column;gap:16px">
+    <div>
+      <div style="font-family:var(--display);font-size:17px;font-weight:700;color:var(--text);margin-bottom:4px">🔒 Acceso restringido</div>
+      <div style="font-family:var(--mono);font-size:11px;color:var(--text3)">Control de Aranceles · Solo socios QTM Capital</div>
+    </div>
+    <div class="field-group">
+      <div class="field-label">Contraseña</div>
+      <input class="field-input" type="password" id="aran-pwd" placeholder="Ingresá la contraseña" onkeydown="if(event.key==='Enter') aranLogin()">
+    </div>
+    <div id="aran-err" style="font-family:var(--mono);font-size:11px;color:var(--red);display:none">Contraseña incorrecta</div>
+    <div style="display:flex;gap:8px">
+      <button class="btn-primary" onclick="aranLogin()" style="flex:1">Ingresar</button>
+      <button class="btn-sec" onclick="aranClose()">Cancelar</button>
     </div>
   </div>
 </div>
@@ -2374,6 +2401,46 @@ function linksModalClose() {
 document.addEventListener('click', function(e) {
   const modal = document.getElementById('links-modal');
   if (modal && modal.style.display === 'flex' && e.target === modal) linksModalClose();
+});
+
+
+// ══════════════════════════════════
+// AUTH ARANCELES
+// ══════════════════════════════════
+const ARAN_URL_ENC = 'aHR0cHM6Ly91YmlxdWl0b3VzLXNhd2luZS05MGZiN2IubmV0bGlmeS5hcHAvcXRtX2FyYW5jZWxlc19kYXNoYm9hcmQuaHRtbA==';
+
+function aranAuth() {
+  document.getElementById('aran-modal').style.display = 'flex';
+  document.getElementById('aran-pwd').value = '';
+  document.getElementById('aran-err').style.display = 'none';
+  setTimeout(() => document.getElementById('aran-pwd').focus(), 100);
+}
+
+async function aranLogin() {
+  const pwd = document.getElementById('aran-pwd').value;
+  const hash = await sha256(pwd);
+  if (hash === ADMIN_HASH) {
+    aranClose();
+    // Decodificar y abrir el link solo si la contraseña es correcta
+    const url = atob(ARAN_URL_ENC);
+    window.open(url, '_blank');
+  } else {
+    document.getElementById('aran-err').style.display = 'block';
+    document.getElementById('aran-pwd').value = '';
+    document.getElementById('aran-pwd').focus();
+  }
+}
+
+function aranClose() {
+  document.getElementById('aran-modal').style.display = 'none';
+  document.getElementById('aran-pwd').value = '';
+  document.getElementById('aran-err').style.display = 'none';
+}
+
+// Cerrar modal aranceles al clickar fuera
+document.addEventListener('click', function(e) {
+  const m = document.getElementById('aran-modal');
+  if (m && m.style.display === 'flex' && e.target === m) aranClose();
 });
 
 // INIT
