@@ -1244,7 +1244,7 @@ const IND_MSGS = {
       {id:'valor',label:'Monto / VN',ph:'ej: 5.000.000 ARS / 100 VN'},
       {id:'plazo',label:'Liquidación',type:'sel',opts:['mkt 24hs','mkt CI','mkt t+1','límite']},
     ],
-    build:f=>`Compra:\n${f.comit||'—'}\n${f.ticker||'—'} - ${fmtInput(f.valor||'')||'—'}\n${f.plazo||'—'}`,\n${f.plazo||'—'}`
+    build:f=>`Compra:\n${f.comit||'—'}\n${f.ticker||'—'} - ${fmtInput(f.valor||'')||'—'}\n${f.plazo||'—'}`,
   },
   venta_ind: {
     title:'Venta individual', sub:'Para la mesa del ALYC',
@@ -1254,7 +1254,7 @@ const IND_MSGS = {
       {id:'valor',label:'VN / Cantidad',ph:'ej: 173 CEDEAR / 11.764 nominales'},
       {id:'plazo',label:'Liquidación',type:'sel',opts:['mkt 24hs','mkt CI','mkt t+1']},
     ],
-    build:f=>`Venta:\n${f.comit||'—'}\n${f.ticker||'—'} - ${fmtInput(f.valor||'')||'—'}\n${f.plazo||'—'}`,\n${f.plazo||'—'}`
+    build:f=>`Venta:\n${f.comit||'—'}\n${f.ticker||'—'} - ${fmtInput(f.valor||'')||'—'}\n${f.plazo||'—'}`
   },
   mep: {
     title:'MEP / CCL cerrado', sub:'Para la mesa del ALYC',
