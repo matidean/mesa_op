@@ -1,0 +1,2492 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QTM Capital · Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500&family=Instrument+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0e17; --bg2: #0f1520; --bg3: #151d2e;
+  --border: #1e2d45; --border2: #263650;
+  --accent: #3b82f6; --accent2: #60a5fa;
+  --gold: #f59e0b; --gold2: #fbbf24;
+  --green: #10b981; --red: #ef4444;
+  --text: #e2e8f0; --text2: #94a3b8; --text3: #64748b;
+  --mono: 'JetBrains Mono', monospace;
+  --sans: 'Instrument Sans', sans-serif;
+  --display: 'Syne', sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;font-family:var(--sans);background:var(--bg);color:var(--text);min-height:100vh}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+
+/* ── HEADER ── */
+#app-header{
+  background:var(--bg2);border-bottom:1px solid var(--border);
+  padding:0 24px;height:52px;displayhttps://docs.google.com/spreadsheets/d/e/2PACX-1vQwoU05cf_cJBRu4YzEGZBIGIXw4lwBTaQVyEmcJUKpJZ6vx0HbAbiwL7eWN64eno6XuM8PHDx8Rbu1/pub?gid=0&single=true&output=csv:flex;align-items:center;
+  justify-content:space-between;position:sticky;top:0;z-index:100;flex-shrink:0;
+}
+.logo{font-family:var(--display);font-weight:800;font-size:17px;color:var(--text);display:flex;align-items:center;gap:10px}
+.logo-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px var(--accent)}
+.hdr-right{display:flex;align-items:center;gap:10px}
+.btn-home{
+  background:transparent;border:1px solid var(--border2);border-radius:8px;
+  color:var(--text2);font-family:var(--sans);font-size:12px;padding:5px 12px;cursor:pointer;transition:all .15s;
+}
+.btn-home:hover{border-color:var(--accent);color:var(--accent2)}
+.hdr-tag{font-family:var(--mono);font-size:10px;color:var(--text3);border:1px solid var(--border2);padding:4px 10px;border-radius:4px;letter-spacing:.1em;text-transform:uppercase}
+
+/* ── SCREENS ── */
+.screen{display:none;flex-direction:column;height:calc(100vh - 52px);overflow:hidden}
+.screen.active{display:flex}
+
+/* ── HOME ── */
+#home{align-items:center;justify-content:flex-start;padding:28px 24px 40px;overflow-y:auto;gap:28px}
+.home-heading{text-align:center}
+.home-heading h1{font-family:var(--display);font-size:32px;font-weight:800;letter-spacing:-0.03em;line-height:1.1}
+.home-heading p{font-family:var(--mono);font-size:11px;color:var(--text3);margin-top:8px;letter-spacing:.12em;text-transform:uppercase}
+.home-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;width:100%;max-width:1200px}
+.hcard{
+  background:var(--bg2);border:1px solid var(--border);border-radius:16px;
+  padding:22px 18px 18px;cursor:pointer;text-align:left;transition:all .2s;
+  display:flex;flex-direction:column;gap:8px;
+}
+.hcard:hover{border-color:var(--accent);background:var(--bg3);transform:translateY(-2px);box-shadow:0 8px 28px rgba(59,130,246,.15)}
+.hcard.soon{opacity:.5;cursor:default;pointer-events:none}
+.hcard-icon{font-size:26px;line-height:1}
+.hcard-title{font-family:var(--display);font-size:14px;font-weight:700;color:var(--text);margin-top:4px}
+.hcard-desc{font-size:11px;color:var(--text3);line-height:1.5;flex:1}
+.hcard-arrow{font-size:14px;color:var(--accent);align-self:flex-end}
+.hcard-tag{font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);background:var(--border);padding:2px 7px;border-radius:10px;align-self:flex-start}
+.home-footer{font-family:var(--mono);font-size:10px;color:var(--text3);letter-spacing:.06em}
+
+/* ── TABS ── */
+#tabs-bar{background:var(--bg2);border-bottom:1px solid var(--border);display:flex;padding:0 16px;flex-shrink:0}
+.tab{
+  font-family:var(--display);font-size:12px;font-weight:600;padding:12px 16px;
+  border:none;background:transparent;color:var(--text3);cursor:pointer;
+  border-bottom:2px solid transparent;transition:all .15s;display:flex;align-items:center;gap:6px;white-space:nowrap;
+}
+.tab:hover{color:var(--text2)}
+.tab.active{color:var(--accent2);border-bottom-color:var(--accent)}
+.tab-badge{font-family:var(--mono);font-size:9px;background:var(--border);color:var(--text3);padding:2px 6px;border-radius:10px}
+.tab.active .tab-badge{background:rgba(59,130,246,.2);color:var(--accent2)}
+
+/* ── PANELS ── */
+.panel{display:none;flex:1;overflow:hidden}
+.panel.active{display:flex}
+
+/* ── LAYOUT HELPERS ── */
+.two-col{display:grid;grid-template-columns:1fr 1fr;height:100%}
+.three-col{display:grid;grid-template-columns:200px 1fr 1fr;height:100%}
+.col{display:flex;flex-direction:column;border-right:1px solid var(--border);overflow:hidden}
+.col:last-child{border-right:none}
+.col-body{flex:1;overflow-y:auto}
+.col-hdr{padding:14px 20px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.col-title{font-family:var(--display);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3)}
+
+/* ── FORMS ── */
+.field-group{display:flex;flex-direction:column;gap:4px}
+.field-label{font-family:var(--mono);font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.1em}
+.field-input,.field-select,.field-ta{
+  background:var(--bg3);border:1px solid var(--border);border-radius:6px;
+  color:var(--text);font-family:var(--mono);font-size:12px;padding:7px 10px;
+  outline:none;transition:border-color .15s;width:100%;
+}
+.field-input:focus,.field-select:focus,.field-ta:focus{border-color:var(--accent)}
+.field-select{cursor:pointer;appearance:none}
+.field-ta{resize:vertical}
+.fields-row{display:grid;gap:10px}
+.cols2{grid-template-columns:1fr 1fr}
+.cols3{grid-template-columns:1fr 1fr 1fr}
+
+/* ── MASIVO ── */
+.op-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:14px 20px;border-bottom:1px solid var(--border)}
+.op-btn{
+  padding:10px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;
+  color:var(--text2);font-family:var(--sans);font-size:11px;font-weight:500;
+  cursor:pointer;transition:all .15s;text-align:left;display:flex;flex-direction:column;gap:2px;
+}
+.op-btn:hover{border-color:var(--border2);color:var(--text)}
+.op-btn.active{background:rgba(59,130,246,.1);border-color:var(--accent);color:var(--accent2)}
+.op-btn-name{font-weight:600;font-size:11px}
+.op-btn-desc{font-size:10px;color:var(--text3)}
+.op-btn.active .op-btn-desc{color:rgba(96,165,250,.7)}
+.extra-params{display:flex;gap:10px;padding:12px 20px;border-bottom:1px solid var(--border);flex-wrap:wrap;flex-shrink:0}
+.paste-hint{font-family:var(--mono);font-size:10px;color:var(--text3);padding:8px 10px;background:var(--bg3);border:1px dashed var(--border2);border-radius:6px;line-height:1.6}
+.paste-hint span{color:var(--accent2)}
+.parsed-preview{border-top:1px solid var(--border);max-height:110px;overflow-y:auto;flex-shrink:0}
+.parsed-row{display:flex;align-items:center;gap:8px;padding:4px 12px;border-bottom:1px solid var(--border);font-family:var(--mono);font-size:11px}
+.pr-num{color:var(--text3);width:22px;text-align:right;flex-shrink:0}
+.pr-comit{color:var(--accent2);width:52px;flex-shrink:0}
+.pr-name{color:var(--text2);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pr-val{color:var(--gold2);text-align:right;flex-shrink:0}
+
+/* ── OUTPUT ── */
+.output-box{
+  flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:8px;
+  font-family:var(--mono);font-size:12px;line-height:1.7;padding:14px;
+  color:var(--text);white-space:pre-wrap;overflow-y:auto;min-height:120px;
+}
+.output-empty{color:var(--text3);font-style:italic}
+.stats-bar{display:flex;gap:16px;padding:10px 20px;border-bottom:1px solid var(--border);flex-shrink:0}
+.stat-val{font-family:var(--mono);font-size:14px;font-weight:500;color:var(--text)}
+.stat-lbl{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em}
+
+/* ── BUTTONS ── */
+.btn-primary{
+  flex:1;padding:10px 18px;background:var(--accent);color:white;border:none;border-radius:8px;
+  font-family:var(--display);font-size:13px;font-weight:700;cursor:pointer;transition:all .15s;
+  display:flex;align-items:center;justify-content:center;gap:6px;
+}
+.btn-primary:hover{background:var(--accent2);transform:translateY(-1px)}
+.btn-primary.success{background:var(--green)}
+.btn-sec{
+  padding:9px 14px;background:transparent;color:var(--text2);border:1px solid var(--border2);
+  border-radius:8px;font-family:var(--sans);font-size:12px;cursor:pointer;transition:all .15s;
+}
+.btn-sec:hover{border-color:var(--text3);color:var(--text)}
+.output-actions{display:flex;gap:8px}
+
+/* ── INDIVIDUAL sidebar ── */
+.ind-sidebar{padding:12px;display:flex;flex-direction:column;gap:3px;overflow-y:auto;flex-shrink:0;min-width:180px}
+.ind-cat{font-family:var(--mono);font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;padding:8px 8px 3px}
+.ind-btn{
+  padding:9px 11px;background:transparent;border:1px solid transparent;border-radius:8px;
+  color:var(--text2);font-family:var(--sans);font-size:11px;font-weight:500;
+  cursor:pointer;text-align:left;transition:all .15s;width:100%;display:flex;align-items:center;gap:8px;
+}
+.ind-btn:hover{background:var(--bg3);color:var(--text)}
+.ind-btn.active{background:rgba(59,130,246,.1);border-color:var(--accent);color:var(--accent2)}
+
+/* ── INFO ── */
+.info-sidebar{padding:12px;display:flex;flex-direction:column;gap:3px;overflow-y:auto;min-width:180px;flex-shrink:0}
+.info-cat{font-family:var(--mono);font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;padding:8px 8px 3px}
+.info-cat-btn{
+  padding:9px 11px;background:transparent;border:1px solid transparent;border-radius:8px;
+  color:var(--text2);font-family:var(--sans);font-size:11px;font-weight:500;
+  cursor:pointer;text-align:left;transition:all .15s;width:100%;
+}
+.info-cat-btn:hover{background:var(--bg3);color:var(--text)}
+.info-cat-btn.active{background:rgba(59,130,246,.1);border-color:var(--accent);color:var(--accent2)}
+.info-content{flex:1;padding:20px;overflow-y:auto}
+.info-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+.info-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;overflow:hidden}
+.info-card-hdr{padding:12px 16px 10px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.info-card-title{font-family:var(--display);font-size:13px;font-weight:700;display:flex;align-items:center;gap:8px}
+.info-card-tag{font-family:var(--mono);font-size:9px;padding:2px 7px;border-radius:10px;background:var(--border);color:var(--text3)}
+.info-card-body{padding:12px 16px;font-family:var(--mono);font-size:11.5px;line-height:1.8;color:var(--text2)}
+.info-row{display:flex;gap:8px}
+.info-lbl{color:var(--text3);font-size:10px;min-width:110px;flex-shrink:0}
+.info-val{color:var(--text);font-weight:500}
+.info-val.hi{color:var(--gold2);font-weight:600}
+.info-actions{padding:10px 16px;border-top:1px solid var(--border);display:flex;gap:6px;flex-wrap:wrap}
+.info-copy-btn{
+  padding:7px 12px;background:var(--bg3);border:1px solid var(--border2);border-radius:7px;
+  color:var(--text2);font-family:var(--sans);font-size:11px;font-weight:500;
+  cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:5px;
+}
+.info-copy-btn:hover{background:var(--accent);border-color:var(--accent);color:white}
+.info-copy-btn.ok{background:var(--green);border-color:var(--green);color:white}
+
+
+/* ── AUTOMATIZACIONES ── */
+.auto-card{
+  background:var(--bg2);border:1px solid var(--border);border-radius:14px;
+  padding:18px 20px;display:flex;align-items:center;justify-content:space-between;gap:16px;
+  transition:border-color .2s;
+}
+.auto-card:hover{border-color:var(--border2)}
+.auto-card-left{display:flex;align-items:flex-start;gap:14px;flex:1}
+.auto-icon{font-size:24px;flex-shrink:0;margin-top:2px}
+.auto-title{font-family:var(--display);font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px}
+.auto-desc{font-size:12px;color:var(--text3);line-height:1.5}
+.auto-btn{
+  flex-shrink:0;padding:10px 20px;background:var(--accent);color:white;border:none;
+  border-radius:9px;font-family:var(--display);font-size:13px;font-weight:700;
+  cursor:pointer;transition:all .15s;white-space:nowrap;min-width:80px;
+}
+.auto-btn:hover{background:var(--accent2);transform:translateY(-1px)}
+.auto-btn:disabled{background:var(--bg3);color:var(--text3);border:1px solid var(--border);cursor:not-allowed;transform:none}
+.auto-btn.running{background:var(--gold);color:#000}
+.auto-btn.ok{background:var(--green)}
+.auto-btn.err{background:var(--red)}
+
+/* ── BUSCADOR CLIENTES ── */
+.client-search-wrap{position:relative;width:100%}
+.client-search-input{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:var(--mono);font-size:12px;padding:7px 10px;outline:none;transition:border-color .15s}
+.client-search-input:focus{border-color:var(--accent)}
+.client-dropdown{
+  position:absolute;top:100%;left:0;right:0;z-index:200;
+  background:var(--bg2);border:1px solid var(--border2);border-radius:8px;
+  max-height:200px;overflow-y:auto;margin-top:3px;
+  box-shadow:0 8px 24px rgba(0,0,0,.4);display:none;
+}
+.client-dropdown.open{display:block}
+.client-option{
+  padding:9px 12px;font-family:var(--mono);font-size:11px;color:var(--text2);
+  cursor:pointer;border-bottom:1px solid var(--border);transition:background .1s;
+}
+.client-option:last-child{border-bottom:none}
+.client-option:hover,.client-option.selected{background:rgba(59,130,246,.15);color:var(--accent2)}
+.client-loading{padding:10px 12px;font-family:var(--mono);font-size:11px;color:var(--text3)}
+.client-badge{
+  display:inline-flex;align-items:center;gap:6px;margin-top:4px;
+  background:rgba(59,130,246,.12);border:1px solid var(--accent);border-radius:6px;
+  padding:4px 10px;font-family:var(--mono);font-size:11px;color:var(--accent2);
+}
+.client-badge-clear{cursor:pointer;color:var(--text3);font-size:13px;line-height:1}
+.client-badge-clear:hover{color:var(--red)}
+
+/* ── FCI BUSCADOR ── */
+.fci-wrap{display:flex;flex-direction:column;gap:14px;max-width:700px}
+.fci-search-bar{display:flex;gap:10px;flex-wrap:wrap}
+.fci-input{flex:1;min-width:160px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:var(--mono);font-size:13px;padding:9px 12px;outline:none;transition:border-color .15s}
+.fci-input:focus{border-color:var(--accent)}
+.fci-select{background:var(--bg3);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:var(--mono);font-size:13px;padding:9px 12px;outline:none;cursor:pointer;appearance:none;min-width:130px}
+.fci-table{width:100%;border-collapse:collapse;background:var(--bg2);border-radius:12px;overflow:hidden;border:1px solid var(--border)}
+.fci-table th{background:var(--bg3);color:var(--text3);font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.1em;padding:10px 16px;text-align:left;border-bottom:1px solid var(--border)}
+.fci-table td{padding:9px 16px;font-family:var(--mono);font-size:12px;color:var(--text2);border-bottom:1px solid var(--border)}
+.fci-table tr:last-child td{border-bottom:none}
+.fci-table tr:hover td{background:rgba(59,130,246,.05);color:var(--text)}
+.fci-hora{font-weight:600;color:var(--gold2) !important}
+.fci-hora.urgente{color:var(--red) !important}
+.fci-hora.ok{color:var(--green) !important}
+.fci-status{font-family:var(--mono);font-size:11px;color:var(--text3);padding:8px 0}
+.fci-loading{color:var(--text3);font-family:var(--mono);font-size:12px;padding:20px;text-align:center}
+
+
+/* ── LINKS TABLE ── */
+#links-table tbody tr{border-bottom:1px solid var(--border);transition:background .1s}
+#links-table tbody tr:hover{background:rgba(59,130,246,.05)}
+#links-table td{padding:9px 16px;font-size:12px;vertical-align:middle}
+.links-empresa{font-family:var(--mono);font-size:10px;font-weight:600;padding:3px 8px;border-radius:10px;white-space:nowrap}
+.emp-cohen{background:rgba(59,130,246,.15);color:var(--accent2)}
+.emp-qtm{background:rgba(249,158,11,.15);color:var(--gold2)}
+.emp-dracma{background:rgba(16,185,129,.15);color:var(--green)}
+.emp-eco{background:rgba(96,165,250,.1);color:#93c5fd}
+.links-open{display:inline-flex;align-items:center;gap:4px;padding:5px 10px;background:var(--bg3);border:1px solid var(--border2);border-radius:7px;color:var(--accent2);font-family:var(--mono);font-size:11px;text-decoration:none;transition:all .15s;white-space:nowrap}
+.links-open:hover{background:var(--accent);border-color:var(--accent);color:white}
+.links-obs{font-size:11px;color:var(--text3);font-style:italic}
+
+/* ── TOAST ── */
+
+.toast{
+  position:fixed;bottom:20px;right:20px;background:var(--green);color:white;
+  padding:10px 18px;border-radius:10px;font-family:var(--display);font-size:13px;font-weight:600;
+  box-shadow:0 8px 28px rgba(0,0,0,.4);transform:translateY(80px);opacity:0;
+  transition:all .3s cubic-bezier(.34,1.56,.64,1);z-index:999;
+}
+.toast.show{transform:translateY(0);opacity:1}
+
+@media(max-width:700px){
+  .two-col,.three-col{grid-template-columns:1fr}
+  .col{border-right:none;border-bottom:1px solid var(--border)}
+  .col:last-child{border-bottom:none}
+  /* HOME MOBILE: 2 columnas compactas */
+  #home{padding:12px 12px;gap:12px;justify-content:flex-start}
+  .home-heading h1{font-size:22px}
+  .home-heading p{font-size:9px;margin-top:4px}
+  .home-grid{grid-template-columns:1fr 1fr;gap:8px;max-width:100%}
+  .hcard{padding:12px 10px 10px;gap:5px}
+  .hcard-icon{font-size:20px}
+  .hcard-title{font-size:11px;margin-top:2px}
+  .hcard-desc{font-size:10px;display:none}
+  .hcard-arrow{font-size:11px}
+  .home-footer{font-size:9px;text-align:center}
+}
+@media(max-width:420px){
+  .home-grid{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div id="app-header">
+  <div class="logo" style="gap:12px">
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAC4AAAAoCAIAAAAOgl99AAABCGlDQ1BJQ0MgUHJvZmlsZQAAeJxjYGA8wQAELAYMDLl5JUVB7k4KEZFRCuwPGBiBEAwSk4sLGHADoKpv1yBqL+viUYcLcKakFicD6Q9ArFIEtBxopAiQLZIOYWuA2EkQtg2IXV5SUAJkB4DYRSFBzkB2CpCtkY7ETkJiJxcUgdT3ANk2uTmlyQh3M/Ck5oUGA2kOIJZhKGYIYnBncAL5H6IkfxEDg8VXBgbmCQixpJkMDNtbGRgkbiHEVBYwMPC3MDBsO48QQ4RJQWJRIliIBYiZ0tIYGD4tZ2DgjWRgEL7AwMAVDQsIHG5TALvNnSEfCNMZchhSgSKeDHkMyQx6QJYRgwGDIYMZAKbWPz9HbOBQAAAKTUlEQVR42u1YW2xUVRfe+5wz9+kwTIbOpaUM2AEVEkydtEmppbWhMghyKW2t9qEqCRDxyZoYNN4eaiRieDJEAipW6bQFgoJ4KdfKrTVA0wtFndT20JTpwFw6di7nMut/WP2P41TQ/3/688f1cLL3Pmvvs/b61v7W2oeuWbOG/CNZQlmWBQBKKcMwoijO1uA4jhCSTqexqzT+Yl1KKaWKMsMw99JUdChOAwBCSH5+/uOPP75s2TKLxRKPx2/evHn+/Pn+/n5cCwAAwOVy2Ww2tB4AGIbBV7IsK0YAQF9fnyiKHo+H4zgA+PHHH++1T4/HM2MopRSHWlpaotEozBKfz5eXl0cIUavVhJDPP/8c/oYUFhZqtdp4PI7dJ554ghDCsqxiBLYrKiqUKRxu6+jRo08++SQhpK2t7cSJExMTEyaTqby8/Lnnnqurq/N4PFVVVWNjY5TSM2fOcBwnyzJu1+FwrFixIhQKnT59mhCC3iKETE1NsSwbj8d1Oh0hpLa29ttvv81CkBBSU1NDCJEkacbKlpYWALh79+7q1auzHOh2u69evQoAFy5cYFl2NuQrV64EgIsXL852vtlsDofD09PT4XA4EAjo9XrFAnxqNBqe5yORSCQSAQCyePHi6elpWZbRQJVKxXEcy7IsyyIiLpcrGAwCQENDA8KkvGVZdu3atQDQ09PDsqwyESN9zpw5v/32G8/zBw4cAIDq6moFF3yWl5cDwMcff+z3+wGAaWpq0uv1P/zww+HDhzmOE0VRkiRZlmVZFgRBpVL9+uuve/fuBYDnn38enSlnCMY/hm2moGMAQKPRHDlyhBDy9NNPZ6FTV1dHCDl8+LBWqyWEkN7e3nQ6vWPHDkop7iZTWJallBYVFQFANBq1Wq3KQrizNWvWAMCVK1eUcaUxZ86cSCSSTCYdDsfPP/8cDocRI0RZrVYHAgG/32+z2WKxGAAwbrebUjo4OIhhPPvQA8DIyEgoFDKZTAsWLLg/SWQJeiUUCvl8PrPZXFZWhjFACCkpKcnNzfX5fOFwGCOBycnJIYREo1Gc+acrxuNxPOcmk+k/5dB0Oq1Wqzs7O7MwQnQ6OjrUajV+lxEEAYM508NZolKptFotpTSVSv0XphiNxr6+Pp7nN2zYYDAYUqmURqOpra0dHx+/fv26wWDA2GJ4nieELFy4EKk6i7kxIGw227x580RRHB8fv4/z7oWRSqUCgPb29rlz51ZUVFBKS0tLbTZbe3s7vp1JDkgJXq836wMYOpIkIXlwHDc0NMTzfGZm+fuOIYQoGAGAgs4fNlZVVQUAsVjM7XYrtEEpLS4uPnfu3PLlywkh/f39APD6668r2fFvnqBwOCwIgtPpRJRHR0dDoZDZbB4fH7916xb6w+FwTE9Pzxj09ddfA8ClS5csFouylYaGBkmSgsHgyZMnAWBycjI3NzcTxL9visPhwPHdu3cDAD737NmDg3a7fcYUSqnL5bp9+zYADA0NNTQ0OJ1Og8Gg0+neeustPMyCIGCGmp3PvF6vKIqI8mxTgsFgPB5XTCktLZVlOZVKybKMBxtNiUajoijOkMTSpUt7e3sxPmRZDgaDiUQCu8g/x44dmz9//myvrF+/HgCGh4dnm2I2m3EFTOwMwyBGAMDzvFqtxk87nU5UY7HmmJyc/PTTT3/55RcMaa1WG41Gr169+tFHH7300kvJZPKFF17wer379+/PqksopfF4vKurq6enJ8sUQogsy5cuXTp9+nQqlWIYRpKksbGx0dHR/fv3DwwMYKGDapcvX56ZidGqLKTVarOSQFNTE4a9Wq3m/i2z8eIyJPMtLpu5psIU2XXDn44oBH8v6kOd2ZnrPqIk8KxajuM4SgjRarU7duwoKiqKxWKtra3d3d1oBMJcXV196NAhQRAAgGXZ2tpah8OBxg0ODp48eZIQ8uijj5rN5t7e3q1btxJCEomELMsGg4FSevz48Rs3blBK3W53aWnpZ599hhDn5uZWVVX5fL7fWcpqtfb393d3dzc3N+/atevu3bvbt29XUsH7778PABs3bsRv5+TkJBKJY8eO7du375NPPhkfH9+7dy+qnTp1ymq1+ny+1tZWv98fiUQOHjx46NCh0tJSnIuVaFlZGXZXrFgRi8UwEc54vbOz8+zZs4qvKisrx8bGcEMmk+ny5csHDx7EraMpPM/Pnz8fuw8//LAgCJTSV199VdEhhOzcudPn82VCkJeXd+XKlba2ti+++AJHiouLR0dHM03h1q1b5/V6MXJlWT5z5kxJSYksywCwYcMGQRBeeeUVv9+fn59/69YtDD0lOKxWK2YGpdY0Go3JZNJkMun1etSUZVkUxcbGRp7nX3vttWvXrplMpqmpKYZhsiKGYVk2EAgAANZvlNKJiYlkMkkIefbZZ/ft2xcIBK5du9bY2Ih3JULIgQMHjh49evz48SNHjrz33ntYlOCxlCRJkiQkRmxjZGzatOnDDz/0+/08z2/atOlPjg8hDAAYDAbcFh70iooKnU5ntVpXrlzZ1NTU0dGxaNGizZs3AwCG2HfffdfZ2dnW1lZdXf32228jMdzrfKXT6QcffNDj8bz88ssdHR0Oh6O+vl4p09gM4fx+/7p163p6enDyI4880tXVZTAYGhsbBwcH29vbVSrVqVOn3n333cLCwpGREQBobW3F0gJpRhCEdDqdma6VLnpxy5Yt586d++qrr1iWvXDhwhtvvGE0GhOJhCRJiUTid8NXrVoVj8dffPFFt9tdWVnJ8/ybb76JMNXX1ytq58+fx8OSTCaLiopYllWpVAqptLS0dHd3Iy8QQj744IOuri7ctMFgCIfD5eXlylI3b95sbm5+4IEHZFmur6+vqanZvHlzTU0N9/33369fv/6dd97Zvn17KpXas2fP7t27CwoKzp49e+LECaQjWZZ37dq1du1almU7OjpCoRDW+soFbGBgAOMXndHX1xeJRBC4RYsWffnllxcvXsSlJElqaWlZsmRJLBb75ptvtm3b9gc4sTFzA7hvFX0f2v3/+qlhNpv/R0zhKioq/vnL9FfxqFAqPjPLNqWtxHVmQ/lF8Kc6yrKZI9mnxOFw6HQ6lUqlVquxLCKE4OVWo9EgCxuNRpfLhTkFM7bdbscfJxqNBq+MHMfl5eWpVCqWZRcvXkwpNRqNeLHV6/Voq16vd7lcmKqwa7VaLRYL1o3szp07b9y4sWzZMoZhtm7dOnfu3OHh4ebm5omJiby8vC1btoiieOfOnWeeeaa3t3f16tUej2d4eHjbtm2BQODOnTsbN25csmTJwMBAYWFhXV3d0NDQY489hhVxWVmZ0+kUBOGpp54qLi6enJxcvnx5QUGBKIper3fVqlUWiwUApqamKisrS0pKmOvXrweDQUzLIyMjCxYsyM/PV6vVS5cujUajU1NTTqfTbrcLgqDRaAoKCubNm5eTkxMKhRYuXIgXx4ceegjJjeM4BMhgMCDVajQalUr1008/2Ww2nU6HpSqW0jab7fbt25RSi8Vit9vtdvu/AMlBrTS+AlbqAAAAAElFTkSuQmCC" alt="QTM Capital" style="height:32px;width:auto;object-fit:contain;filter:brightness(1)">
+  </div>
+  <div class="hdr-right">
+    <button class="btn-home" onclick="showHome()">⌂ Inicio</button>
+    <div class="hdr-tag">Mesa Cohen · CNV</div>
+  </div>
+</div>
+
+<!-- ══════════ HOME ══════════ -->
+<div class="screen active" id="home">
+  <div class="home-heading">
+    <h1>QTM Capital</h1>
+    <p>Hub Operativo · Mesa Cohen · Agente CNV</p>
+  </div>
+  <div class="home-grid">
+    <button class="hcard" onclick="showSection('masivo')">
+      <div class="hcard-icon">📋</div>
+      <div class="hcard-title">Operaciones Masivas</div>
+      <div class="hcard-desc">Paste desde Sheet → mensaje listo para la Mesa. Tomadoras, compras, ventas, subastas MAV.</div>
+      <div class="hcard-arrow">→</div>
+    </button>
+    <button class="hcard" onclick="showSection('individual')">
+      <div class="hcard-icon">💬</div>
+      <div class="hcard-title">Mensajes Individuales</div>
+      <div class="hcard-desc">Confirmaciones, cotizaciones, cartera. Para la mesa y para clientes.</div>
+      <div class="hcard-arrow">→</div>
+    </button>
+    <button class="hcard" onclick="showSection('cartera')">
+      <div class="hcard-icon">📊</div>
+      <div class="hcard-title">Resumen de Cartera</div>
+      <div class="hcard-desc">Pegá tenencias del Sheet y generá un resumen listo para enviar al cliente.</div>
+      <div class="hcard-arrow">→</div>
+    </button>
+    <button class="hcard" onclick="showSection('info')">
+      <div class="hcard-icon">⚡</div>
+      <div class="hcard-title">Info Rápida</div>
+      <div class="hcard-desc">Cuentas bancarias, CBU, CUIT, datos exterior. Copiá con un toque.</div>
+      <div class="hcard-arrow">→</div>
+    </button>
+    <button class="hcard" onclick="showSection('automatizaciones')">
+      <div class="hcard-icon">🚀</div>
+      <div class="hcard-title">Automatizaciones</div>
+      <div class="hcard-desc">Disparar envíos de mail SGR, aperturas y reportes con un toque.</div>
+      <div class="hcard-arrow">→</div>
+    </button>
+    <button class="hcard" onclick="showSection('links')">
+      <div class="hcard-icon">🔗</div>
+      <div class="hcard-title">Links de Interés</div>
+      <div class="hcard-desc">Cohen, QTM, Dracma, Eco Valores. Buscá por empresa o palabra clave.</div>
+      <div class="hcard-arrow">→</div>
+    </button>
+    <button class="hcard soon">
+      <div class="hcard-icon">📖</div>
+      <div class="hcard-title">Procesos y Procedimientos</div>
+      <div class="hcard-desc">Guías internas: apertura de cuenta, endoso, onboarding CNV.</div>
+      <div class="hcard-tag">próximamente</div>
+    </button>
+    <button class="hcard soon">
+      <div class="hcard-icon">🧮</div>
+      <div class="hcard-title">Calculadoras</div>
+      <div class="hcard-desc">TNA↔TEA, rendimiento de caución, MEP implícito, paridad de bono.</div>
+      <div class="hcard-tag">próximamente</div>
+    </button>
+    <button class="hcard" onclick="window.open('https://splendorous-bombolone-2e2f6d.netlify.app/tenencias.html','_blank')">
+      <div class="hcard-icon">📋</div>
+      <div class="hcard-title">Tenencias</div>
+      <div class="hcard-desc">Dashboard de tenencias de clientes por comitente.</div>
+      <div class="hcard-arrow">↗</div>
+    </button>
+    <button class="hcard" onclick="window.open('https://cedearv2-qtmauto.streamlit.app','_blank')">
+      <div class="hcard-icon">🌐</div>
+      <div class="hcard-title">CEDEARs</div>
+      <div class="hcard-desc">Dashboard de CEDEARs y ETFs. Análisis y rendimientos.</div>
+      <div class="hcard-arrow">↗</div>
+    </button>
+    <button class="hcard" onclick="window.open('https://incredible-shortbread-9c0b8d.netlify.app/sgr_dashboard.html','_blank')">
+      <div class="hcard-icon">🏭</div>
+      <div class="hcard-title">Financiamiento SGR</div>
+      <div class="hcard-desc">Dashboard de financiamiento PyME y garantías SGR.</div>
+      <div class="hcard-arrow">↗</div>
+    </button>
+    <button class="hcard" onclick="window.open('https://sprightly-parfait-145f43.netlify.app/bcra-deudores','_blank')">
+      <div class="hcard-icon">🏭</div>
+      <div class="hcard-title">Central de deudores</div>
+      <div class="hcard-desc">Dashboard de consulta BCRA por CUIT.</div>
+      <div class="hcard-arrow">↗</div>
+    </button>
+    <button class="hcard" onclick="window.open('https://stately-phoenix-0a8c4a.netlify.app/cheques_qtm','_blank')">
+      <div class="hcard-icon">📄</div>
+      <div class="hcard-title">Cheques Negociados</div>
+      <div class="hcard-desc">Seguimiento de cheques negociados MAV y garantizados.</div>
+      <div class="hcard-arrow">↗</div>
+    </button>
+    <button class="hcard" onclick="window.open('https://chipper-fenglisu-121220.netlify.app/dolar_mep_qtm','_blank')">
+      <div class="hcard-icon">💱</div>
+      <div class="hcard-title">Dólar MEP / CCL</div>
+      <div class="hcard-desc">Tipo de cambio MEP, CCL y oficial. Datos históricos.</div>
+      <div class="hcard-arrow">↗</div>
+    </button>
+    <button class="hcard soon">
+      <div class="hcard-icon">📱</div>
+      <div class="hcard-title">Contactos Clave</div>
+      <div class="hcard-desc">Mesa Cohen, Compliance, Backoffice, Marie Chacón.</div>
+      <div class="hcard-tag">próximamente</div>
+    </button>
+  </div>
+    <button class="hcard" onclick="aranAuth()">
+      <div class="hcard-icon">📊</div>
+      <div class="hcard-title">Control de Aranceles</div>
+      <div class="hcard-desc">Dashboard de comisiones y aranceles. Acceso restringido a socios.</div>
+      <div class="hcard-arrow" style="color:var(--gold2)">🔒</div>
+    </button>
+
+  </div>
+  <div class="home-footer">QTM Capital · Agente Matriculado CNV · Uso exclusivamente interno</div>
+</div>
+
+<!-- ══════════ SECTION WRAPPER ══════════ -->
+<div class="screen" id="section-screen">
+
+  <!-- TABS -->
+  <div id="tabs-bar">
+    <button class="tab" data-tab="masivo" onclick="switchTab('masivo')">📋 Masivo<span class="tab-badge">paste & go</span></button>
+    <button class="tab" data-tab="individual" onclick="switchTab('individual')">💬 Individual<span class="tab-badge">mensajes</span></button>
+    <button class="tab" data-tab="cartera" onclick="switchTab('cartera')">📊 Cartera<span class="tab-badge">resumen</span></button>
+    <button class="tab" data-tab="info" onclick="switchTab('info')">⚡ Info Rápida<span class="tab-badge">cuentas</span></button>
+    <button class="tab" data-tab="links" onclick="switchTab('links')">🔗 Links<span class="tab-badge">recursos</span></button>
+    <button class="tab" data-tab="automatizaciones" onclick="switchTab('automatizaciones')">🚀 Automatizaciones<span class="tab-badge">scripts</span></button>
+  </div>
+
+  <!-- ── PANEL MASIVO ── -->
+  <div class="panel" id="panel-masivo">
+    <div class="two-col" style="height:100%">
+      <!-- izq -->
+      <div class="col">
+        <div class="col-hdr">
+          <span class="col-title">Datos del Sheet</span>
+          <span style="font-family:var(--mono);font-size:10px;color:var(--text3)" id="mas-count">0 filas</span>
+        </div>
+        <div class="op-grid">
+          <button class="op-btn active" id="op-tomadora_ars" onclick="setOp('tomadora_ars')"><span class="op-btn-name">🔽 Tomadora ARS</span><span class="op-btn-desc">Saldo pesos → caución tomadora</span></button>
+          <button class="op-btn" id="op-tomadora_usd" onclick="setOp('tomadora_usd')"><span class="op-btn-name">🔽 Tomadora USD</span><span class="op-btn-desc">MEP / cable</span></button>
+          <button class="op-btn" id="op-compra" onclick="setOp('compra')"><span class="op-btn-name">🟢 Compra</span><span class="op-btn-desc">Comitente + ticker + importe</span></button>
+          <button class="op-btn" id="op-venta" onclick="setOp('venta')"><span class="op-btn-name">🔴 Venta</span><span class="op-btn-desc">Tenencia Cohen → VN disponible</span></button>
+          <button class="op-btn" id="op-renovacion" onclick="setOp('renovacion')"><span class="op-btn-name">🔄 Renovación</span><span class="op-btn-desc">Boletos → caución vencida</span></button>
+          <button class="op-btn" id="op-subasta" onclick="setOp('subasta')"><span class="op-btn-name">🏦 Subasta MAV</span><span class="op-btn-desc">Cheques / pagarés</span></button>
+        </div>
+        <div class="extra-params" id="mas-params"></div>
+        <div style="padding:10px 20px;flex-shrink:0">
+          <div class="paste-hint" id="mas-hint">Seleccioná el tipo de operación y pegá las filas del Sheet.</div>
+        </div>
+        <div style="flex:1;padding:0 20px 16px;display:flex;flex-direction:column;gap:8px;min-height:0">
+          <textarea class="field-ta" id="mas-paste" style="flex:1;min-height:120px" placeholder="Pegá acá (Ctrl+V)..." oninput="masParse()"></textarea>
+        </div>
+        <div class="parsed-preview" id="mas-preview"></div>
+      </div>
+      <!-- der -->
+      <div class="col">
+        <div class="col-hdr">
+          <span class="col-title">Mensaje generado</span>
+          <button class="btn-sec" onclick="masClear()" style="padding:3px 9px;font-size:11px">Limpiar</button>
+        </div>
+        <div class="stats-bar">
+          <div><div class="stat-val" id="mas-stat-n">0</div><div class="stat-lbl">Comitentes</div></div>
+          <div><div class="stat-val" id="mas-stat-t">—</div><div class="stat-lbl">Total ARS</div></div>
+          <div><div class="stat-val" id="mas-stat-op">—</div><div class="stat-lbl">Operación</div></div>
+        </div>
+        <div style="flex:1;padding:16px 20px;display:flex;flex-direction:column;gap:10px;min-height:0">
+          <div class="output-box" id="mas-output"><span class="output-empty">El mensaje aparecerá acá →</span></div>
+          <div class="output-actions">
+            <button class="btn-primary" id="mas-copy" onclick="masCopy()">📋 Copiar para WhatsApp</button>
+            <button class="btn-sec" onclick="masBuild()">↺</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PANEL INDIVIDUAL ── -->
+  <div class="panel" id="panel-individual">
+    <div class="three-col" style="height:100%">
+      <!-- sidebar -->
+      <div class="col" style="overflow-y:auto">
+        <div class="ind-sidebar">
+          <div class="ind-cat">Mesa / ALYC</div>
+          <button class="ind-btn active" id="ind-tom_ind" onclick="setInd('tom_ind')">🔽 Tomadora individual</button>
+          <button class="ind-btn" id="ind-compra_ind" onclick="setInd('compra_ind')">🟢 Compra individual</button>
+          <button class="ind-btn" id="ind-venta_ind" onclick="setInd('venta_ind')">🔴 Venta individual</button>
+          <button class="ind-btn" id="ind-mep" onclick="setInd('mep')">💱 MEP cerrado</button>
+          <button class="ind-btn" id="ind-subasta_ind" onclick="setInd('subasta_ind')">🏦 Subasta MAV</button>
+          <div class="ind-cat">Clientes</div>
+          <button class="ind-btn" id="ind-transferencia" onclick="setInd('transferencia')">🏦 Pedido de transferencia</button>
+          <button class="ind-btn" id="ind-cotiz" onclick="setInd('cotiz')">📈 Cotización</button>
+          <button class="ind-btn" id="ind-cartera_ind" onclick="setInd('cartera_ind')">📊 Estado de cartera</button>
+        </div>
+      </div>
+      <!-- form -->
+      <div class="col">
+        <div class="col-hdr">
+          <div>
+            <div style="font-family:var(--display);font-size:14px;font-weight:700;color:var(--text)" id="ind-title">Tomadora individual</div>
+            <div style="font-size:11px;color:var(--text3);margin-top:2px" id="ind-sub">Para la mesa del ALYC</div>
+          </div>
+        </div>
+        <div class="col-body" style="padding:16px 20px">
+          <div id="ind-fields" style="display:flex;flex-direction:column;gap:12px"></div>
+        </div>
+      </div>
+      <!-- preview -->
+      <div class="col">
+        <div class="col-hdr"><span class="col-title">Vista previa</span></div>
+        <div style="flex:1;padding:16px 20px;display:flex;flex-direction:column;gap:10px;min-height:0">
+          <div class="output-box" id="ind-bubble" style="flex:1;border-radius:12px;border-top-left-radius:4px">El mensaje aparecerá acá</div>
+        </div>
+        <div style="padding:12px 20px;border-top:1px solid var(--border);display:flex;gap:8px">
+          <button class="btn-primary" id="ind-copy" onclick="indCopy()">📋 Copiar</button>
+          <button class="btn-sec" onclick="indClear()">Limpiar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PANEL CARTERA ── -->
+  <div class="panel" id="panel-cartera">
+    <div class="two-col" style="height:100%">
+      <!-- izq -->
+      <div class="col">
+        <div class="col-hdr">
+          <span class="col-title">Tenencias del cliente</span>
+          <span style="font-family:var(--mono);font-size:10px;color:var(--text3)" id="cart-count">0 posiciones</span>
+        </div>
+        <div style="padding:14px 20px;border-bottom:1px solid var(--border);display:flex;flex-direction:column;gap:10px;flex-shrink:0">
+          <div class="fields-row cols2">
+            <div class="field-group"><div class="field-label">Cliente</div><div id="cart-nombre-wrap"></div></div>
+            <div class="field-group"><div class="field-label">Fecha</div><input class="field-input" id="cart-fecha" oninput="cartBuild()"></div>
+          </div>
+          <div class="fields-row cols3">
+            <div class="field-group"><div class="field-label">Saldo ARS</div><input class="field-input" id="cart-ars" placeholder="ej: 1.250.000" oninput="cartBuild()"></div>
+            <div class="field-group"><div class="field-label">Saldo USD</div><input class="field-input" id="cart-usd" placeholder="ej: 5.200" oninput="cartBuild()"></div>
+            <div class="field-group"><div class="field-label">Formato</div>
+              <select class="field-select" id="cart-fmt" onchange="cartBuild()">
+                <option value="wa">WhatsApp cliente</option>
+                <option value="mesa">Interno / Mesa</option>
+                <option value="full">Detalle completo</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div style="padding:10px 20px 6px;flex-shrink:0">
+          <div class="paste-hint">📋 Copiá filas de <span>"Tenencia Cohen"</span>: Comitente · Nombre · Tipo · Ticker · Denom · Moneda · Disponible · ... · Valorizado</div>
+        </div>
+        <div style="flex:1;padding:8px 20px 16px;display:flex;flex-direction:column;min-height:0">
+          <textarea class="field-ta" id="cart-paste" style="flex:1;min-height:120px" placeholder="Pegá acá las filas de tenencias..." oninput="cartParse()"></textarea>
+        </div>
+      </div>
+      <!-- der -->
+      <div class="col">
+        <div class="col-hdr">
+          <span class="col-title">Resumen generado</span>
+          <button class="btn-sec" onclick="cartClear()" style="padding:3px 9px;font-size:11px">Limpiar</button>
+        </div>
+        <div class="stats-bar">
+          <div><div class="stat-val" id="cart-stat-n">0</div><div class="stat-lbl">Posiciones</div></div>
+          <div><div class="stat-val" id="cart-stat-v">—</div><div class="stat-lbl">Total valorizado</div></div>
+          <div><div class="stat-val" id="cart-stat-t">—</div><div class="stat-lbl">Tipos</div></div>
+        </div>
+        <div style="flex:1;padding:16px 20px;display:flex;flex-direction:column;gap:10px;min-height:0">
+          <div class="output-box" id="cart-output" style="flex:1"><span class="output-empty">El resumen aparecerá acá →</span></div>
+          <div class="output-actions">
+            <button class="btn-primary" id="cart-copy" onclick="cartCopy()">📋 Copiar para WhatsApp</button>
+            <button class="btn-sec" onclick="cartBuild()">↺</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PANEL INFO ── -->
+  <div class="panel" id="panel-info">
+    <div style="display:grid;grid-template-columns:180px 1fr;height:100%">
+      <div class="col" style="overflow-y:auto">
+        <div class="info-sidebar">
+          <div class="info-cat">Cohen</div>
+          <button class="info-cat-btn active" id="icat-cohen_ars" onclick="setInfoCat('cohen_ars')">🏦 Cuenta ARS</button>
+          <button class="info-cat-btn" id="icat-cohen_usd" onclick="setInfoCat('cohen_usd')">💵 Cuenta USD</button>
+          <button class="info-cat-btn" id="icat-cohen_ext" onclick="setInfoCat('cohen_ext')">🌐 Cuenta Exterior</button>
+          <button class="info-cat-btn" id="icat-cohen_cuit" onclick="setInfoCat('cohen_cuit')">📋 CUIT / Depositante</button>
+          <div class="info-cat">Cuentas Cohen</div>
+          <button class="info-cat-btn" id="icat-cohen_todas" onclick="setInfoCat('cohen_todas')">🏦 Cuentas Bancos Cohen</button>
+          <div class="info-cat">Endoso / MAV</div>
+          <button class="info-cat-btn" id="icat-endoso" onclick="setInfoCat('endoso')">📝 Endoso echeq</button>
+          <div class="info-cat">Procesos</div>
+          <button class="info-cat-btn" id="icat-apertura_fisica" onclick="setInfoCat('apertura_fisica')">👤 Apertura Persona Física</button>
+          <button class="info-cat-btn" id="icat-apertura_juridica" onclick="setInfoCat('apertura_juridica')">🏢 Apertura Persona Jurídica</button>
+          <button class="info-cat-btn" id="icat-apertura_epyme" onclick="setInfoCat('apertura_epyme')">🏭 Apertura ePyme</button>
+          <button class="info-cat-btn" id="icat-matrix_usuario" onclick="setInfoCat('matrix_usuario')">🔐 Crear usuario Cohen</button>
+          <div class="info-cat">FCI</div>
+          <button class="info-cat-btn" id="icat-fci" onclick="setInfoCat('fci')">📊 Horarios de Fondos</button>
+        </div>
+      </div>
+      <div class="col" style="overflow-y:auto;border-right:none">
+        <div class="info-content">
+          <div class="info-grid" id="info-grid"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- ── PANEL LINKS ── -->
+  <div class="panel" id="panel-links">
+    <div style="display:flex;flex-direction:column;height:100%;overflow:hidden">
+      <!-- BARRA DE FILTROS -->
+      <div style="padding:14px 20px;border-bottom:1px solid var(--border);display:flex;gap:10px;flex-wrap:wrap;flex-shrink:0;background:var(--bg2)">
+        <input class="field-input" id="links-search" placeholder="🔍 Buscar por palabra clave..." style="flex:2;min-width:160px" oninput="filterLinks()">
+        <select class="field-select" id="links-empresa" style="flex:1;min-width:120px" onchange="filterLinks()">
+          <option value="">Todas las empresas</option>
+          <option value="Cohen">Cohen</option>
+          <option value="QTM">QTM</option>
+          <option value="Dracma">Dracma</option>
+          <option value="Dracma Investments">Dracma Investments</option>
+          <option value="Eco Valores">Eco Valores</option>
+        </select>
+        <button class="btn-primary" onclick="linksAdminOpen()" style="flex:0;padding:8px 16px;font-size:12px;white-space:nowrap">🔒 Admin</button>
+        <span id="links-count" style="font-family:var(--mono);font-size:11px;color:var(--text3);align-self:center;white-space:nowrap"></span>
+      </div>
+      <!-- TABLA -->
+      <div style="flex:1;overflow-y:auto;padding:0">
+        <table id="links-table" style="width:100%;border-collapse:collapse">
+          <thead>
+            <tr style="background:var(--bg3);position:sticky;top:0;z-index:1">
+              <th style="padding:10px 16px;font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);text-align:left;border-bottom:1px solid var(--border);width:90px">Empresa</th>
+              <th style="padding:10px 16px;font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);text-align:left;border-bottom:1px solid var(--border)">Detalle</th>
+              <th style="padding:10px 16px;font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);text-align:left;border-bottom:1px solid var(--border);width:80px">Acceso</th>
+              <th style="padding:10px 16px;font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);text-align:left;border-bottom:1px solid var(--border)">Obs.</th>
+            </tr>
+          </thead>
+          <tbody id="links-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PANEL AUTOMATIZACIONES ── -->
+  <div class="panel" id="panel-automatizaciones">
+    <div style="flex:1;overflow-y:auto;padding:24px;display:flex;flex-direction:column;gap:20px;max-width:740px;margin:0 auto;width:100%">
+
+      <div>
+        <div style="font-family:var(--display);font-size:20px;font-weight:800;color:var(--text)">🚀 Automatizaciones</div>
+        <div style="font-family:var(--mono);font-size:11px;color:var(--text3);margin-top:4px">Disparadores de Google Apps Script · QTM Capital</div>
+      </div>
+
+      <!-- SGR JURÍDICA con formulario -->
+      <div class="auto-card" style="flex-direction:column;align-items:stretch;gap:14px">
+        <div class="auto-card-left">
+          <div class="auto-icon">📧</div>
+          <div>
+            <div class="auto-title">SGR — Financiamiento PYME</div>
+            <div class="auto-desc">Escribe en la Sheet los datos del destinatario, elige adjuntos y envía el mail de documentación SGR.</div>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div class="field-group">
+            <div class="field-label">Nombre destinatario</div>
+            <input class="field-input" id="sgr-nombre" placeholder="ej: Gabriel Spinazzola">
+          </div>
+          <div class="field-group">
+            <div class="field-label">Mail destinatario</div>
+            <input class="field-input" id="sgr-mail" placeholder="ej: gabriel@hotmail.com" type="email">
+          </div>
+        </div>
+        <div class="field-group">
+          <div class="field-label">Archivos adjuntos (Sheet: Configuracion)</div>
+          <div id="sgr-adjuntos" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:4px">
+            <div style="font-family:var(--mono);font-size:11px;color:var(--text3)">⏳ Cargando archivos...</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;align-items:center">
+          <button class="auto-btn" id="btn-sgr-jur" onclick="runSGR('enviarMailConSeleccion','jur',this)" style="flex:1">📧 Enviar SGR Jurídica</button>
+          <button class="auto-btn" id="btn-sgr-fis" onclick="runSGR('enviarSgrPersonaFisica','fis',this)" style="flex:1;background:var(--bg3);border:1px solid var(--border2);color:var(--text2)">👤 Enviar SGR Física</button>
+        </div>
+      </div>
+
+      <!-- APERTURAS con formulario -->
+      <div class="auto-card" style="flex-direction:column;align-items:stretch;gap:14px">
+        <div class="auto-card-left">
+          <div class="auto-icon">🏦</div>
+          <div>
+            <div class="auto-title">Apertura de cuenta Cohen</div>
+            <div class="auto-desc">Completa los datos y envía el mail de instrucciones de apertura (física o jurídica).</div>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
+          <div class="field-group">
+            <div class="field-label">Nombre</div>
+            <input class="field-input" id="aper-nombre" placeholder="ej: Victor">
+          </div>
+          <div class="field-group">
+            <div class="field-label">Email</div>
+            <input class="field-input" id="aper-mail" placeholder="ej: victor@mail.com" type="email">
+          </div>
+          <div class="field-group">
+            <div class="field-label">Tipo de persona</div>
+            <select class="field-select" id="aper-tipo">
+              <option value="Física">Física</option>
+              <option value="Jurídica">Jurídica</option>
+            </select>
+          </div>
+        </div>
+        <button class="auto-btn" id="btn-aper" onclick="runApertura(this)" style="align-self:flex-start;padding:10px 28px">Enviar instrucciones</button>
+      </div>
+
+      <div id="auto-log" style="display:none;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:14px 16px;font-family:var(--mono);font-size:12px;line-height:1.7"></div>
+
+    </div>
+  </div>
+
+</div><!-- /section-screen -->
+
+
+<!-- MODAL ADMIN LINKS -->
+<div id="links-modal" style="display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.7);align-items:center;justify-content:center">
+  <div style="background:var(--bg2);border:1px solid var(--border2);border-radius:16px;padding:28px;width:min(480px,90vw);display:flex;flex-direction:column;gap:16px">
+    <!-- LOGIN -->
+    <div id="links-login-pane">
+      <div style="font-family:var(--display);font-size:16px;font-weight:700;color:var(--text);margin-bottom:4px">🔒 Acceso administrador</div>
+      <div style="font-family:var(--mono);font-size:11px;color:var(--text3);margin-bottom:16px">Solo socios QTM Capital</div>
+      <div class="field-group" style="margin-bottom:12px">
+        <div class="field-label">Contraseña</div>
+        <input class="field-input" type="password" id="links-pwd" placeholder="Ingresá la contraseña" onkeydown="if(event.key==='Enter') linksLogin()">
+      </div>
+      <div class="field-group" style="margin-bottom:12px">
+        <div class="field-label">GitHub Token (ghp_...)</div>
+        <input class="field-input" type="password" id="links-token" placeholder="Pegá tu Personal Access Token">
+        <div style="font-family:var(--mono);font-size:10px;color:var(--text3);margin-top:4px">Solo queda en tu navegador, nunca se envía a ningún servidor.</div>
+      </div>
+      <div id="links-login-err" style="font-family:var(--mono);font-size:11px;color:var(--red);display:none;margin-bottom:8px">Contraseña incorrecta</div>
+      <div style="display:flex;gap:8px">
+        <button class="btn-primary" onclick="linksLogin()" style="flex:1">Ingresar</button>
+        <button class="btn-sec" onclick="linksModalClose()">Cancelar</button>
+      </div>
+    </div>
+    <!-- PANEL ADMIN -->
+    <div id="links-admin-pane" style="display:none;flex-direction:column;gap:14px">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div style="font-family:var(--display);font-size:16px;font-weight:700;color:var(--text)">✏️ Administrar Links</div>
+        <button class="btn-sec" onclick="linksModalClose()" style="padding:4px 10px;font-size:11px">Cerrar</button>
+      </div>
+      <!-- AGREGAR -->
+      <div style="background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:10px">
+        <div style="font-family:var(--mono);font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.1em">Agregar nuevo link</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <div class="field-group">
+            <div class="field-label">Empresa</div>
+            <select class="field-select" id="new-link-emp">
+              <option>Cohen</option><option>QTM</option><option>Dracma</option><option>Dracma Investments</option><option>Eco Valores</option><option>Otro</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <div class="field-label">Detalle / Nombre</div>
+            <input class="field-input" id="new-link-det" placeholder="ej: Tablero de riesgo">
+          </div>
+        </div>
+        <div class="field-group">
+          <div class="field-label">URL (opcional)</div>
+          <input class="field-input" id="new-link-url" placeholder="https://...">
+        </div>
+        <div class="field-group">
+          <div class="field-label">Observación (opcional)</div>
+          <input class="field-input" id="new-link-obs" placeholder="ej: Solo para socios">
+        </div>
+        <button class="btn-primary" onclick="linksAdd()" style="align-self:flex-start;padding:8px 20px;font-size:12px">➕ Agregar</button>
+      </div>
+      <!-- EDITAR URL -->
+      <div style="background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:10px">
+        <div style="font-family:var(--mono);font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.1em">Editar URL de un link</div>
+        <div class="field-group">
+          <div class="field-label">Buscar link</div>
+          <input class="field-input" id="edit-search" placeholder="Escribí para buscar..." oninput="filterEditList()">
+        </div>
+        <div id="edit-links-list" style="max-height:140px;overflow-y:auto;display:flex;flex-direction:column;gap:3px"></div>
+        <div id="edit-form" style="display:none;flex-direction:column;gap:8px;padding-top:8px;border-top:1px solid var(--border)">
+          <div style="font-family:var(--mono);font-size:11px;color:var(--accent2)" id="edit-link-name"></div>
+          <div class="field-group">
+            <div class="field-label">Nueva URL</div>
+            <input class="field-input" id="edit-link-url" placeholder="https://...">
+          </div>
+          <div class="field-group">
+            <div class="field-label">Observación (opcional)</div>
+            <input class="field-input" id="edit-link-obs" placeholder="ej: Solo socios">
+          </div>
+          <div style="display:flex;gap:8px">
+            <button class="btn-primary" onclick="linksEdit()" style="flex:1;padding:8px">💾 Guardar</button>
+            <button class="btn-sec" onclick="closeEditForm()" style="padding:8px 12px">Cancelar</button>
+          </div>
+        </div>
+      </div>
+      <!-- ELIMINAR -->
+      <div style="background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <div style="font-family:var(--mono);font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.1em">Eliminar links</div>
+          <div style="display:flex;gap:6px">
+            <button class="btn-sec" onclick="delSelectAll()" style="padding:4px 10px;font-size:10px">Todos</button>
+            <button class="btn-sec" onclick="delSelectNone()" style="padding:4px 10px;font-size:10px">Ninguno</button>
+          </div>
+        </div>
+        <div id="del-links-list" style="max-height:180px;overflow-y:auto;display:flex;flex-direction:column;gap:4px"></div>
+        <button class="btn-sec" onclick="linksDelete()" style="border-color:var(--red);color:var(--red);align-self:flex-start;padding:8px 16px">🗑 Eliminar seleccionados</button>
+      </div>
+      <div id="links-admin-msg" style="font-family:var(--mono);font-size:11px;color:var(--green);display:none"></div>
+    </div>
+  </div>
+</div>
+
+
+<!-- MODAL AUTH ARANCELES -->
+<div id="aran-modal" style="display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.75);align-items:center;justify-content:center">
+  <div style="background:var(--bg2);border:1px solid var(--border2);border-radius:16px;padding:28px;width:min(380px,90vw);display:flex;flex-direction:column;gap:16px">
+    <div>
+      <div style="font-family:var(--display);font-size:17px;font-weight:700;color:var(--text);margin-bottom:4px">🔒 Acceso restringido</div>
+      <div style="font-family:var(--mono);font-size:11px;color:var(--text3)">Control de Aranceles · Solo socios QTM Capital</div>
+    </div>
+    <div class="field-group">
+      <div class="field-label">Contraseña</div>
+      <input class="field-input" type="password" id="aran-pwd" placeholder="Ingresá la contraseña" onkeydown="if(event.key==='Enter') aranLogin()">
+    </div>
+    <div id="aran-err" style="font-family:var(--mono);font-size:11px;color:var(--red);display:none">Contraseña incorrecta</div>
+    <div style="display:flex;gap:8px">
+      <button class="btn-primary" onclick="aranLogin()" style="flex:1">Ingresar</button>
+      <button class="btn-sec" onclick="aranClose()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast">✅ ¡Copiado!</div>
+
+<script>
+// ══════════════════════════════════
+// NAVEGACIÓN
+// ══════════════════════════════════
+function showHome() {
+  document.getElementById('home').classList.add('active');
+  document.getElementById('section-screen').classList.remove('active');
+}
+
+function showSection(tab) {
+  document.getElementById('home').classList.remove('active');
+  document.getElementById('section-screen').classList.add('active');
+  switchTab(tab);
+}
+
+function switchTab(tab) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  const panel = document.getElementById('panel-' + tab);
+  if (panel) panel.classList.add('active');
+  if (tab === 'info') { if (infoCat === 'fci') renderFCI(); else renderInfo(); }
+  if (tab === 'links') initLinks();
+  if (tab === 'automatizaciones') setTimeout(loadAdjuntos, 100);
+  if (tab === 'cartera') {
+    const wrap = document.getElementById('cart-nombre-wrap');
+    if (wrap && !wrap.querySelector('.client-search-input')) {
+      renderClientSearch('cart-nombre', wrap, () => cartBuild());
+    }
+  }
+}
+
+// ══════════════════════════════════
+// UTILS
+// ══════════════════════════════════
+function copyText(text, cb) {
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(text).then(cb).catch(() => fallback(text, cb));
+  } else { fallback(text, cb); }
+}
+function fallback(text, cb) {
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.cssText = 'position:fixed;top:-9999px;left:-9999px;opacity:0';
+  document.body.appendChild(ta);
+  ta.focus(); ta.select();
+  try { document.execCommand('copy'); if(cb) cb(); }
+  catch(e) { alert('Mantené presionado el texto para copiar manualmente.'); }
+  document.body.removeChild(ta);
+}
+function toast() {
+  const t = document.getElementById('toast');
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+function fmtARS(n) { return Math.abs(n).toLocaleString('es-AR', {maximumFractionDigits:0}); }
+// Formatea un string de monto ingresado manualmente (ej: "3950000" → "3.950.000")
+function fmtInput(s) {
+  if (!s) return s;
+  const str = s.toString().trim();
+  // Detectar si tiene decimales: último separador es coma o punto con 1-2 dígitos al final
+  const hasDecimalComma = /[,]\d{1,2}$/.test(str);   // ej: 1.286,35
+  const hasDecimalDot   = /[.]\d{1,2}$/.test(str) && str.indexOf('.') === str.lastIndexOf('.');  // ej: 1286.35
+  let intPart, decPart = '';
+  if (hasDecimalComma) {
+    const parts = str.split(',');
+    decPart = parts.pop();
+    intPart = parts.join('').replace(/[^0-9]/g,'');
+  } else if (hasDecimalDot) {
+    const parts = str.split('.');
+    decPart = parts.pop();
+    intPart = parts.join('').replace(/[^0-9]/g,'');
+  } else {
+    intPart = str.replace(/[^0-9]/g,'');
+  }
+  const n = parseInt(intPart, 10);
+  if (isNaN(n)) return s;
+  const formatted = n.toLocaleString('es-AR');
+  return decPart ? formatted + ',' + decPart : formatted;
+}
+
+// ══════════════════════════════════
+// MASIVO
+// ══════════════════════════════════
+let masOp = 'tomadora_ars';
+let masData = [];
+
+const MAS_OPS = {
+  tomadora_ars: {
+    label: 'Tomadoras ARS',
+    hint: '📋 Sheet "Saldo pesos": Comitente | Nombre | Moneda | CI (saldo)',
+    params: [
+      {id:'plazo', label:'Plazo (días)', type:'txt', placeholder:'ej: 1 / 3 / 7'},
+      {id:'tna', label:'TNA / Precio', type:'txt', placeholder:'ej: mkt / 42%'},
+    ],
+    parse(lines) {
+      return lines.map(l => {
+        const c = l.split('\t').map(s=>s.trim());
+        if (c.length < 2) return null;
+        if (c[0].toLowerCase() === 'comitente') return null;
+        const comit = c[0].replace(/\.0$/,'');
+        const nombre = c[1];
+        let monto = '';
+        for (let i=2;i<c.length;i++) {
+          if (['pesos','dolar','usd'].some(x=>c[i].toLowerCase().includes(x))) continue;
+          const v = parseFloat(c[i].replace(/\./g,'').replace(',','.'));
+          if (!isNaN(v)) { monto = c[i]; break; }
+        }
+        return comit && nombre ? {comit, nombre:nombre.slice(0,30), monto, ticker:'', vn:''} : null;
+      }).filter(Boolean);
+    },
+    build(rows) {
+      const p = getP('plazo'), t = getP('tna');
+      return `Buen día! Les pido tomadoras ARS a ${p} - ${t}\n` +
+        rows.map(r => `${r.comit}\t${r.nombre}\t-${r.monto.replace(/^-/,'')}`).join('\n');
+    }
+  },
+  tomadora_usd: {
+    label: 'Tomadoras USD MEP',
+    hint: '📋 Sheet "Cta Cte Cohen" (Dolar MEP): Comitente | Nombre | Moneda | CI',
+    params: [
+      {id:'plazo', label:'Plazo (días)', type:'txt', placeholder:'ej: 1 / 3 / 7'},
+      {id:'tna', label:'TNA / Precio', type:'txt', placeholder:'ej: mkt / 0.74%'},
+    ],
+    parse(lines) { return MAS_OPS.tomadora_ars.parse(lines); },
+    build(rows) {
+      const p = getP('plazo'), t = getP('tna');
+      return `Buen día! Les paso tomadoras USD, vamos ${p} ${t}\n` +
+        rows.map(r => `DOLAR MEP\t${r.comit}\t${r.nombre}\t-${r.monto.replace(/^-/,'')}`).join('\n');
+    }
+  },
+  compra: {
+    label: 'Compras',
+    hint: '📋 Pegá: Comitente | Nombre | Ticker | Importe ARS o USD',
+    params: [
+      {id:'plazo', label:'Liquidación', type:'sel', opts:['mkt 24hs','mkt CI','mkt t+1','límite']},
+      {id:'moneda', label:'Moneda', type:'sel', opts:['ARS','USD cable','USD MEP']},
+    ],
+    parse(lines) {
+      return lines.map(l => {
+        const c = l.split('\t').map(s=>s.trim());
+        if (c.length < 3) return null;
+        if (c[0].toLowerCase() === 'comitente') return null;
+        const comit = c[0].replace(/\.0$/,'');
+        const nombre = c[1];
+        let ticker='', valor='';
+        for (let i=2;i<c.length;i++) {
+          const v = parseFloat(c[i].replace(/\./g,'').replace(',','.').replace(/[^0-9.-]/g,''));
+          if (!isNaN(v) && c[i].trim()!=='') { if(!valor) valor=c[i]; }
+          else if (c[i].trim() && !ticker) ticker=c[i];
+        }
+        return comit ? {comit, nombre:nombre.slice(0,30), ticker, vn:'', monto:valor} : null;
+      }).filter(Boolean);
+    },
+    build(rows) {
+      const p = getP('plazo'), m = getP('moneda');
+      if (rows.length===1) {
+        const r = rows[0];
+        return `Buen día! Les pido una compra:\n${r.comit} - ${r.nombre}\n${r.ticker||'[ticker]'} - ${r.monto} ${m}\n${p}`;
+      }
+      return `Buen día! Les pedimos compras ${p} en ${m}:\n` +
+        rows.map(r=>`${r.comit}\t${r.nombre}\t${r.ticker||''}\t${r.monto}`).join('\n');
+    }
+  },
+  venta: {
+    label: 'Ventas',
+    hint: '📋 Sheet "Tenencia Cohen": Comitente | Nombre | Tipo | Ticker | Denom | Moneda | Disponible | ... | Valorizado',
+    params: [
+      {id:'plazo', label:'Liquidación', type:'sel', opts:['mkt 24hs','mkt CI','mkt t+1','límite']},
+      {id:'moneda', label:'Moneda', type:'sel', opts:['ARS','USD cable','USD MEP']},
+    ],
+    parse(lines) {
+      return lines.map(l => {
+        const c = l.split('\t').map(s=>s.trim());
+        if (c.length < 8) return null;
+        if (c[0].toLowerCase() === 'comitente') return null;
+        const comit = c[0].replace(/\.0$/,'');
+        const nombre = c[1];
+        const ticker = c[4]||'';
+        const vn = c[7]||'';
+        return comit && ticker ? {comit, nombre:nombre.slice(0,30), ticker, vn, monto:vn} : null;
+      }).filter(Boolean);
+    },
+    build(rows) {
+      const p = getP('plazo'), m = getP('moneda');
+      if (rows.length===1) {
+        const r = rows[0];
+        return `Buen día! Les pido una venta:\n${r.comit} - ${r.nombre}\n${r.ticker} - ${r.vn} VN\n${p}`;
+      }
+      return `Buen día! Les pedimos ventas ${p} en ${m}:\n` +
+        rows.map(r=>`${r.comit}\t${r.nombre}\t${r.ticker}\t${r.vn} VN`).join('\n');
+    }
+  },
+  renovacion: {
+    label: 'Renovaciones',
+    hint: '📋 Sheet "Boletos" (filas Apertura Tomadora Contado): Operación | Comitente | Fecha | Plazo | FechaVto | ... | Bruto',
+    params: [
+      {id:'plazo', label:'Nuevo plazo', type:'sel', opts:['1D','3D','5D','7D','14D']},
+      {id:'tna', label:'TNA', type:'txt', placeholder:'ej: mkt / 42%'},
+    ],
+    parse(lines) {
+      const map = {};
+      lines.forEach(l => {
+        const c = l.split('\t').map(s=>s.trim());
+        if (!c[0].toLowerCase().includes('tomadora contado')) return;
+        const comit = (c[1]||'').replace(/\.0$/,'');
+        const bruto = parseFloat((c[11]||c[10]||'0').replace(/\./g,'').replace(',','.')) || 0;
+        if (map[comit]) map[comit].bruto += bruto;
+        else map[comit] = {comit, nombre:comit, bruto};
+      });
+      return Object.values(map).map(r => ({...r, monto:fmtARS(r.bruto), ticker:'', vn:''}));
+    },
+    build(rows) {
+      const p = getP('plazo'), t = getP('tna');
+      return `Buen día! Les pedimos renovaciones de caución a ${p} - ${t}\n` +
+        rows.map(r=>`${r.comit}\t${r.nombre}\t${r.monto}`).join('\n');
+    }
+  },
+  subasta: {
+    label: 'Subastas MAV',
+    hint: '📋 Completá los campos y generá el mensaje para la mesa',
+    params: [
+      {id:'instrumento', label:'Instrumento', type:'sel', opts:['MAV NO GARANTIZADO','MAV AVALADO','PAGARÉ']},
+      {id:'tipo', label:'Tipo', type:'sel', opts:['PROPIOS','TERCEROS']},
+      {id:'cuits', label:'CUITs terceros (uno por línea)', type:'ta', placeholder:'Solo si es TERCEROS\nej: 30-123456789 Empresa A\n20-987654321 Juan Pérez', showIf:'TERCEROS'},
+      {id:'monto', label:'Monto', type:'txt', placeholder:'ej: 50000000'},
+      {id:'cantidad', label:'Cantidad echeqs', type:'txt', placeholder:'ej: 10'},
+      {id:'moneda', label:'Moneda', type:'sel', opts:['ARS','USD BCRA','USD A3500','USD MEP']},
+      {id:'estado', label:'Estado', type:'sel', opts:['PENDIENTE DE ACEPTACION','PENDIENTE DE AVAL']},
+      {id:'comitente', label:'Comitente vendedor', type:'client'},
+    ],
+    parse(lines) { return []; },
+    build(rows) {
+      const inst = getP('instrumento');
+      const tipo = getP('tipo');
+      const monto = fmtInput(getP('monto')) || '—';
+      const cantidad = getP('cantidad') || '—';
+      const moneda = getP('moneda');
+      const estado = getP('estado');
+      const comitente = getP('comitente') || '—';
+      const cuits = getP('cuits');
+      let cuitLine = '';
+      if (tipo === 'TERCEROS' && cuits.trim()) {
+        const lista = cuits.trim().split('\n').filter(l=>l.trim()).map(l=>'  - ' + l.trim()).join('\n');
+        cuitLine = `\nCUIT TERCEROS:\n${lista}`;
+      }
+      return `INSTRUMENTO: ${inst}\nTIPO: ${tipo}${cuitLine}\nMONTO: ${monto}\nCANTIDAD ECHEQS: ${cantidad}\nMONEDA: ${moneda}\nESTADO: ${estado}\nCOMITENTE VENDEDOR: ${comitente}`;
+    }
+  },
+};
+
+function masToggleConditionals() {
+  // Mostrar/ocultar campos condicionales según valor de 'tipo'
+  const tipoEl = document.getElementById('mas-p-tipo');
+  const tipoVal = tipoEl ? tipoEl.value : '';
+  document.querySelectorAll('#mas-params [data-showif]').forEach(g => {
+    g.style.display = g.dataset.showif === tipoVal ? '' : 'none';
+  });
+}
+
+function getP(id) {
+  const el = document.getElementById('mas-p-' + id); return el ? el.value : '';
+}
+
+function setOp(op) {
+  masOp = op;
+  document.querySelectorAll('.op-btn').forEach(b => b.classList.toggle('active', b.id === 'op-' + op));
+  const cfg = MAS_OPS[op];
+  document.getElementById('mas-hint').textContent = cfg.hint;
+  // params
+  const pCont = document.getElementById('mas-params');
+  pCont.innerHTML = '';
+  cfg.params.forEach(p => {
+    const g = document.createElement('div');
+    g.className = 'field-group';
+    g.style.flex = '1';
+    // Si el param tiene showIf, empieza oculto
+    if (p.showIf) { g.style.display = 'none'; g.dataset.showif = p.showIf; }
+    g.innerHTML = `<div class="field-label">${p.label}</div>`;
+    let el;
+    if (p.type === 'sel') {
+      el = document.createElement('select');
+      el.className = 'field-select';
+      p.opts.forEach(o => { const opt = document.createElement('option'); opt.value = o; opt.textContent = o; el.appendChild(opt); });
+    } else if (p.type === 'ta') {
+      el = document.createElement('textarea');
+      el.className = 'field-ta';
+      el.rows = 3;
+      el.placeholder = p.placeholder || '';
+      el.style.minWidth = '100%';
+    } else {
+      el = document.createElement('input');
+      el.className = 'field-input';
+      el.placeholder = p.placeholder || '';
+    }
+    el.id = 'mas-p-' + p.id;
+    el.addEventListener('change', () => { masToggleConditionals(); masBuild(); });
+    el.addEventListener('input', () => { masToggleConditionals(); masBuild(); });
+    g.appendChild(el);
+    pCont.appendChild(g);
+  });
+  masToggleConditionals();
+  masData = [];
+  document.getElementById('mas-paste').value = '';
+  document.getElementById('mas-preview').innerHTML = '';
+  // Subasta: ocultar área de paste, mostrar solo params
+  const pasteArea = document.getElementById('mas-paste');
+  const pasteHint = document.querySelector('.paste-hint');
+  const isSubasta = op === 'subasta';
+  if (pasteArea) pasteArea.style.display = isSubasta ? 'none' : '';
+  if (pasteHint) pasteHint.style.display = isSubasta ? 'none' : '';
+  masUpdateStats();
+  masBuild();
+}
+
+function masParse() {
+  const raw = document.getElementById('mas-paste').value.trim();
+  if (!raw) { masData = []; masUpdateStats(); masBuild(); return; }
+  const lines = raw.split('\n').filter(l => l.trim());
+  masData = MAS_OPS[masOp].parse(lines);
+  // preview rows
+  const prev = document.getElementById('mas-preview');
+  prev.innerHTML = '';
+  masData.forEach((r, i) => {
+    const d = document.createElement('div');
+    d.className = 'parsed-row';
+    const val = r.ticker ? `${r.ticker} ${r.vn||r.monto}` : r.monto || r.subasta || '';
+    d.innerHTML = `<span class="pr-num">${i+1}</span><span class="pr-comit">${r.comit}</span><span class="pr-name">${r.nombre}</span><span class="pr-val">${val}</span>`;
+    prev.appendChild(d);
+  });
+  document.getElementById('mas-count').textContent = masData.length + ' filas';
+  masUpdateStats();
+  masBuild();
+}
+
+function masUpdateStats() {
+  document.getElementById('mas-stat-n').textContent = masData.length;
+  document.getElementById('mas-stat-op').textContent = MAS_OPS[masOp].label;
+  let total = 0;
+  masData.forEach(r => {
+    const v = parseFloat((r.monto||'').replace(/\./g,'').replace(',','.').replace(/^-/,''));
+    if (!isNaN(v)) total += v;
+  });
+  document.getElementById('mas-stat-t').textContent = total > 0 ? '$' + fmtARS(total) : '—';
+}
+
+function masBuild() {
+  const box = document.getElementById('mas-output');
+  // Subasta no necesita datos pegados, genera directo desde params
+  if (masOp === 'subasta') {
+    box.textContent = MAS_OPS.subasta.build([]);
+    return;
+  }
+  if (!masData.length) { box.innerHTML = '<span class="output-empty">El mensaje aparecerá acá →</span>'; return; }
+  box.textContent = MAS_OPS[masOp].build(masData);
+}
+
+function masCopy() {
+  const text = document.getElementById('mas-output').textContent;
+  if (!text || text.includes('aparecerá')) return;
+  const btn = document.getElementById('mas-copy');
+  copyText(text, () => {
+    btn.textContent = '✅ ¡Copiado!'; btn.classList.add('success');
+    setTimeout(() => { btn.textContent = '📋 Copiar para WhatsApp'; btn.classList.remove('success'); }, 2000);
+    toast();
+  });
+}
+
+function masClear() {
+  document.getElementById('mas-paste').value = '';
+  document.getElementById('mas-preview').innerHTML = '';
+  masData = [];
+  masUpdateStats();
+  masBuild();
+}
+
+// ══════════════════════════════════
+// INDIVIDUAL
+// ══════════════════════════════════
+let indMsg = 'tom_ind';
+
+const IND_MSGS = {
+  tom_ind: {
+    title:'Tomadora individual', sub:'Para la mesa del ALYC',
+    fields:[
+      {id:'comit',label:'Comitente',type:'client'},
+      {id:'monto',label:'Monto',ph:'ej: 3.500.000'},
+      {id:'moneda',label:'Moneda',type:'sel',opts:['ARS','USD MEP','USD cable']},
+      {id:'plazo',label:'Plazo (días)',ph:'ej: 1 / 3 / 7 / 30'},
+      {id:'tna',label:'TNA / Precio',ph:'ej: mkt / 39%'},
+    ],
+    build:f=>`Buen día! Les pido una tomadora${f.moneda!=='ARS'?' '+f.moneda:''} a ${f.plazo||'—'} - ${f.tna||'mkt'}\n${f.comit||'—'}\t${f.nombre||'—'}\t-$'+fmtInput(f.monto||'')+'`
+  },
+  compra_ind: {
+    title:'Compra individual', sub:'Para la mesa del ALYC',
+    fields:[
+      {id:'comit',label:'Comitente',type:'client'},
+      {id:'ticker',label:'Ticker',ph:'ej: AL30D, IRCPO'},
+      {id:'valor',label:'Monto / VN',ph:'ej: 5.000.000 ARS / 100 VN'},
+      {id:'plazo',label:'Liquidación',type:'sel',opts:['mkt 24hs','mkt CI','mkt t+1','límite']},
+    ],
+    build:f=>`Compra:\n${f.comit||'—'}\n${f.ticker||'—'} - ${fmtInput(f.valor||'')||'—'}\n${f.plazo||'—'}`,\n${f.plazo||'—'}`
+  },
+  venta_ind: {
+    title:'Venta individual', sub:'Para la mesa del ALYC',
+    fields:[
+      {id:'comit',label:'Comitente',type:'client'},
+      {id:'ticker',label:'Ticker',ph:'ej: ABT, PAMP, GD30'},
+      {id:'valor',label:'VN / Cantidad',ph:'ej: 173 CEDEAR / 11.764 nominales'},
+      {id:'plazo',label:'Liquidación',type:'sel',opts:['mkt 24hs','mkt CI','mkt t+1']},
+    ],
+    build:f=>`Venta:\n${f.comit||'—'}\n${f.ticker||'—'} - ${fmtInput(f.valor||'')||'—'}\n${f.plazo||'—'}`,\n${f.plazo||'—'}`
+  },
+  mep: {
+    title:'MEP / CCL cerrado', sub:'Para la mesa del ALYC',
+    fields:[
+      {id:'comit',label:'Comitente',type:'client'},
+      {id:'monto',label:'Monto ARS',ph:'ej: 9.999.242'},
+      {id:'tc',label:'TC cerrado',ph:'ej: 1330'},
+      {id:'tipo',label:'Tipo',type:'sel',opts:['MEP','CCL cable']},
+    ],
+    build:f=>`Buen día! Les pido ${f.tipo||'MEP'} cerrado:\n${f.comit||'—'}\n$$'+fmtInput(f.monto||'')+' ARS · TC ${f.tc||'—'}\nOperan con disponible.`
+  },
+  subasta_ind: {
+    title:'Subasta MAV', sub:'Masivo o individual — Para la mesa del ALYC',
+    fields:[
+      {id:'instrumento',label:'Instrumento',type:'sel',opts:['MAV NO GARANTIZADO','MAV AVALADO','PAGARÉ']},
+      {id:'tipo',label:'Tipo',type:'sel',opts:['PROPIOS','TERCEROS']},
+      {id:'cuits',label:'CUITs terceros (uno por línea)',type:'ta',ph:'Solo si es TERCEROS\nej: 30-123456789 Empresa A\n20-987654321 Juan Pérez'},
+      {id:'monto',label:'Monto',ph:'ej: 50000000'},
+      {id:'cantidad',label:'Cantidad echeqs',ph:'ej: 10'},
+      {id:'moneda',label:'Moneda',type:'sel',opts:['ARS','USD BCRA','USD A3500','USD MEP']},
+      {id:'estado',label:'Estado',type:'sel',opts:['PENDIENTE DE ACEPTACION','PENDIENTE DE AVAL']},
+      {id:'comitente',label:'Comitente vendedor',type:'client'},
+    ],
+    build: f => {
+      const tipo = f.tipo || 'PROPIOS';
+      const monto = fmtInput(f.monto||'') || '—';
+      let cuitLine = '';
+      if (tipo === 'TERCEROS' && (f.cuits||'').trim()) {
+        const lista = f.cuits.trim().split('\n').filter(l=>l.trim()).map(l=>'  - '+l.trim()).join('\n');
+        cuitLine = `\nCUIT TERCEROS:\n${lista}`;
+      }
+      return `INSTRUMENTO: ${f.instrumento||'—'}\nTIPO: ${tipo}${cuitLine}\nMONTO: ${monto}\nCANTIDAD ECHEQS: ${f.cantidad||'—'}\nMONEDA: ${f.moneda||'ARS'}\nESTADO: ${f.estado||'—'}\nCOMITENTE VENDEDOR: ${f.comitente||'—'}`;
+    }
+  },
+  transferencia: {
+    title:'Pedido de transferencia', sub:'Mensaje al cliente',
+    fields:[
+      {id:'nombre', label:'Cliente', type:'client'},
+      {id:'importe', label:'Importe ($)', ph:'ej: 3950000'},
+      {id:'operacion', label:'Operación', type:'sel', opts:['Caución ARS','Caución USD','Venta activos','Compra activos','Suscripción FCI','Rescate FCI','Retiro saldo']},
+      {id:'medio', label:'Medio', type:'sel', opts:['Transferencia bancaria','Echeq','Transferencia o echeq']},
+      {id:'banco', label:'Banco / CBU destino', ph:'completar con datos bancarios'},
+      {id:'plazo', label:'Plazo', ph:'ej: antes de las 15 hs / hoy'},
+    ],
+    build: f => {
+      const imp = f.importe ? '$' + fmtInput(f.importe) : '$—';
+      return `Orden cliente: ${f.nombre||''}\n\n💰 Importe: ${imp}\n📌 Operación: ${f.operacion||'—'}\n💳 Medio: ${f.medio||'—'}\n🏦 Banco / CBU: ${f.banco||'-'}\n⏰ Plazo: ${f.plazo||'-'}`;
+    }
+  },
+  cotiz: {
+    title:'Cotización', sub:'Mensaje al cliente',
+    fields:[
+      {id:'nombre',label:'Cliente',type:'client'},
+      {id:'ticker',label:'Activo',ph:'ej: PAMP'},
+      {id:'precio',label:'Precio ($)',ph:'ej: 2.870'},
+      {id:'var',label:'Variación',ph:'ej: +0.9% / -1.2%'},
+    ],
+    build:f=>`Hola ${f.nombre||'[Nombre]'} 👋\n\n${f.ticker||'—'} está en $$'+fmtInput(f.precio||'')+' (${f.var||'—'} en el día).\n\n¿Querés que arme una orden o esperamos un poco más?`
+  },
+  cartera_ind: {
+    title:'Estado de cartera', sub:'Mensaje al cliente',
+    fields:[
+      {id:'nombre',label:'Cliente',type:'client'},
+      {id:'fecha',label:'Fecha',ph:'ej: 27/03/26'},
+      {id:'total',label:'Total valorizado ($)',ph:'ej: 8.450.000'},
+      {id:'var',label:'Variación período',ph:'ej: +3.2%'},
+      {id:'resumen',label:'Resumen cartera',type:'ta',ph:'ej: 40% bonos soberanos, 30% ON, 20% acciones...'},
+    ],
+    build:f=>`Hola ${f.nombre||'[Nombre]'}, acá el resumen de tu cartera al ${f.fecha||'—'}:\n\n💰 Total valorizado: $$'+fmtInput(f.total||'')+'\n📈 Variación del período: ${f.var||'—'}\n\n${f.resumen||''}\n\nCualquier consulta, avisame.`
+  },
+};
+
+
+// ══════════════════════════════════
+// BUSCADOR DE CLIENTES DESDE SHEET
+// ══════════════════════════════════
+const SHEET_ID = '1ChBgibJFcO_bvpw1MSW9KNRPJt46LxCbLIYKmmtWeN0';
+const SHEET_TAB = 'BASE DE DATOS QTM CAPITAL';
+let clientesDB = [];
+let clientesLoaded = false;
+
+async function loadClientes() {
+  if (clientesLoaded) return;
+  try {
+    const url = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID + '/gviz/tq?tqx=out:json&sheet=' + encodeURIComponent(SHEET_TAB);
+    const res = await fetch(url);
+    const text = await res.text();
+    const jsonStr = text.replace(/^[^(]+\(/, '').replace(/\);?$/, '');
+    const json = JSON.parse(jsonStr);
+    const cols = json.table.cols.map(c => c.label);
+    const rows = json.table.rows;
+    // Buscar columna Auxiliar NumeroNombreAlyc
+    let useIdx = cols.findIndex(c => c.includes('NumeroNombre'));
+    if (useIdx < 0) useIdx = cols.findIndex(c => c === 'CTTE');
+    clientesDB = rows.map(r => {
+      const v = r.c[useIdx] ? String(r.c[useIdx].v || r.c[useIdx].f || '').trim() : '';
+      return v ? { label: v } : null;
+    }).filter(Boolean);
+    clientesLoaded = true;
+  } catch(e) {
+    console.warn('No se pudo cargar clientes:', e.message);
+  }
+}
+
+function renderClientSearch(fieldId, container, onSelect) {
+  const wrap = document.createElement('div');
+  wrap.className = 'client-search-wrap';
+
+  const input = document.createElement('input');
+  input.className = 'client-search-input';
+  input.placeholder = 'Buscar N° comitente o nombre...';
+  input.autocomplete = 'off';
+
+  const dropdown = document.createElement('div');
+  dropdown.className = 'client-dropdown';
+
+  const badge = document.createElement('div');
+  badge.style.display = 'none';
+
+  const hidden = document.createElement('input');
+  hidden.type = 'hidden';
+  hidden.dataset.field = fieldId;
+
+  function showOptions(query) {
+    dropdown.innerHTML = '';
+    if (!query || query.length < 1) { dropdown.classList.remove('open'); return; }
+    if (!clientesLoaded) {
+      dropdown.innerHTML = '<div class="client-loading">⏳ Cargando...</div>';
+      dropdown.classList.add('open');
+      loadClientes().then(() => showOptions(input.value));
+      return;
+    }
+    const q = query.toLowerCase();
+    const matches = clientesDB.filter(c => c.label.toLowerCase().includes(q)).slice(0, 12);
+    if (!matches.length) {
+      dropdown.innerHTML = '<div class="client-loading">Sin resultados</div>';
+      dropdown.classList.add('open');
+      return;
+    }
+    matches.forEach(c => {
+      const opt = document.createElement('div');
+      opt.className = 'client-option';
+      opt.textContent = c.label;
+      opt.onclick = () => {
+        hidden.value = c.label;
+        input.value = '';
+        dropdown.classList.remove('open');
+        badge.style.display = 'flex';
+        badge.className = 'client-badge';
+        badge.innerHTML = '<span>' + c.label + '</span><span class="client-badge-clear" onclick="clearClient(this,\''+fieldId+'\')">✕</span>';
+        if (onSelect) onSelect(c.label);
+      };
+      dropdown.appendChild(opt);
+    });
+    dropdown.classList.add('open');
+  }
+
+  input.addEventListener('focus', loadClientes);
+  input.addEventListener('input', () => showOptions(input.value));
+  document.addEventListener('click', e => { if (!wrap.contains(e.target)) dropdown.classList.remove('open'); });
+
+  wrap.appendChild(input);
+  wrap.appendChild(dropdown);
+  wrap.appendChild(badge);
+  wrap.appendChild(hidden);
+  container.appendChild(wrap);
+  return hidden;
+}
+
+function clearClient(btn, fieldId) {
+  const wrap = btn.closest('.client-search-wrap');
+  wrap.querySelector('.client-badge').style.display = 'none';
+  wrap.querySelector('.client-search-input').value = '';
+  const h = wrap.querySelector('[data-field="' + fieldId + '"]');
+  if (h) h.value = '';
+  indBuild();
+}
+
+function setInd(id) {
+  indMsg = id;
+  document.querySelectorAll('.ind-btn').forEach(b => b.classList.toggle('active', b.id === 'ind-' + id));
+  const cfg = IND_MSGS[id];
+  document.getElementById('ind-title').textContent = cfg.title;
+  document.getElementById('ind-sub').textContent = cfg.sub;
+  const cont = document.getElementById('ind-fields');
+  cont.innerHTML = '';
+  cfg.fields.forEach(f => {
+    const g = document.createElement('div');
+    g.className = 'field-group';
+    g.innerHTML = `<div class="field-label">${f.label}</div>`;
+    let el;
+    if (f.type === 'sel') {
+      el = document.createElement('select');
+      el.className = 'field-select';
+      f.opts.forEach(o => { const opt=document.createElement('option'); opt.value=o; opt.textContent=o; el.appendChild(opt); });
+    } else if (f.type === 'ta') {
+      el = document.createElement('textarea');
+      el.className = 'field-ta';
+      el.rows = 3;
+      el.placeholder = f.ph||'';
+    } else if (f.type === 'client') {
+      // Buscador de clientes desde Sheet
+      g.innerHTML = `<div class="field-label">${f.label}</div>`;
+      const hiddenEl = renderClientSearch(f.id, g, () => indBuild());
+      cont.appendChild(g);
+      return; // renderClientSearch ya agregó el elemento
+    } else {
+      el = document.createElement('input');
+      el.className = 'field-input';
+      el.placeholder = f.ph||'';
+    }
+    el.dataset.field = f.id;
+    el.addEventListener('input', indBuild);
+    el.addEventListener('change', indBuild);
+    g.appendChild(el);
+    cont.appendChild(g);
+  });
+  // Ocultar campo cuits por defecto al cargar
+  setTimeout(() => {
+    const cuitsWrap = document.querySelector('#ind-fields [data-field="cuits"]');
+    if (cuitsWrap) cuitsWrap.closest('.field-group').style.display = 'none';
+  }, 0);
+  indBuild();
+}
+
+function indBuild() {
+  const cfg = IND_MSGS[indMsg];
+  const vals = {};
+  document.querySelectorAll('#ind-fields [data-field]').forEach(el => { vals[el.dataset.field] = el.value; });
+  document.getElementById('ind-bubble').textContent = cfg.build(vals);
+  // Condicional: campo cuits solo visible si tipo = TERCEROS
+  const tipoEl = document.querySelector('#ind-fields [data-field="tipo"]');
+  const cuitsWrap = document.querySelector('#ind-fields [data-field="cuits"]');
+  if (tipoEl && cuitsWrap) {
+    cuitsWrap.closest('.field-group').style.display = tipoEl.value === 'TERCEROS' ? '' : 'none';
+  }
+}
+
+function indCopy() {
+  const text = document.getElementById('ind-bubble').textContent;
+  const btn = document.getElementById('ind-copy');
+  copyText(text, () => {
+    btn.textContent = '✅ ¡Copiado!'; btn.classList.add('success');
+    setTimeout(() => { btn.textContent = '📋 Copiar'; btn.classList.remove('success'); }, 2000);
+    toast();
+  });
+}
+
+function indClear() {
+  document.querySelectorAll('#ind-fields input,#ind-fields textarea').forEach(el => el.value='');
+  document.querySelectorAll('#ind-fields select').forEach(el => el.selectedIndex=0);
+  indBuild();
+}
+
+// ══════════════════════════════════
+// CARTERA
+// ══════════════════════════════════
+let cartData = [];
+
+function cartParse() {
+  const raw = document.getElementById('cart-paste').value.trim();
+  if (!raw) { cartData = []; cartBuild(); return; }
+  const lines = raw.split('\n').filter(l => l.trim() && !l.trim().startsWith('Comitente'));
+  cartData = lines.map(l => {
+    const c = l.split('\t').map(s=>s.trim());
+    if (c.length < 8) return null;
+    const tipo = c[3]||'';
+    const ticker = c[4]||'';
+    const denom = c[5]||'';
+    const disponible = parseFloat((c[7]||'').replace(/\./g,'').replace(',','.')) || 0;
+    const valorizado = parseFloat((c[11]||'').replace(/\./g,'').replace(',','.')) || 0;
+    return ticker ? {tipo, ticker, denom, disponible, valorizado} : null;
+  }).filter(Boolean);
+  document.getElementById('cart-count').textContent = cartData.length + ' posiciones';
+  cartBuild();
+}
+
+function cartBuild() {
+  const cartNombreEl = document.getElementById('cart-nombre') || document.querySelector('#cart-nombre-wrap [data-field="cart-nombre"]');
+  const nombre = cartNombreEl ? cartNombreEl.value || '[Cliente]' : '[Cliente]';
+  const fecha = document.getElementById('cart-fecha').value || new Date().toLocaleDateString('es-AR');
+  const ars = document.getElementById('cart-ars').value;
+  const usd = document.getElementById('cart-usd').value;
+  const fmt = document.getElementById('cart-fmt').value;
+  const box = document.getElementById('cart-output');
+  const total = cartData.reduce((a,r)=>a+r.valorizado,0);
+  const tipos = [...new Set(cartData.map(r=>r.tipo))].filter(Boolean);
+  document.getElementById('cart-stat-n').textContent = cartData.length;
+  document.getElementById('cart-stat-v').textContent = total>0 ? '$'+fmtARS(total) : '—';
+  document.getElementById('cart-stat-t').textContent = tipos.length>0 ? tipos.length+' tipos' : '—';
+  if (!cartData.length) { box.innerHTML='<span class="output-empty">El resumen aparecerá acá →</span>'; return; }
+  const EMOJI = {'Bonos':'🏛','ON':'🏢','Acciones':'📈','Cedear':'🌐','Cheque Electrónico':'📄','FCI':'💼','Letras':'📋'};
+  const grupos = {};
+  cartData.forEach(r => { if(!grupos[r.tipo]) grupos[r.tipo]=[]; grupos[r.tipo].push(r); });
+  let msg = '';
+  if (fmt === 'wa') {
+    msg += `📊 *Resumen de cartera — ${nombre}*\n📅 Al ${fecha}\n`;
+    if (ars) msg += `\n💵 Saldo ARS: $${ars}`;
+    if (usd) msg += `\n💵 Saldo USD: u$s${usd}`;
+    msg += '\n\n';
+    Object.entries(grupos).forEach(([tipo,rows]) => {
+      msg += `${EMOJI[tipo]||'•'} *${tipo}*\n`;
+      rows.forEach(r => msg += `  · ${r.ticker}${r.valorizado>0?' — $'+fmtARS(r.valorizado):''}\n`);
+      msg += '\n';
+    });
+    if (total>0) msg += `💰 *Total valorizado: $${fmtARS(total)}*\n`;
+    msg += '\nCualquier consulta, avisame 👋';
+  } else if (fmt === 'mesa') {
+    msg += `${nombre} — Tenencia al ${fecha}\n${'─'.repeat(36)}\n`;
+    cartData.forEach(r => msg += `${r.ticker}\t${r.disponible.toLocaleString('es-AR')} VN\t$${fmtARS(r.valorizado)}\n`);
+    if (ars) msg += `\nSaldo ARS: $${ars}`;
+    if (usd) msg += `\nSaldo USD: u$s${usd}`;
+  } else {
+    msg += `RESUMEN DE CARTERA\n${nombre} · Al ${fecha}\n${'═'.repeat(40)}\n\n`;
+    Object.entries(grupos).forEach(([tipo,rows]) => {
+      msg += `── ${tipo.toUpperCase()} ──\n`;
+      rows.forEach(r => msg += `${r.ticker.padEnd(10)} VN: ${r.disponible.toLocaleString('es-AR')}${r.valorizado>0?' | $'+fmtARS(r.valorizado):''}\n`);
+      msg += '\n';
+    });
+    if (ars) msg += `Saldo ARS: $${ars}\n`;
+    if (usd) msg += `Saldo USD: u$s${usd}\n`;
+    if (total>0) msg += `\nTOTAL VALORIZADO: $${fmtARS(total)}\n`;
+  }
+  box.textContent = msg.trim();
+}
+
+function cartCopy() {
+  const text = document.getElementById('cart-output').textContent;
+  if (!text || text.includes('aparecerá')) return;
+  const btn = document.getElementById('cart-copy');
+  copyText(text, () => {
+    btn.textContent = '✅ ¡Copiado!'; btn.classList.add('success');
+    setTimeout(() => { btn.textContent = '📋 Copiar para WhatsApp'; btn.classList.remove('success'); }, 2000);
+    toast();
+  });
+}
+
+function cartClear() {
+  document.getElementById('cart-paste').value='';
+  const cnEl = document.querySelector('#cart-nombre-wrap [data-field="cart-nombre"]'); if(cnEl) cnEl.value='';
+  const cnBadge = document.querySelector('#cart-nombre-wrap .client-badge'); if(cnBadge) cnBadge.style.display='none';
+  const cnInput = document.querySelector('#cart-nombre-wrap .client-search-input'); if(cnInput) cnInput.value='';
+  document.getElementById('cart-ars').value='';
+  document.getElementById('cart-usd').value='';
+  cartData=[];
+  cartBuild();
+}
+
+// ══════════════════════════════════
+// INFO RÁPIDA
+// ══════════════════════════════════
+let infoCat = 'cohen_ars';
+
+const INFO_DATA = {
+  cohen_ars:[{
+    title:'Cuenta ARS — Cohen', icon:'🏦', tag:'Pesos',
+    fields:[['Titular','COHEN S.A.'],['CUIT','30-55854331-7'],['N° Depositante','46'],['Banco','Banco de Valores S.A. (198)'],['Tipo','Cta. Cte. AR$'],['Cuenta','46/8'],['CBU','1980001730000000004683'],['ALIAS','COHEN.PESOS']],
+    copy:`Cuentas Bancarias COHEN\nTitular: COHEN S.A.\nCUIT: 30-55854331-7\nNúmero de Depositante: 46\n\nBanco de Valores S.A. (198)\nCta. Cte. AR$ 46/8\nCBU: 1980001730000000004683\nALIAS: COHEN.PESOS`
+  }],
+  cohen_usd:[{
+    title:'Cuenta USD — Cohen', icon:'💵', tag:'Dólares',
+    fields:[['Titular','COHEN S.A.'],['Banco','Banco de Valores S.A. (198)'],['Tipo','Cta Cte Especial en Dólares'],['Cuenta','9-001-0000010255-3'],['CBU','1980001790000001025535'],['ALIAS','COHEN.DOLARES']],
+    copy:`Cuenta USD — Cohen\nBanco de Valores S.A. (198)\nCta Cte Especial en Dólares N° 9-001-0000010255-3\nCBU: 1980001790000001025535\nALIAS: COHEN.DOLARES`
+  }],
+  cohen_ext:[{
+    title:'Cuenta Exterior — Cable', icon:'🌐', tag:'USD Wire',
+    fields:[['Banco','Santander Bank N.A.'],['Swift','SVRNUS33'],['ABA','231372691'],['Account','8938227081'],['Account Name','COHEN SA'],['Dirección','601 Penn Street, Reading, PA 19601'],['',''],['Corresponsal','Wells Fargo NY INTL'],['ABA Corresponsal','026005092'],['Ciudad','Nueva York, NY, EE.UU.']],
+    copy:`Cuenta Exterior — Dólar Cable\nSantander Bank N.A.\nSwift: SVRNUS33\nABA: 231372691\nAccount: 8938227081\nAccount Name: COHEN SA\n601 Penn Street, Reading, PA 19601\n\nCorresponsal: Wells Fargo NY INTL\nABA: 026005092\nNueva York, NY, EE.UU.`
+  }],
+  cohen_cuit:[{
+    title:'CUIT / Depositante', icon:'📋', tag:'Identificación',
+    fields:[['Razón Social','COHEN S.A.'],['CUIT','30-55854331-7'],['N° Depositante','46'],['Agente','Banco de Valores (198)']],
+    copy:`Cohen S.A.\nCUIT: 30-55854331-7\nNúmero de Depositante: 46`
+  }],
+
+  endoso:[{
+    title:'Endoso echeq — Cohen', icon:'📝', tag:'MAV / echeq',
+    fields:[
+      ['Paso 1','Corroborar que no tenga cadena de endoso (debe venir del emisor)'],
+      ['Paso 2','En tu online banking: Endosar echeq (endoso nominal)'],
+      ['Endosar a','COHEN S.A.'],
+      ['CUIT','30-55854331-7'],
+      ['Paso 3','Enviar comprobante de origen del echeq (factura, liquidación ARCA, etc.) + comprobante del endoso a info@qtmcapital.com.ar'],
+      ['Paso 4','48hs luego el importe está disponible para operar'],
+    ],
+    copy:`Endoso echeq — Cohen S.A.
+
+Pasos:
+1. Corroborar que no tenga cadena de endoso (debe venir del emisor)
+2. En tu online banking: Endosar echeq → Endoso nominal
+3. Endosar a: COHEN S.A. · CUIT: 30-55854331-7
+4. Enviar a info@qtmcapital.com.ar:
+   - Comprobante de origen del echeq (factura, liquidación ARCA, etc.)
+   - Comprobante del endoso (con toda la cadena de endosos)
+5. En 48hs el importe queda disponible para operar.`
+  }],
+
+  cohen_todas:[{
+    title:'Cuentas Bancos Cohen', icon:'🏦', tag:'Pesos + USD + Cable',
+    fields:[
+      ['── PESOS ──',''],
+      ['Titular','COHEN S.A.'],['CUIT','30-55854331-7'],['Depositante','46'],
+      ['Banco','Banco de Valores S.A. (198)'],['Cuenta','Cta. Cte. AR$ 46/8'],
+      ['CBU','1980001730000000004683'],['ALIAS','COHEN.PESOS'],
+      ['',''],
+      ['── USD LOCAL ──',''],
+      ['Banco','Banco de Valores S.A. (198)'],
+      ['Cuenta','Cta Cte Especial USD N° 9-001-0000010255-3'],
+      ['CBU','1980001790000001025535'],['ALIAS','COHEN.DOLARES'],
+      ['',''],
+      ['── USD CABLE ──',''],
+      ['Banco','Santander Bank N.A.'],['Swift','SVRNUS33'],
+      ['ABA','231372691'],['Account','8938227081'],['Account Name','COHEN SA'],
+      ['Dirección','601 Penn Street, Reading, PA 19601'],
+      ['Corresponsal','Wells Fargo NY INTL · ABA 026005092'],
+    ],
+    copy:`Cuentas Bancarias COHEN S.A.
+CUIT: 30-55854331-7 · N° Depositante: 46
+
+── PESOS ──
+Banco de Valores S.A. (198)
+Cta. Cte. AR$ 46/8
+CBU: 1980001730000000004683
+ALIAS: COHEN.PESOS
+
+── USD LOCAL ──
+Banco de Valores S.A. (198)
+Cta Cte Especial en Dólares N° 9-001-0000010255-3
+CBU: 1980001790000001025535
+ALIAS: COHEN.DOLARES
+
+── USD CABLE ──
+Santander Bank N.A.
+Swift: SVRNUS33
+ABA: 231372691
+Account: 8938227081
+Account Name: COHEN SA
+601 Penn Street, Reading, PA 19601
+Corresponsal: Wells Fargo NY INTL · ABA: 026005092`
+  }],
+
+  apertura_juridica:[{
+    title:'Apertura — Persona Jurídica', icon:'🏢', tag:'Instructivo',
+    fields:[
+      ['Link','aperturaempresas.cohen.com.ar'],
+      ['Mail asesor','matias@qtmcapital.com.ar'],
+      ['',''],
+      ['Paso 1','Ingresar al link y completar datos iniciales'],
+      ['Paso 2','Recibirán mail con código para continuar el trámite'],
+      ['Paso 3','Cada firmante recibe mail individual para firma digital'],
+      ['',''],
+      ['Documentación','Enviar a info@qtmcapital.com.ar'],
+    ],
+    copy:`📢 Apertura de cuenta – Persona Jurídica
+
+Para abrir su cuenta comitente en COHEN (ALyC) deben iniciar el trámite en:
+👉 aperturaempresas.cohen.com.ar
+
+📌 En el campo "mail asesor" colocar: matias@qtmcapital.com.ar
+
+Tras completar los primeros datos, recibirán un mail con un código para continuar o retomar el trámite. Cada firmante recibirá luego un mail individual para firmar digitalmente.
+
+📨 Documentación a enviar a info@qtmcapital.com.ar:
+✅ Estatuto certificado
+✅ Poder certificado (si corresponde)
+✅ Acta de cargos
+✅ Estados contables vigentes (o 6 DDJJ IVA)
+✅ Libro Registro de accionistas (SA/SAS) o Acta de socios (SRL)
+✅ DNIs de firmantes, autorizados y accionistas
+✅ Constancia de domicilio
+✅ Documentación extra si hay sociedades accionistas (>10%)
+✅ Sujeto Obligado: constancia UIF + acta oficial de cumplimiento`
+  }],
+
+  apertura_fisica:[{
+    title:'Apertura — Persona Física', icon:'👤', tag:'Instructivo',
+    fields:[
+      ['Link','aperturapersonas.cohen.com.ar'],
+      ['Mail asesor','matias@qtmcapital.com.ar'],
+      ['Tener a mano','Celular + DNI físico + Datos bancarios'],
+      ['',''],
+      ['Paso 1','Ingresar al link e indicar datos + correo'],
+      ['Paso 2','Verificar identidad con código que llega por mail'],
+      ['Paso 3','Completar datos personales requeridos'],
+      ['Paso 4','Agregar cotitulares si corresponde (mails distintos)'],
+      ['Paso 5','Firma digital por SIGNATURA (llega por mail a cada titular)'],
+      ['Paso 6','Mail de bienvenida con N° de cuenta y datos bancarios'],
+    ],
+    copy:`📢 Apertura de cuenta – Persona Física
+
+Antes de empezar: tené a mano tu Celular, DNI físico y Datos Bancarios.
+
+👉 aperturapersonas.cohen.com.ar
+
+📌 En el paso "mail del asesor" colocar: matias@qtmcapital.com.ar
+
+✅ Datos iniciales: ingresá tus datos y correo electrónico
+✅ Verificación: te llegará un código por mail para verificar tu identidad
+✅ Completar datos: cargá la información personal requerida
+✅ Cotitulares: si deseás agregar cotitulares, indicá nombres y correos (distintos)
+✅ Firma Digital: llegará un mail a cada titular vía SIGNATURA para firmar
+✅ Confirmación: recibirás mail de bienvenida con tu número de cuenta comitente
+
+No dudes en contactarnos si tenés alguna duda. ¡Éxitos! 💰`
+  }],
+
+  apertura_epyme:[{
+    title:'Apertura ePyme — Caja de Valores', icon:'🏭', tag:'Instructivo',
+    fields:[
+      ['Link','epyme.cajadevalores.com.ar'],
+      ['',''],
+      ['Paso 1','Ingresá a https://epyme.cajadevalores.com.ar/'],
+      ['Paso 2','Seleccioná "Registrar nuevo participante"'],
+      ['Paso 3','Seleccioná "Si sos Pyme ingresa aquí"'],
+      ['Paso 4','Completá los datos de la sociedad'],
+      ['Paso 5','Subí la nota modelo (datos de la empresa, impresa y firmada o con firma digital)'],
+      ['',''],
+      ['Nota','Te pasamos el modelo de nota cuando lo necesites'],
+    ],
+    copy:`🏭 Apertura ePyme — Caja de Valores
+
+Pasos:
+1. Ingresá a https://epyme.cajadevalores.com.ar/
+2. Seleccioná "Registrar nuevo participante"
+3. Seleccioná "Si sos Pyme ingresa aquí"
+4. Completá los datos de la sociedad
+5. Te pedirá que subas una nota modelo — te la pasamos nosotros, la completás con los datos de la empresa, la imprimís y firmás (o usás firma digital) y la subís cuando te lo solicite
+
+Cualquier duda, avisanos. ¡Éxitos! 💰`
+  }],
+
+  matrix_usuario:[{
+    title:'Crear usuario Cohen', icon:'🔐', tag:'Post-apertura',
+    fields:[
+      ['App requerida','Google Authenticator'],
+      ['iOS','apps.apple.com → "Google Authenticator"'],
+      ['Android','play.google.com → "Google Authenticator"'],
+      ['',''],
+      ['Paso 1','Entrar a connect.cohen.com.ar/registrarUsuario'],
+      ['Paso 2','Ingresar CUIT, elegir usuario, mail y contraseña'],
+      ['Paso 3','Autenticar mails recibidos y escanear QR con la app'],
+      ['Paso 4','Para ingresar: usuario + contraseña + código de la app'],
+      ['Tutorial oficial','https://connect.cohen.com.ar/comoregistrarme'],
+    ],
+    copy:`🔐 Crear usuario en Cohen Connect 
+    Tutorial: https://connect.cohen.com.ar/comoregistrarme
+
+Primero descargá Google Authenticator:
+📱 iOS: https://apps.apple.com/es/app/google-authenticator/id388497605
+📱 Android: https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2
+
+Pasos:
+1. Entrá a https://connect.cohen.com.ar/registrarUsuario
+   Ingresá tu CUIT, elegí un usuario, mail y contraseña
+2. Recibirás mails para autenticar — te mostrará un QR
+3. Escaneá el QR con Google Authenticator
+4. Para ingresar cada vez: usuario + contraseña + código de la app
+
+¡Listo! Ya podés ver tus tenencias y movimientos en la web.`
+  }],
+};
+
+const HI_FIELDS = ['CBU','ALIAS','CUIT','Swift','Account','ABA','N° Depositante','Depositante'];
+
+function setInfoCat(id) {
+  infoCat = id;
+  document.querySelectorAll('.info-cat-btn').forEach(b => b.classList.toggle('active', b.id === 'icat-' + id));
+  if (id === 'fci') renderFCI();
+  else renderInfo();
+}
+
+function renderInfo() {
+  const grid = document.getElementById('info-grid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  (INFO_DATA[infoCat]||[]).forEach(card => {
+    const el = document.createElement('div');
+    el.className = 'info-card';
+    // header
+    el.innerHTML = `<div class="info-card-hdr"><div class="info-card-title">${card.icon} ${card.title}</div><span class="info-card-tag">${card.tag}</span></div>`;
+    // body
+    const body = document.createElement('div');
+    body.className = 'info-card-body';
+    card.fields.forEach(([lbl, val]) => {
+      if (!lbl && !val) { body.innerHTML += '<br>'; return; }
+      const row = document.createElement('div');
+      row.className = 'info-row';
+      row.innerHTML = `<span class="info-lbl">${lbl}${lbl?':':''}</span><span class="info-val${HI_FIELDS.includes(lbl)?' hi':''}">${val}</span>`;
+      body.appendChild(row);
+    });
+    el.appendChild(body);
+    // actions
+    const actions = document.createElement('div');
+    actions.className = 'info-actions';
+    const btnAll = document.createElement('button');
+    btnAll.className = 'info-copy-btn';
+    btnAll.innerHTML = '📋 Copiar todo';
+    btnAll.onclick = () => copyText(card.copy, () => { btnAll.textContent='✅'; btnAll.classList.add('ok'); setTimeout(()=>{btnAll.innerHTML='📋 Copiar todo';btnAll.classList.remove('ok');},1500); toast(); });
+    actions.appendChild(btnAll);
+    card.fields.forEach(([lbl, val]) => {
+      if (HI_FIELDS.includes(lbl) && val) {
+        const b = document.createElement('button');
+        b.className = 'info-copy-btn';
+        b.textContent = lbl;
+        b.onclick = () => copyText(val, () => { b.textContent='✅'; b.classList.add('ok'); setTimeout(()=>{b.textContent=lbl;b.classList.remove('ok');},1200); });
+        actions.appendChild(b);
+      }
+    });
+    el.appendChild(actions);
+    grid.appendChild(el);
+  });
+}
+
+// ══════════════════════════════════
+
+// ══════════════════════════════════
+// AUTOMATIZACIONES
+// ══════════════════════════════════
+const SCRIPT_URL = 'https://script.google.com/a/macros/qtmcapital.com.ar/s/AKfycbxa8EwPOmbHqG7uU7J0n8VFOTmz7USZFs3bS0pSPhyOmSC3KA_0H6Heeg8DAplKPF9VVQ/exec';
+
+function runScript(func, btn) {
+  const originalText = btn.textContent;
+  btn.textContent = '⏳ Enviando...';
+  btn.classList.add('running');
+  btn.disabled = true;
+
+  const log = document.getElementById('auto-log');
+  log.style.display = 'block';
+  log.innerHTML = `<span style="color:var(--gold2)">⏳ Ejecutando ${func}...</span>`;
+
+  const url = SCRIPT_URL + '?func=' + encodeURIComponent(func);
+
+  fetch(url, { method: 'GET', mode: 'no-cors' })
+    .then(() => {
+      // no-cors no devuelve body, pero si llegó acá el request salió
+      btn.textContent = '✅ Enviado';
+      btn.classList.remove('running');
+      btn.classList.add('ok');
+      log.innerHTML = `<span style="color:var(--green)">✅ ${func} ejecutado correctamente.</span><br><span style="color:var(--text3);font-size:10px">Verificá tu mail para confirmar el envío.</span>`;
+      setTimeout(() => {
+        btn.textContent = originalText;
+        btn.classList.remove('ok');
+        btn.disabled = false;
+      }, 4000);
+    })
+    .catch(err => {
+      btn.textContent = '❌ Error';
+      btn.classList.remove('running');
+      btn.classList.add('err');
+      log.innerHTML = `<span style="color:var(--red)">❌ Error: ${err.message}</span><br><span style="color:var(--text3);font-size:10px">Verificá que el script esté publicado como Web App.</span>`;
+      setTimeout(() => {
+        btn.textContent = originalText;
+        btn.classList.remove('err');
+        btn.disabled = false;
+      }, 4000);
+    });
+}
+
+
+// ══════════════════════════════════
+// AUTOMATIZACIONES CON FORMULARIO
+// ══════════════════════════════════
+let adjuntosConfig = [];
+let adjuntosLoaded = false;
+
+async function loadAdjuntos() {
+  if (adjuntosLoaded) return;
+  try {
+    const url = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID + '/gviz/tq?tqx=out:json&sheet=Configuracion';
+    const res = await fetch(url);
+    const text = await res.text();
+    const jsonStr = text.replace(/^[^(]+\(/, '').replace(/\);?$/, '');
+    const json = JSON.parse(jsonStr);
+    adjuntosConfig = json.table.rows
+      .slice(1)
+      .map((r, i) => ({
+        idx: i+2,
+        nombre: r.c[0] ? String(r.c[0].v||'').trim() : '',
+        id: r.c[1] ? String(r.c[1].v||'').trim() : '',
+        checked: r.c[2] ? Boolean(r.c[2].v) : false,
+      }))
+      .filter(r => r.nombre && r.id);
+    adjuntosLoaded = true;
+    renderAdjuntos();
+  } catch(e) {
+    const cont = document.getElementById('sgr-adjuntos');
+    if (cont) cont.innerHTML = '<span style="font-family:var(--mono);font-size:11px;color:var(--text3)">No se pudieron cargar los adjuntos</span>';
+  }
+}
+
+function renderAdjuntos() {
+  const cont = document.getElementById('sgr-adjuntos');
+  if (!cont || !adjuntosConfig.length) return;
+  cont.innerHTML = adjuntosConfig.map((a, i) =>
+    '<label style="display:flex;align-items:center;gap:6px;cursor:pointer;background:var(--bg3);border:1px solid var(--border);border-radius:7px;padding:5px 10px;font-family:var(--mono);font-size:11px;color:var(--text2)">' +
+    '<input type="checkbox" id="adj-' + i + '" ' + (a.checked?'checked':'') + ' style="accent-color:var(--accent)">' +
+    a.nombre + '</label>'
+  ).join('');
+}
+
+async function runSGR(func, tipo, btn) {
+  const nombre = (document.getElementById('sgr-nombre')||{}).value||'';
+  const mail = (document.getElementById('sgr-mail')||{}).value||'';
+  if (!nombre.trim() || !mail.trim()) { alert('Completá nombre y mail del destinatario.'); return; }
+  const orig = btn.textContent;
+  btn.textContent = '⏳ Enviando...'; btn.classList.add('running'); btn.disabled = true;
+  const log = document.getElementById('auto-log');
+  log.style.display = 'block';
+  log.innerHTML = '<span style="color:var(--gold2)">⏳ Enviando mail a ' + nombre + '...</span>';
+  const url = SCRIPT_URL + '?func=' + func + '&mail=' + encodeURIComponent(mail) + '&nombre=' + encodeURIComponent(nombre);
+  fetch(url, { method:'GET', mode:'no-cors' })
+    .then(() => {
+      btn.textContent = '✅ Enviado'; btn.classList.remove('running'); btn.classList.add('ok');
+      log.innerHTML = '<span style="color:var(--green)">✅ Mail enviado a ' + nombre + ' (' + mail + '). Verificá tu bandeja.</span>';
+      setTimeout(() => { btn.textContent = orig; btn.classList.remove('ok'); btn.disabled = false; }, 3500);
+    })
+    .catch(e => {
+      btn.textContent = '❌ Error'; btn.classList.remove('running'); btn.classList.add('err');
+      log.innerHTML = '<span style="color:var(--red)">❌ ' + e.message + '</span>';
+      setTimeout(() => { btn.textContent = orig; btn.classList.remove('err'); btn.disabled = false; }, 3000);
+    });
+}
+
+async function runApertura(btn) {
+  const nombre = (document.getElementById('aper-nombre')||{}).value||'';
+  const mail = (document.getElementById('aper-mail')||{}).value||'';
+  const tipo = (document.getElementById('aper-tipo')||{}).value||'Física';
+  if (!nombre.trim() || !mail.trim()) { alert('Completá nombre y mail.'); return; }
+  const func = tipo === 'Física' ? 'enviarAperturaFisica' : 'enviarAperturaJuridica';
+  const orig = btn.textContent;
+  btn.textContent = '⏳ Enviando...'; btn.classList.add('running'); btn.disabled = true;
+  const log = document.getElementById('auto-log');
+  log.style.display = 'block';
+  log.innerHTML = '<span style="color:var(--gold2)">⏳ Enviando instrucciones de apertura...</span>';
+  const url = SCRIPT_URL + '?func=' + func + '&mail=' + encodeURIComponent(mail) + '&nombre=' + encodeURIComponent(nombre) + '&tipo=' + encodeURIComponent(tipo);
+  fetch(url, { method:'GET', mode:'no-cors' })
+    .then(() => {
+      btn.textContent = '✅ Enviado'; btn.classList.remove('running'); btn.classList.add('ok');
+      log.innerHTML = '<span style="color:var(--green)">✅ Instrucciones de apertura ' + tipo + ' enviadas a ' + nombre + ' (' + mail + ')</span>';
+      setTimeout(() => { btn.textContent = orig; btn.classList.remove('ok'); btn.disabled = false; }, 3500);
+    })
+    .catch(e => {
+      btn.textContent = '❌ Error'; btn.classList.remove('running'); btn.classList.add('err');
+      log.innerHTML = '<span style="color:var(--red)">❌ ' + e.message + '</span>';
+      setTimeout(() => { btn.textContent = orig; btn.classList.remove('err'); btn.disabled = false; }, 3000);
+    });
+}
+
+
+// ══════════════════════════════════
+// LINKS DE INTERÉS
+// ══════════════════════════════════
+const LINKS_DATA = [
+  {e:'Cohen',d:'Formularios Back Office',l:'https://docs.google.com/forms/d/e/1FAIpQLSdxdHlqDXyOzPegbYim3Svw6QEkcc8wulC5k21lZDVBwVYrwQ/viewform',o:''},
+  {e:'Cohen',d:'Solicitud de mejoras',l:'https://docs.google.com/forms/d/e/1FAIpQLSedWlxvHrlkx41w1SJBAgwSaMDX6FquKZTbrXBT93f8xxqJ1A/viewform',o:''},
+  {e:'Cohen',d:'Cobro de facturas',l:'https://docs.google.com/forms/d/e/1FAIpQLSdhWcq6h-SHvSXTrmkKLHHd45yA7OqY7GbiJtecU4ilEJWVnw/viewform',o:''},
+  {e:'Cohen',d:'Tesorería - solicitudes Cohen',l:'https://docs.google.com/forms/d/e/1FAIpQLSe3HjHImw7OXQ-DuYlpQdrfmNZBfdZG0qStD3Rf8WR5RFYrng/viewform',o:''},
+  {e:'Cohen',d:'Solicitud Sistema pedidos y garantías (BO)',l:'https://docs.google.com/a/cohen.com.ar/forms/d/e/1FAIpQLSdxdHlqDXyOzPegbYim3Svw6QEkcc8wulC5k21lZDVBwVYrwQ/viewform',o:''},
+  {e:'Cohen',d:'Solicitud de transferencias – desde 1/03/2018',l:'http://byma.cohen.com.ar',o:''},
+  {e:'Cohen',d:'Tarjetas personales – Productores inscriptos',l:'https://docs.google.com/a/cohen.com.ar/forms/d/e/1FAIpQLSegvuPk0fd-xwT_GrSxgCdrFrgwm2rLtXhervwlqJaXJp5GKg/viewform',o:''},
+  {e:'Cohen',d:'Formulario comisiones SGR',l:'https://docs.google.com/forms/d/e/1FAIpQLSdj2f-wjviQz_2uFtUOub0tFVDbcnku3GW-3fJdYp02FN-hcg/viewform',o:''},
+  {e:'Cohen',d:'Que opero y que no - Normativas',l:'https://docs.google.com/document/d/1EMPCNxxxC6dbknlLkHCvic2Gg5n8ITYwWVNQ9vU2l50/edit',o:''},
+  {e:'Cohen',d:'SGR - Leasing',l:'https://sites.google.com/a/cohen.com.ar/internos-cohen/home',o:''},
+  {e:'Cohen',d:'Inscripcion charlas, informes, etc.',l:'https://docs.google.com/forms/d/e/1FAIpQLScoFbtEpTdlUux2QsD89s3NyiK5U0H35k4FGF99k8nFGtDRjg/viewform',o:''},
+  {e:'Cohen',d:'Tablero Productores',l:'https://tablero.cohen.com.ar/',o:''},
+  {e:'Cohen',d:'Sugerencias Back Office / Connect',l:'https://docs.google.com/forms/d/e/1FAIpQLScwtLQE3VhrI-8Jp75uw8DiNT86GcNeMt1Zga20ZVB9ZQOfjw/viewform',o:''},
+  {e:'Cohen',d:'Formulario de Compliance',l:'https://docs.google.com/forms/d/e/1FAIpQLSdpmn0V5VV4lfl7C2uZI45vhESIu_tUYGh0Lx9TX2BsLVQZLA/viewform',o:''},
+  {e:'Cohen',d:'Bopreal - CCL - Pago a proveedores',l:'https://docs.google.com/forms/d/e/1FAIpQLSfoiz72Csu6INB_Iphwm6Z5b9XZ6CQp1r0rL44LHpXLGStv-w/viewform',o:''},
+  {e:'Cohen',d:'Bopreal - CCL - Pago a accionistas',l:'https://docs.google.com/forms/d/e/1FAIpQLScOgalqj8-3EFsOqNM_CZboTLZX6UmdpHScEES2kuDKmXaNUw/viewform',o:''},
+  {e:'Cohen',d:'BYMA - Back Office',l:'https://byma.cohen.com.ar/#/posicionValorizadaSaldosGarantia/list',o:'Se loguea con autenticador Google'},
+  {e:'Cohen',d:'Manual escaneo QR app Authenticator',l:'https://docs.google.com/document/d/1o-vFpg2r4RlgUhDE5h1dRG8DQDqwpFDW/edit',o:''},
+  {e:'Cohen',d:'Pedido credito/saldo matriz',l:'https://docs.google.com/forms/d/e/1FAIpQLSckIvpnyF-N_lo43lATrfP1IA9xSVUVYxQmbMhIDcJU6FqpHA/viewform',o:''},
+  {e:'Dracma',d:'Web bursatil',l:'https://dracmasa.aunesa.com/Irmo/',o:''},
+  {e:'Dracma',d:'Appsheet operaciones mdo',l:'https://www.appsheet.com/start/f5972bfb-0bc8-412c-96ff-a14fe44667e3',o:''},
+  {e:'Dracma Investments',d:'Solicitud conversion dolar Exterior',l:'https://form.jotform.com/241984974769683',o:''},
+  {e:'Dracma Investments',d:'Appsheet operaciones mdo',l:'https://www.appsheet.com/start/ea10e9e0-657f-4e37-be06-aadefa1f5807',o:''},
+  {e:'Dracma Investments',d:'DDJJ Endoso de echeqs',l:'https://form.jotform.com/241295126395056',o:'Cada cheque debe tener su propia factura'},
+  {e:'Dracma Investments',d:'Home broker',l:'https://clientes.patentedevalores.com.ar/Consultas/CuentaCorrientePesos',o:''},
+  {e:'Dracma Investments',d:'DDJJ transferencia de titulos valores',l:'https://form.jotform.com/242004212750642',o:''},
+  {e:'Eco Valores',d:'Cuenta productora',l:'https://productores.ecovalores.com.ar/app',o:''},
+  {e:'Eco Valores',d:'Eco portfolio',l:'https://portfolio.ecovalores.com.ar/',o:'OJO: no funciona web directa de Home Broker'},
+  {e:'QTM',d:'Tenencias Cliente',l:'https://splendorous-bombolone-2e2f6d.netlify.app/tenencias.html',o:''},
+  {e:'QTM',d:'Ideas de prompts ChatGPT',l:'https://road-dogwood-33d.notion.site/Rosetta-Prompts-ef16ddfd36884548bf78720b38a3bd04',o:''},
+  {e:'QTM',d:'Pagos interbanking',l:'https://drive.google.com/drive/folders/1t2-wxMFRUA2lPlOXUVWghFg5vTdsOtt0',o:'Archivo con instructivo'},
+  {e:'QTM',d:'Tablero global rentabilidades',l:'',o:''},
+  {e:'QTM',d:'Procedimientos Cohen',l:'',o:''},
+  {e:'QTM',d:'Check list documentacion clientes',l:'',o:''},
+  {e:'QTM',d:'Instructivo apertura ctas CCERA - BLANQUEO',l:'',o:''},
+  {e:'QTM',d:'SGR - Proceso y listados',l:'',o:'Protectores'},
+  {e:'QTM',d:'Tablero negocio cheques apalancados',l:'',o:''},
+  {e:'QTM',d:'Indice Renta Fija General',l:'',o:'Bonos, ONs, subsoberanos, Lecaps'},
+  {e:'QTM',d:'Financiamiento PYME - Check list',l:'',o:''},
+  {e:'QTM',d:'Procedimientos QTM Capital',l:'',o:'En proceso'},
+  {e:'QTM',d:'Legajos empresas e instituciones',l:'',o:'En proceso'},
+  {e:'QTM',d:'Calculadora aforos BYMA',l:'',o:''},
+  {e:'QTM',d:'Tabla aranceles Cohen',l:'',o:''},
+  {e:'QTM',d:'MACRO - Filtro valuaciones ALYCs',l:'',o:'Mejorar'},
+  {e:'QTM',d:'Planilla bot ePyme',l:'',o:''},
+  {e:'QTM',d:'Valuacion cuentas CUYO AVAL SGR',l:'',o:''},
+  {e:'QTM',d:'Control de saldos cuenta corriente',l:'',o:''},
+  {e:'QTM',d:'Tenencias Cohen - Base datos',l:'',o:''},
+  {e:'QTM',d:'Reporte de resultados - base',l:'',o:''},
+  {e:'QTM',d:'Planilla bot conversion masiva BO',l:'',o:''},
+  {e:'QTM',d:'Base reportes financieros PPT',l:'',o:''},
+  {e:'QTM',d:'Base reportes financieros SHEET',l:'',o:''},
+  {e:'QTM',d:'Base envio posicion mensual / honorarios',l:'',o:''},
+  {e:'QTM',d:'Base valuacion mensual de carteras',l:'',o:''},
+  {e:'QTM',d:'Avance migraciones Dracma a Cohen/Inviu',l:'',o:'Sheet temporal, no borrar'},
+  {e:'QTM',d:'Recibo cobro QTM',l:'',o:'Para confirmar cobros en efectivo'},
+  {e:'QTM',d:'Rendimientos CEDEARs',l:'',o:'Rendimiento por especie y comitente'},
+  {e:'QTM',d:'Envio mails informativos',l:'',o:''},
+  {e:'QTM',d:'Procesos apertura de cuenta Cohen',l:'',o:''},
+  {e:'QTM',d:'Proceso valuacion mensual - reporte clientes',l:'',o:''},
+  {e:'QTM',d:'SUCCESS FEE - Listado clientes',l:'',o:''},
+  {e:'QTM',d:'Calculadora dto cheques v2',l:'',o:''},
+  {e:'QTM',d:'BD Cheques POWERBI V3',l:'',o:'En proceso'},
+  {e:'QTM',d:'CARTERA ALYCs - SIMULADOR',l:'',o:'Mejorar'},
+];
+
+function empClass(e){
+  if(e==='Cohen') return 'emp-cohen';
+  if(e==='QTM') return 'emp-qtm';
+  if(e.startsWith('Dracma')) return 'emp-dracma';
+  if(e==='Eco Valores') return 'emp-eco';
+  return '';
+}
+
+function initLinks(){
+  setTimeout(function(){ renderLinksTable(LINKS_DATA); }, 80);
+}
+
+function filterLinks(){
+  var q=(document.getElementById('links-search')||{value:''}).value.toLowerCase();
+  var emp=(document.getElementById('links-empresa')||{value:''}).value;
+  var rows=LINKS_DATA.filter(function(r){
+    if(emp && !r.e.toLowerCase().includes(emp.toLowerCase())) return false;
+    if(q && !r.d.toLowerCase().includes(q) && !r.e.toLowerCase().includes(q) && !(r.o||'').toLowerCase().includes(q)) return false;
+    return true;
+  });
+  renderLinksTable(rows);
+}
+
+function renderLinksTable(rows){
+  var tbody=document.getElementById('links-tbody');
+  var count=document.getElementById('links-count');
+  if(!tbody) return;
+  if(count) count.textContent=rows.length+' links';
+  tbody.innerHTML=rows.map(function(r){
+    var acc=r.l&&r.l.startsWith('http')
+      ? '<a href="'+r.l+'" target="_blank" class="links-open">Abrir</a>'
+      : '<span style="color:var(--text3);font-family:var(--mono);font-size:10px">-</span>';
+    return '<tr>'
+      +'<td><span class="links-empresa '+empClass(r.e)+'">'+r.e+'</span></td>'
+      +'<td style="color:var(--text);font-size:12px">'+r.d+'</td>'
+      +'<td>'+acc+'</td>'
+      +'<td class="links-obs">'+(r.o||'')+'</td>'
+      +'</tr>';
+  }).join('');
+  if(!rows.length) tbody.innerHTML='<tr><td colspan="4" style="text-align:center;color:var(--text3);padding:20px;font-family:var(--mono);font-size:12px">Sin resultados</td></tr>';
+}
+
+
+// ══════════════════════════════════
+// ADMIN LINKS — JSON en GitHub (sin tocar el HTML)
+// ══════════════════════════════════
+const ADMIN_HASH = '3d62c0bfceafedf059781bffdc09c3551bab4974b2483400b9bc5271585010d4';
+const GH_USER = 'matidean';
+const GH_REPO = 'mesa_op';
+const GH_JSON_FILE = 'links_extra.json'; // archivo separado — nunca toca el HTML
+const GH_BRANCH = 'main';
+
+let adminUnlocked = false;
+let ghToken = '';
+let linksExtra = { added: [], deleted: [] }; // {added:[...], deleted:[indices de LINKS_DATA]}
+
+// Links visibles = base - eliminados + agregados
+function getLinks() {
+  return LINKS_DATA
+    .filter((r, i) => !linksExtra.deleted.includes(i))
+    .concat(linksExtra.added);
+}
+
+async function loadLinksExtra() {
+  try {
+    const url = 'https://raw.githubusercontent.com/' + GH_USER + '/' + GH_REPO + '/' + GH_BRANCH + '/' + GH_JSON_FILE;
+    const res = await fetch(url + '?t=' + Date.now());
+    if (res.ok) {
+      linksExtra = await res.json();
+    }
+  } catch(e) {
+    // Si no existe el archivo, usar defaults vacíos
+    linksExtra = { added: [], deleted: [] };
+  }
+}
+
+function initLinks() {
+  setTimeout(async function(){
+    await loadLinksExtra();
+    renderLinksTable(getLinks());
+  }, 80);
+}
+
+function filterLinks() {
+  var q=(document.getElementById('links-search')||{value:''}).value.toLowerCase();
+  var emp=(document.getElementById('links-empresa')||{value:''}).value;
+  var rows=getLinks().filter(function(r){
+    if(emp && !r.e.toLowerCase().includes(emp.toLowerCase())) return false;
+    if(q && !r.d.toLowerCase().includes(q) && !r.e.toLowerCase().includes(q) && !(r.o||'').toLowerCase().includes(q)) return false;
+    return true;
+  });
+  renderLinksTable(rows);
+}
+
+async function sha256(str) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+function linksAdminOpen() {
+  const modal = document.getElementById('links-modal');
+  modal.style.display = 'flex';
+  if (adminUnlocked) showAdminPane();
+  else {
+    document.getElementById('links-login-pane').style.display = 'block';
+    document.getElementById('links-admin-pane').style.display = 'none';
+    setTimeout(() => document.getElementById('links-pwd').focus(), 100);
+  }
+}
+
+async function linksLogin() {
+  const pwd = document.getElementById('links-pwd').value;
+  const token = document.getElementById('links-token').value.trim();
+  if (!token) { alert('Ingresá el GitHub Token.'); return; }
+  const hash = await sha256(pwd);
+  if (hash === ADMIN_HASH) {
+    adminUnlocked = true;
+    ghToken = token;
+    document.getElementById('links-pwd').value = '';
+    document.getElementById('links-login-err').style.display = 'none';
+    showAdminPane();
+  } else {
+    document.getElementById('links-login-err').style.display = 'block';
+  }
+}
+
+function showAdminPane() {
+  document.getElementById('links-login-pane').style.display = 'none';
+  const pane = document.getElementById('links-admin-pane');
+  pane.style.display = 'flex';
+  renderDelList();
+  renderEditList('');
+}
+
+function renderDelList() {
+  const list = document.getElementById('del-links-list');
+  if (!list) return;
+  list.innerHTML = '';
+  getLinks().forEach((r, i) => {
+    const row = document.createElement('label');
+    row.style.cssText = 'display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:6px;cursor:pointer;font-family:var(--mono);font-size:11px;color:var(--text2);background:var(--bg2);border:1px solid var(--border)';
+    row.innerHTML = '<input type="checkbox" class="del-chk" data-idx="' + i + '" style="accent-color:var(--red);flex-shrink:0">'
+      + '<span style="color:var(--text3);min-width:90px">[' + r.e + ']</span>'
+      + '<span>' + r.d.substring(0, 48) + '</span>';
+    list.appendChild(row);
+  });
+}
+
+function delSelectAll() {
+  document.querySelectorAll('.del-chk').forEach(c => c.checked = true);
+}
+function delSelectNone() {
+  document.querySelectorAll('.del-chk').forEach(c => c.checked = false);
+}
+
+// ── GitHub API: leer SHA de links_extra.json ──
+async function getJSONSHA() {
+  const res = await fetch(
+    'https://api.github.com/repos/' + GH_USER + '/' + GH_REPO + '/contents/' + GH_JSON_FILE + '?ref=' + GH_BRANCH,
+    { headers: { 'Authorization': 'token ' + ghToken, 'Accept': 'application/vnd.github.v3+json' } }
+  );
+  if (res.status === 404) return { sha: null };
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || 'Error al leer JSON de GitHub');
+  return { sha: data.sha };
+}
+
+// ── GitHub API: guardar links_extra.json — JSON puro, sin encoding problemático ──
+async function pushJSON(message) {
+  const { sha } = await getJSONSHA();
+  const jsonStr = JSON.stringify(linksExtra, null, 2);
+  const encoded = btoa(unescape(encodeURIComponent(jsonStr)));
+  const body = { message, content: encoded, branch: GH_BRANCH };
+  if (sha) body.sha = sha;
+  const res = await fetch(
+    'https://api.github.com/repos/' + GH_USER + '/' + GH_REPO + '/contents/' + GH_JSON_FILE,
+    {
+      method: 'PUT',
+      headers: { 'Authorization': 'token ' + ghToken, 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    }
+  );
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || 'Error al guardar JSON en GitHub');
+  return data;
+}
+
+function setAdminMsg(txt, color) {
+  const msg = document.getElementById('links-admin-msg');
+  msg.textContent = txt;
+  msg.style.color = color || 'var(--green)';
+  msg.style.display = 'block';
+  setTimeout(() => msg.style.display = 'none', 4000);
+}
+
+// ── Agregar link: guarda en links_extra.json ──
+async function linksAdd() {
+  const emp = document.getElementById('new-link-emp').value;
+  const det = document.getElementById('new-link-det').value.trim();
+  const url = document.getElementById('new-link-url').value.trim();
+  const obs = document.getElementById('new-link-obs').value.trim();
+  if (!det) { alert('Ingresá el nombre del link.'); return; }
+
+  setAdminMsg('⏳ Guardando en GitHub...', 'var(--gold2)');
+  try {
+    linksExtra.added.push({e:emp, d:det, l:url, o:obs});
+    await pushJSON('Hub: agregar link — ' + det);
+    document.getElementById('new-link-det').value = '';
+    document.getElementById('new-link-url').value = '';
+    document.getElementById('new-link-obs').value = '';
+    setAdminMsg('✅ Link agregado. Visible al instante para todo el equipo.', 'var(--green)');
+    showAdminPane();
+    renderLinksTable(getLinks());
+  } catch(e) {
+    linksExtra.added.pop(); // revertir
+    setAdminMsg('❌ Error: ' + e.message, 'var(--red)');
+  }
+}
+
+// ── Eliminar links seleccionados — guarda en links_extra.json ──
+async function linksDelete() {
+  const checked = Array.from(document.querySelectorAll('.del-chk:checked'));
+  if (!checked.length) { alert('Seleccioná al menos un link para eliminar.'); return; }
+  // data-idx es el índice en getLinks() — necesitamos separar base vs added
+  const allLinks = getLinks();
+  const baseCount = LINKS_DATA.filter((r,i) => !linksExtra.deleted.includes(i)).length;
+  const toDeleteBase = [];
+  const toDeleteAdded = [];
+  checked.forEach(c => {
+    const visIdx = parseInt(c.dataset.idx);
+    if (visIdx < baseCount) {
+      // Es un link base — encontrar su índice real en LINKS_DATA
+      let realIdx = 0, count = 0;
+      for (let i = 0; i < LINKS_DATA.length; i++) {
+        if (!linksExtra.deleted.includes(i)) {
+          if (count === visIdx) { realIdx = i; break; }
+          count++;
+        }
+      }
+      toDeleteBase.push(realIdx);
+    } else {
+      toDeleteAdded.push(visIdx - baseCount);
+    }
+  });
+  const names = checked.map(c => allLinks[parseInt(c.dataset.idx)].d).join(', ');
+  if (!confirm('¿Eliminar ' + checked.length + ' link(s)?\n\n' + names)) return;
+
+  setAdminMsg('⏳ Guardando cambios en GitHub...', 'var(--gold2)');
+  const prevDeleted = [...linksExtra.deleted];
+  const prevAdded = [...linksExtra.added];
+  try {
+    toDeleteBase.forEach(i => { if (!linksExtra.deleted.includes(i)) linksExtra.deleted.push(i); });
+    toDeleteAdded.sort((a,b)=>b-a).forEach(i => linksExtra.added.splice(i,1));
+    await pushJSON('Hub: eliminar ' + checked.length + ' link(s)');
+    setAdminMsg('🗑 ' + checked.length + ' link(s) eliminado(s). Visible al instante.', 'var(--green)');
+    renderDelList();
+    renderLinksTable(getLinks());
+  } catch(e) {
+    linksExtra.deleted = prevDeleted;
+    linksExtra.added = prevAdded;
+    setAdminMsg('❌ Error: ' + e.message, 'var(--red)');
+  }
+}
+
+function filterEditList() {
+  const q = (document.getElementById('edit-search')||{value:''}).value.toLowerCase();
+  renderEditList(q);
+}
+
+let editingIdx = -1;
+
+function renderEditList(q) {
+  const list = document.getElementById('edit-links-list');
+  if (!list) return;
+  list.innerHTML = '';
+  const all = getLinks();
+  const filtered = all
+    .map((r, i) => ({r, i}))
+    .filter(({r}) => !q || r.d.toLowerCase().includes(q) || r.e.toLowerCase().includes(q))
+    .slice(0, 15);
+  filtered.forEach(({r, i}) => {
+    const row = document.createElement('div');
+    row.style.cssText = 'display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:6px;font-family:var(--mono);font-size:11px;color:var(--text2);background:var(--bg2);border:1px solid var(--border);cursor:pointer';
+    const hasUrl = r.l && r.l.startsWith('http');
+    row.innerHTML = '<span style="color:var(--text3);min-width:80px;flex-shrink:0">[' + r.e + ']</span>'
+      + '<span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + r.d + '</span>'
+      + '<span style="flex-shrink:0;font-size:10px;color:' + (hasUrl ? 'var(--green)' : 'var(--red)') + '">' + (hasUrl ? '✓ URL' : '✗ Sin URL') + '</span>'
+      + '<button style="flex-shrink:0;padding:3px 8px;background:var(--bg3);border:1px solid var(--border2);border-radius:5px;color:var(--accent2);font-family:var(--mono);font-size:10px;cursor:pointer" onclick="openEditForm(' + i + ')">Editar</button>';
+    list.appendChild(row);
+  });
+  if (!filtered.length) list.innerHTML = '<div style="color:var(--text3);font-family:var(--mono);font-size:11px;padding:8px">Sin resultados</div>';
+}
+
+function openEditForm(idx) {
+  editingIdx = idx;
+  const link = getLinks()[idx];
+  document.getElementById('edit-link-name').textContent = '[' + link.e + '] ' + link.d;
+  document.getElementById('edit-link-url').value = link.l || '';
+  document.getElementById('edit-link-obs').value = link.o || '';
+  document.getElementById('edit-form').style.display = 'flex';
+}
+
+function closeEditForm() {
+  editingIdx = -1;
+  document.getElementById('edit-form').style.display = 'none';
+  document.getElementById('edit-link-url').value = '';
+  document.getElementById('edit-link-obs').value = '';
+}
+
+async function linksEdit() {
+  if (editingIdx < 0) return;
+  const newUrl = document.getElementById('edit-link-url').value.trim();
+  const newObs = document.getElementById('edit-link-obs').value.trim();
+  const link = getLinks()[editingIdx];
+  setAdminMsg('⏳ Guardando en GitHub...', 'var(--gold2)');
+
+  // Determinar si es link base o agregado
+  const baseVisible = LINKS_DATA.filter((r,i) => !linksExtra.deleted.includes(i));
+  const isBase = editingIdx < baseVisible.length;
+
+  const prevAdded = JSON.parse(JSON.stringify(linksExtra.added));
+  try {
+    if (isBase) {
+      // Agregar como override en linksExtra.added con flag de edición
+      // Buscar si ya existe un override para este link
+      const existingOverride = linksExtra.added.findIndex(a => a._editOf === link.d && a._editOfE === link.e);
+      const entry = {e: link.e, d: link.d, l: newUrl, o: newObs, _editOf: link.d, _editOfE: link.e};
+      if (existingOverride >= 0) {
+        linksExtra.added[existingOverride] = entry;
+        // Ocultar el original si no está ya
+        const realBaseIdx = LINKS_DATA.findIndex(r => r.d === link.d && r.e === link.e);
+        if (realBaseIdx >= 0 && !linksExtra.deleted.includes(realBaseIdx)) {
+          linksExtra.deleted.push(realBaseIdx);
+        }
+      } else {
+        linksExtra.added.push(entry);
+        const realBaseIdx = LINKS_DATA.findIndex(r => r.d === link.d && r.e === link.e);
+        if (realBaseIdx >= 0) linksExtra.deleted.push(realBaseIdx);
+      }
+    } else {
+      // Es un link agregado — editarlo directamente
+      const addedIdx = editingIdx - baseVisible.length;
+      linksExtra.added[addedIdx].l = newUrl;
+      linksExtra.added[addedIdx].o = newObs;
+    }
+    await pushJSON('Hub: editar URL — ' + link.d);
+    closeEditForm();
+    setAdminMsg('✅ URL actualizada. Visible al instante.', 'var(--green)');
+    renderEditList(document.getElementById('edit-search').value.toLowerCase());
+    renderLinksTable(getLinks());
+    renderDelList();
+  } catch(e) {
+    linksExtra.added = prevAdded;
+    setAdminMsg('❌ Error: ' + e.message, 'var(--red)');
+  }
+}
+
+function escReg(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
+
+function linksModalClose() {
+  document.getElementById('links-modal').style.display = 'none';
+}
+
+document.addEventListener('click', function(e) {
+  const modal = document.getElementById('links-modal');
+  if (modal && modal.style.display === 'flex' && e.target === modal) linksModalClose();
+});
+
+
+// ══════════════════════════════════
+// AUTH ARANCELES
+// ══════════════════════════════════
+const ARAN_URL_ENC = 'aHR0cHM6Ly91YmlxdWl0b3VzLXNhd2luZS05MGZiN2IubmV0bGlmeS5hcHAvcXRtX2FyYW5jZWxlc19kYXNoYm9hcmQuaHRtbA==';
+
+function aranAuth() {
+  document.getElementById('aran-modal').style.display = 'flex';
+  document.getElementById('aran-pwd').value = '';
+  document.getElementById('aran-err').style.display = 'none';
+  setTimeout(() => document.getElementById('aran-pwd').focus(), 100);
+}
+
+async function aranLogin() {
+  const pwd = document.getElementById('aran-pwd').value;
+  const hash = await sha256(pwd);
+  if (hash === ADMIN_HASH) {
+    aranClose();
+    // Decodificar y abrir el link solo si la contraseña es correcta
+    const url = atob(ARAN_URL_ENC);
+    window.open(url, '_blank');
+  } else {
+    document.getElementById('aran-err').style.display = 'block';
+    document.getElementById('aran-pwd').value = '';
+    document.getElementById('aran-pwd').focus();
+  }
+}
+
+function aranClose() {
+  document.getElementById('aran-modal').style.display = 'none';
+  document.getElementById('aran-pwd').value = '';
+  document.getElementById('aran-err').style.display = 'none';
+}
+
+// Cerrar modal aranceles al clickar fuera
+document.addEventListener('click', function(e) {
+  const m = document.getElementById('aran-modal');
+  if (m && m.style.display === 'flex' && e.target === m) aranClose();
+});
+
+// INIT
+// ══════════════════════════════════
+setOp('tomadora_ars');
+setInd('tom_ind');
+document.getElementById('cart-fecha').value = new Date().toLocaleDateString('es-AR');
+</script>
+</body>
+</html>
