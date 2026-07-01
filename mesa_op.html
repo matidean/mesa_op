@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>QTM Capital · Hub</title>
-<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500&family=Instrument+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -2498,10 +2498,22 @@ document.getElementById('cart-fecha').value = new Date().toLocaleDateString('es-
     <div style="font-family:Syne,sans-serif;font-size:24px;font-weight:800;color:#e2e8f0">QTM Capital Hub</div>
     <div style="font-family:monospace;font-size:11px;color:#64748b;margin-top:6px;letter-spacing:.1em;text-transform:uppercase">Acceso restringido · Solo equipo QTM</div>
   </div>
-  <button id="login-btn" onclick="netlifyIdentity.open()" style="background:#3b82f6;color:white;border:none;border-radius:10px;padding:14px 32px;font-family:Syne,sans-serif;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:10px">
-    <svg width="20" height="20" viewBox="0 0 24 24"><path fill="white" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="white" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="white" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="white" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-    Ingresar con Google
-  </button>
+  <!-- Botón oficial de Google -->
+  <div id="g_id_onload"
+    data-client_id="781924221914-a7bag3s1j8hkun51md28bdsjet3pnr7l.apps.googleusercontent.com"
+    data-context="signin"
+    data-ux_mode="popup"
+    data-callback="onGoogleLogin"
+    data-auto_prompt="false">
+  </div>
+  <div class="g_id_signin"
+    data-type="standard"
+    data-shape="pill"
+    data-theme="filled_blue"
+    data-text="signin_with"
+    data-size="large"
+    data-logo_alignment="left">
+  </div>
   <div id="login-err" style="font-family:monospace;font-size:11px;color:#ef4444;display:none;text-align:center;max-width:300px;line-height:1.6">
     Este mail no tiene acceso al Hub.<br>Contactá a matias@qtmcapital.com.ar
   </div>
@@ -2509,7 +2521,7 @@ document.getElementById('cart-fecha').value = new Date().toLocaleDateString('es-
 
 <script>
 var QTM_ALLOWED = ["ciro@qtmcapital.com.ar","info@qtmcapital.com.ar","federico@qtmcapital.com.ar","matias@qtmcapital.com.ar","matiasdean.md@gmail.com","fgarciacordoba@gmail.com"];
-var QTM_KEY = 'qtm_auth_v1';
+var QTM_KEY = 'qtm_auth_v2';
 
 function qtmShowLogin() {
   var s = document.getElementById('qtm-login-screen');
@@ -2523,59 +2535,48 @@ function qtmHideLogin() {
   document.body.style.overflow = '';
 }
 
-function qtmIsAllowed(email) {
-  return QTM_ALLOWED.indexOf(email) >= 0;
+function onGoogleLogin(response) {
+  // Decodificar el JWT de Google
+  var parts = response.credential.split('.');
+  var payload = JSON.parse(atob(parts[1].replace(/-/g, '+').replace(/_/g, '/')));
+  var email = payload.email;
+  
+  if (QTM_ALLOWED.indexOf(email) >= 0) {
+    // Guardar sesión con expiración de 8 horas
+    var session = {email: email, exp: Date.now() + 8*60*60*1000};
+    localStorage.setItem(QTM_KEY, JSON.stringify(session));
+    qtmHideLogin();
+    document.getElementById('login-err').style.display = 'none';
+  } else {
+    document.getElementById('login-err').style.display = 'block';
+  }
 }
 
 function logout() {
   localStorage.removeItem(QTM_KEY);
-  netlifyIdentity.logout();
   qtmShowLogin();
+  // Revocar sesión de Google
+  if (window.google && google.accounts) {
+    google.accounts.id.disableAutoSelect();
+  }
 }
 
-// Al iniciar — verificar si ya hay sesión
-// Inicializar widget con el endpoint del sitio
-netlifyIdentity.init({
-  APIUrl: 'https://storied-zabaione-1c26c1.netlify.app/.netlify/identity'
-});
-
-netlifyIdentity.on('init', function(user) {
-  if (user && qtmIsAllowed(user.email)) {
-    localStorage.setItem(QTM_KEY, user.email);
-    qtmHideLogin();
-  } else {
-    qtmShowLogin();
-  }
-});
-
-// Al hacer login
-netlifyIdentity.on('login', function(user) {
-  if (qtmIsAllowed(user.email)) {
-    localStorage.setItem(QTM_KEY, user.email);
-    netlifyIdentity.close();
-    qtmHideLogin();
-    document.getElementById('login-err').style.display = 'none';
-  } else {
-    netlifyIdentity.logout();
-    document.getElementById('login-err').style.display = 'block';
-  }
-});
-
-// Al hacer logout
-netlifyIdentity.on('logout', function() {
-  localStorage.removeItem(QTM_KEY);
-  qtmShowLogin();
-});
-
-// Bloquear acceso inmediato si no hay sesión
+// Verificar sesión al cargar
 (function() {
   var stored = localStorage.getItem(QTM_KEY);
-  if (!stored) {
-    document.addEventListener('DOMContentLoaded', function() {
-      qtmShowLogin();
-    });
+  if (stored) {
+    try {
+      var session = JSON.parse(stored);
+      if (session.exp > Date.now() && QTM_ALLOWED.indexOf(session.email) >= 0) {
+        // Sesión válida
+        return;
+      }
+    } catch(e) {}
   }
+  // No hay sesión válida — mostrar login
+  document.addEventListener('DOMContentLoaded', function() {
+    qtmShowLogin();
+  });
 })();
 </script>
 </body>
-</html>
