@@ -2534,6 +2534,11 @@ function logout() {
 }
 
 // Al iniciar — verificar si ya hay sesión
+// Inicializar widget con el endpoint del sitio
+netlifyIdentity.init({
+  APIUrl: 'https://storied-zabaione-1c26c1.netlify.app/.netlify/identity'
+});
+
 netlifyIdentity.on('init', function(user) {
   if (user && qtmIsAllowed(user.email)) {
     localStorage.setItem(QTM_KEY, user.email);
