@@ -423,6 +423,31 @@ html,body{height:100%;font-family:var(--sans);background:var(--bg);color:var(--t
     </button>
 
   </div>
+    <button class="hcard" onclick="showDatosQTM()">
+      <div class="hcard-icon">🪪</div>
+      <div class="hcard-title">Datos QTM</div>
+      <div class="hcard-desc">Razón social, domicilio y datos fiscales para facturación.</div>
+      <div class="hcard-arrow">→</div>
+    </button>
+    <button class="hcard" onclick="showTarjeta('matias')">
+      <div class="hcard-icon">🪪</div>
+      <div class="hcard-title">Tarjeta Matias Dean</div>
+      <div class="hcard-desc">Datos bancarios y personales. Mostrar desde el celular.</div>
+      <div class="hcard-arrow">→</div>
+    </button>
+    <button class="hcard" onclick="showTarjeta('fgarcia')">
+      <div class="hcard-icon">🪪</div>
+      <div class="hcard-title">Tarjeta Federico García</div>
+      <div class="hcard-desc">Datos bancarios y personales. Mostrar desde el celular.</div>
+      <div class="hcard-arrow">→</div>
+    </button>
+    <button class="hcard" onclick="showTarjeta('funamuno')">
+      <div class="hcard-icon">🪪</div>
+      <div class="hcard-title">Tarjeta Federico Unamuno</div>
+      <div class="hcard-desc">Datos bancarios y personales. Mostrar desde el celular.</div>
+      <div class="hcard-arrow">→</div>
+    </button>
+  </div>
   <div class="home-footer">QTM Capital · Agente Matriculado CNV · Uso exclusivamente interno</div>
 </div>
 
@@ -605,6 +630,14 @@ html,body{height:100%;font-family:var(--sans);background:var(--bg);color:var(--t
           <button class="info-cat-btn" id="icat-apertura_juridica" onclick="setInfoCat('apertura_juridica')">🏢 Apertura Persona Jurídica</button>
           <button class="info-cat-btn" id="icat-apertura_epyme" onclick="setInfoCat('apertura_epyme')">🏭 Apertura ePyme</button>
           <button class="info-cat-btn" id="icat-matrix_usuario" onclick="setInfoCat('matrix_usuario')">🔐 Crear usuario Cohen</button>
+          <div class="info-cat">Cuentas Socios</div>
+          <button class="info-cat-btn" id="icat-ctas_matias" onclick="setInfoCat('ctas_matias')">👤 Matias Dean</button>
+          <button class="info-cat-btn" id="icat-ctas_fgarcia" onclick="setInfoCat('ctas_fgarcia')">👤 Federico García</button>
+          <button class="info-cat-btn" id="icat-ctas_susana" onclick="setInfoCat('ctas_susana')">👤 Susana Lapuchevsky</button>
+          <button class="info-cat-btn" id="icat-ctas_funamuno" onclick="setInfoCat('ctas_funamuno')">👤 Federico Unamuno</button>
+          <div class="info-cat">Cuentas QTM</div>
+          <button class="info-cat-btn" id="icat-ctas_qtm_ars" onclick="setInfoCat('ctas_qtm_ars')">🏦 QTM Pesos</button>
+          <button class="info-cat-btn" id="icat-ctas_qtm_usd" onclick="setInfoCat('ctas_qtm_usd')">💵 QTM Dólares</button>
           <div class="info-cat">FCI</div>
           <button class="info-cat-btn" id="icat-fci" onclick="setInfoCat('fci')">📊 Horarios de Fondos</button>
         </div>
@@ -841,6 +874,58 @@ html,body{height:100%;font-family:var(--sans);background:var(--bg);color:var(--t
       <button class="btn-primary" onclick="aranLogin()" style="flex:1">Ingresar</button>
       <button class="btn-sec" onclick="aranClose()">Cancelar</button>
     </div>
+  </div>
+</div>
+
+
+<!-- MODAL DATOS QTM -->
+<div id="qtm-datos-modal" style="display:none;position:fixed;inset:0;z-index:600;background:rgba(0,0,0,.85);align-items:center;justify-content:center;padding:16px" onclick="if(event.target===this)closeDatosQTM()">
+  <div style="background:#0f1520;border:1px solid #263650;border-radius:20px;width:min(420px,100%);overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,.6)">
+    <!-- Header -->
+    <div style="background:linear-gradient(135deg,#0f2044,#1a3460);padding:28px 24px 20px;text-align:center;position:relative">
+      <button onclick="closeDatosQTM()" style="position:absolute;top:12px;right:12px;background:rgba(255,255,255,.1);border:none;border-radius:50%;width:28px;height:28px;color:white;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center">✕</button>
+      <div style="font-family:Syne,sans-serif;font-size:28px;font-weight:800;color:white;letter-spacing:-0.02em">QTM Capital</div>
+      <div style="font-family:monospace;font-size:11px;color:#c8a84b;letter-spacing:.15em;text-transform:uppercase;margin-top:4px">Finanzas & Economía</div>
+      <div style="font-family:monospace;font-size:10px;color:rgba(255,255,255,.4);margin-top:8px;letter-spacing:.1em">AGENTE MATRICULADO CNV</div>
+    </div>
+    <!-- Datos -->
+    <div style="padding:24px;display:flex;flex-direction:column;gap:14px">
+      <div style="display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-family:monospace;font-size:13px">
+        <span style="color:#64748b;white-space:nowrap">Razón social</span>
+        <span style="color:#e2e8f0;font-weight:600">QTM S.A.S.</span>
+        <span style="color:#64748b;white-space:nowrap">CUIT</span>
+        <span style="color:#e2e8f0;font-weight:600">30-71893054-1</span>
+        <span style="color:#64748b;white-space:nowrap">Cond. imp.</span>
+        <span style="color:#e2e8f0;font-weight:600">Responsable Inscripto</span>
+        <span style="color:#64748b;white-space:nowrap">Domicilio</span>
+        <span style="color:#e2e8f0;font-weight:600">Alonso 520, Río Cuarto, Córdoba</span>
+        <span style="color:#64748b;white-space:nowrap">Actividad</span>
+        <span style="color:#e2e8f0;font-weight:600">Asesoramiento financiero</span>
+      </div>
+      <div style="height:1px;background:#1e2d45"></div>
+      <!-- Botones copiar -->
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <button onclick="copyDato('QTM S.A.S.',this)" style="padding:10px 14px;background:#151d2e;border:1px solid #1e2d45;border-radius:8px;color:#94a3b8;font-family:monospace;font-size:12px;cursor:pointer;text-align:left;transition:all .15s;display:flex;justify-content:space-between;align-items:center" onmouseover="this.style.borderColor='#3b82f6'" onmouseout="this.style.borderColor='#1e2d45'">
+          <span>Razón social: <strong style="color:#e2e8f0">QTM S.A.S.</strong></span><span style="font-size:10px;color:#3b82f6">📋</span>
+        </button>
+        <button onclick="copyDato('30-71893054-1',this)" style="padding:10px 14px;background:#151d2e;border:1px solid #1e2d45;border-radius:8px;color:#94a3b8;font-family:monospace;font-size:12px;cursor:pointer;text-align:left;transition:all .15s;display:flex;justify-content:space-between;align-items:center" onmouseover="this.style.borderColor='#3b82f6'" onmouseout="this.style.borderColor='#1e2d45'">
+          <span>CUIT: <strong style="color:#e2e8f0">30-71893054-1</strong></span><span style="font-size:10px;color:#3b82f6">📋</span>
+        </button>
+        <button onclick="copyDato('Alonso 520, Río Cuarto, Córdoba',this)" style="padding:10px 14px;background:#151d2e;border:1px solid #1e2d45;border-radius:8px;color:#94a3b8;font-family:monospace;font-size:12px;cursor:pointer;text-align:left;transition:all .15s;display:flex;justify-content:space-between;align-items:center" onmouseover="this.style.borderColor='#3b82f6'" onmouseout="this.style.borderColor='#1e2d45'">
+          <span>Domicilio: <strong style="color:#e2e8f0">Alonso 520, Río Cuarto</strong></span><span style="font-size:10px;color:#3b82f6">📋</span>
+        </button>
+        <button onclick="copyDatosCompletos(this)" style="padding:11px 14px;background:#3b82f6;border:none;border-radius:8px;color:white;font-family:Syne,sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .15s" onmouseover="this.style.background='#60a5fa'" onmouseout="this.style.background='#3b82f6'">
+          📋 Copiar todos los datos
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- MODAL TARJETAS SOCIOS -->
+<div id="modal-socio" style="display:none;position:fixed;inset:0;z-index:600;background:rgba(0,0,0,.85);align-items:center;justify-content:center;padding:16px" onclick="if(event.target===this)closeTarjeta()">
+  <div id="modal-socio-inner" style="background:#0f1520;border:1px solid #263650;border-radius:20px;width:min(420px,100%);overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,.6)">
   </div>
 </div>
 
@@ -1763,6 +1848,126 @@ Antes de empezar: tené a mano tu Celular, DNI físico y Datos Bancarios.
 No dudes en contactarnos si tenés alguna duda. ¡Éxitos! 💰`
   }],
 
+  ctas_matias:[
+    {title:'Matias Dean — ARS (BBVA)', icon:'👤', tag:'Pesos',
+     fields:[['Titular','Matias Dean'],['CUIT','20-36133449-4'],['Banco','BBVA'],['Tipo','Caja de Ahorro $'],['Cuenta','267-60552/9'],['CBU','0170267740000006055293'],['ALIAS','MATIAS.DEAN.BBVA']],
+     copy:`Datos bancarios — Matias Dean
+Banco BBVA · Caja de Ahorro $
+Cuenta: 267-60552/9
+CBU: 0170267740000006055293
+ALIAS: MATIAS.DEAN.BBVA
+CUIT: 20-36133449-4
+Titular: Matias Dean`},
+    {title:'Matias Dean — ARS (Galicia)', icon:'👤', tag:'Pesos',
+     fields:[['Titular','Matias Dean'],['CUIL','20-36133449-4'],['Banco','Banco Galicia'],['DNI','36133449'],['Cuenta','4057629-8 176-0'],['CBU','0070176730004057629800'],['ALIAS','matidean.ga']],
+     copy:`Datos bancarios — Matias Dean
+Banco Galicia · Caja de Ahorro $
+Cuenta: 4057629-8 176-0
+CBU: 0070176730004057629800
+ALIAS: matidean.ga
+CUIL: 20-36133449-4
+Titular: Matias Dean`},
+  ],
+  ctas_fgarcia:[
+    {title:'Federico García — ARS (Galicia)', icon:'👤', tag:'Pesos',
+     fields:[['Titular','García Córdoba, Federico Javier'],['CUIL','20-32680333-3'],['Banco','Banco Galicia'],['Cuenta','4040384-9 176-2'],['CBU','0070176730004040384927'],['ALIAS','FEDERICO.GARCIA.CBA']],
+     copy:`Datos bancarios — Federico García
+Banco Galicia · Caja de Ahorro $
+Cuenta: 4040384-9 176-2
+CBU: 0070176730004040384927
+ALIAS: FEDERICO.GARCIA.CBA
+CUIL: 20-32680333-3
+Titular: García Córdoba, Federico Javier`},
+    {title:'Federico García — USD (Galicia)', icon:'👤', tag:'Dólares',
+     fields:[['Titular','Federico García'],['Banco','Banco Galicia'],['CBU','0070176731004011207069']],
+     copy:`Datos bancarios — Federico García
+Banco Galicia · USD
+CBU: 0070176731004011207069
+Titular: Federico García`},
+  ],
+  ctas_susana:[
+    {title:'Susana Lapuchevsky — ARS', icon:'👤', tag:'Pesos',
+     fields:[['Titular','Susana Lorena Lapuchevsky'],['Banco','Banco del Sol'],['Cuenta','1000359711'],['CBU','3108100900010003597117'],['ALIAS','SLLSOL']],
+     copy:`Datos bancarios — Susana Lapuchevsky
+Banco del Sol · Caja de Ahorro $
+Cuenta: 1000359711
+CBU: 3108100900010003597117
+ALIAS: SLLSOL
+Titular: Susana Lorena Lapuchevsky`},
+  ],
+  ctas_funamuno:[
+    {title:'Federico Unamuno — ARS (Macro/ex-Itau)', icon:'👤', tag:'Pesos',
+     fields:[['Titular','Federico Martin Unamuno'],['Banco','Banco Macro (ex-Itaú)'],['CBU','2590061520004410630134'],['ALIAS','fmuitau']],
+     copy:`Datos bancarios — Federico Unamuno
+Banco Macro (ex-Itaú) · Caja de Ahorro $
+CBU: 2590061520004410630134
+ALIAS: fmuitau
+Titular: Federico Martin Unamuno`},
+    {title:'Federico Unamuno — ARS (Galicia Plus/ex-HSBC)', icon:'👤', tag:'Pesos',
+     fields:[['Titular','Federico Martin Unamuno'],['CUIT','23-29118015-9'],['Banco','Galicia Más (ex-HSBC)'],['CBU','1500660000066061237414'],['ALIAS','FMU.HSBC.ARS']],
+     copy:`Datos bancarios — Federico Unamuno
+Galicia Más (ex-HSBC) · Caja de Ahorro $
+CBU: 1500660000066061237414
+ALIAS: FMU.HSBC.ARS
+CUIT: 23-29118015-9
+Titular: Federico Martin Unamuno`},
+    {title:'Federico Unamuno — ARS (Galicia)', icon:'👤', tag:'Pesos',
+     fields:[['Titular','Federico Martin Unamuno'],['CUIT','23-29118015-9'],['Banco','Banco Galicia'],['CBU','0070769730004002766987'],['ALIAS','FMU.GAL.ARS']],
+     copy:`Datos bancarios — Federico Unamuno
+Banco Galicia · Caja de Ahorro $
+CBU: 0070769730004002766987
+ALIAS: FMU.GAL.ARS
+CUIT: 23-29118015-9
+Titular: Federico Martin Unamuno`},
+    {title:'Federico Unamuno — USD (Galicia)', icon:'👤', tag:'Dólares',
+     fields:[['Titular','Federico Martin Unamuno'],['CUIT','23-29118015-9'],['Banco','Banco Galicia'],['CBU','0070769731004001013887'],['ALIAS','FMU.GAL.USD']],
+     copy:`Datos bancarios — Federico Unamuno
+Banco Galicia · USD
+CBU: 0070769731004001013887
+ALIAS: FMU.GAL.USD
+CUIT: 23-29118015-9
+Titular: Federico Martin Unamuno`},
+  ],
+  ctas_qtm_ars:[
+    {title:'QTM S.A.S. — ARS (Macro)', icon:'🏦', tag:'Pesos',
+     fields:[['Titular','QTM S.A.S.'],['CUIT','30-71893054-1'],['Banco','Banco Macro'],['Tipo','Cuenta Corriente'],['Cuenta','382109424793916'],['CBU','2850821230094247939161'],['ALIAS','QTMSAS']],
+     copy:`Datos bancarios — QTM S.A.S.
+Banco Macro · Cuenta Corriente $
+Cuenta: 382109424793916
+CBU: 2850821230094247939161
+ALIAS: QTMSAS
+CUIT: 30-71893054-1
+Titular: QTM S.A.S.`},
+    {title:'QTM S.A.S. — ARS (Galicia)', icon:'🏦', tag:'Pesos',
+     fields:[['Titular','QTM S.A.S.'],['CUIT','30-71893054-1'],['Banco','Banco Galicia'],['Cuenta','0015233-6 176-8'],['CBU','0070176720000015233688'],['ALIAS','qtm.galicia']],
+     copy:`Datos bancarios — QTM S.A.S.
+Banco Galicia · Cuenta $
+Cuenta: 0015233-6 176-8
+CBU: 0070176720000015233688
+ALIAS: qtm.galicia
+CUIT: 30-71893054-1
+Titular: QTM S.A.S.`},
+  ],
+  ctas_qtm_usd:[
+    {title:'QTM S.A.S. — USD (Macro)', icon:'🏦', tag:'Dólares',
+     fields:[['Titular','QTM S.A.S.'],['CUIT','30-71893054-1'],['Banco','Banco Macro'],['Tipo','Caja de Ahorro USD'],['Cuenta','282109604679663'],['CBU','2850821220096046796634'],['ALIAS','LIBRO.ELEVACION.LUZ']],
+     copy:`Datos bancarios — QTM S.A.S.
+Banco Macro · Caja de Ahorro USD
+Cuenta: 282109604679663
+CBU: 2850821220096046796634
+ALIAS: LIBRO.ELEVACION.LUZ
+CUIT: 30-71893054-1
+Titular: QTM S.A.S.`},
+    {title:'QTM S.A.S. — USD (Galicia)', icon:'🏦', tag:'Dólares',
+     fields:[['Titular','QTM S.A.S.'],['CUIT','30-71893054-1'],['Banco','Banco Galicia'],['Cuenta','9751388-7 176-1'],['CBU','0070176731009751388719'],['ALIAS','qtmsas.gal']],
+     copy:`Datos bancarios — QTM S.A.S.
+Banco Galicia · USD
+Cuenta: 9751388-7 176-1
+CBU: 0070176731009751388719
+ALIAS: qtmsas.gal
+CUIT: 30-71893054-1
+Titular: QTM S.A.S.`},
+  ],
   apertura_epyme:[{
     title:'Apertura ePyme — Caja de Valores', icon:'🏭', tag:'Instructivo',
     fields:[
@@ -2483,6 +2688,113 @@ document.addEventListener('click', function(e) {
   const m = document.getElementById('aran-modal');
   if (m && m.style.display === 'flex' && e.target === m) aranClose();
 });
+
+
+// ══════════════════════════════════
+// MODAL DATOS QTM
+// ══════════════════════════════════
+function showDatosQTM() {
+  document.getElementById('qtm-datos-modal').style.display = 'flex';
+}
+function closeDatosQTM() {
+  document.getElementById('qtm-datos-modal').style.display = 'none';
+}
+function copyDato(texto, btn) {
+  copyText(texto, function() {
+    var orig = btn.querySelector('span:last-child').textContent;
+    btn.querySelector('span:last-child').textContent = '✅';
+    setTimeout(function() { btn.querySelector('span:last-child').textContent = orig; }, 1500);
+  });
+}
+function copyDatosCompletos(btn) {
+  var texto = 'QTM S.A.S.\nCUIT: 30-71893054-1\nCondición IVA: Responsable Inscripto\nDomicilio: Alonso 520, Río Cuarto, Córdoba\nActividad: Asesoramiento financiero';
+  copyText(texto, function() {
+    var orig = btn.textContent;
+    btn.textContent = '✅ ¡Copiado!';
+    setTimeout(function() { btn.textContent = orig; }, 2000);
+  });
+}
+
+
+// ══════════════════════════════════
+// TARJETAS SOCIOS
+// ══════════════════════════════════
+var SOCIOS_DATA = {
+  matias: {
+    nombre:'Matias Dean',
+    rol:'Socio · QTM Capital',
+    cuit:'20-36133449-4',
+    condicion:'Responsable Inscripto',
+    domicilio:'Gral Bustos 2620, Río Cuarto, Córdoba',
+    email:'matiasdean.md@gmail.com',
+  },
+  fgarcia: {
+    nombre:'Federico Javier García Córdoba',
+    rol:'Socio · QTM Capital',
+    cuit:'20-32680333-3',
+    condicion:'Responsable Inscripto',
+    domicilio:'Alonso 520, Río Cuarto, Córdoba',
+    email:'fgarciacordoba@gmail.com',
+  },
+  funamuno: {
+    nombre:'Federico Unamuno',
+    rol:'Socio · QTM Capital',
+    cuit:'23-29118015-9',
+    condicion:'Responsable Inscripto',
+    domicilio:'Callao Av. 322, Piso 13, Dpto A, CABA',
+    email:'federico.unamuno@gmail.com',
+  },
+};
+
+function showTarjeta(key) {
+  var s = SOCIOS_DATA[key];
+  if (!s) return;
+
+  var filas = [
+    ['CUIT', s.cuit],
+    ['Condición IVA', s.condicion],
+    ['Domicilio', s.domicilio],
+    ['Email', s.email],
+  ];
+
+  var filasHtml = filas.map(function(f) {
+    return '<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #1e2d45">'
+      + '<span style="font-family:monospace;font-size:11px;color:#64748b;min-width:90px">' + f[0] + '</span>'
+      + '<span style="font-family:monospace;font-size:13px;color:#e2e8f0;font-weight:600;text-align:right;flex:1;padding-left:12px">' + f[1] + '</span>'
+      + '</div>';
+  }).join('');
+
+  document.getElementById('modal-socio-inner').innerHTML =
+    '<div style="background:linear-gradient(135deg,#0f2044,#1a3460);padding:32px 24px 24px;text-align:center;position:relative">'
+    + '<button onclick="closeTarjeta()" style="position:absolute;top:12px;right:12px;background:rgba(255,255,255,.1);border:none;border-radius:50%;width:30px;height:30px;color:white;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center">✕</button>'
+    + '<div style="font-family:Syne,sans-serif;font-size:26px;font-weight:800;color:white;letter-spacing:-0.02em">' + s.nombre + '</div>'
+    + '<div style="font-family:monospace;font-size:11px;color:#c8a84b;letter-spacing:.12em;text-transform:uppercase;margin-top:6px">' + s.rol + '</div>'
+    + '</div>'
+    + '<div style="padding:20px 24px">'
+    + filasHtml
+    + '<button data-key="' + key + '" onclick="copyTarjetaCompleta(this.dataset.key,this)" style="width:100%;padding:12px;background:#3b82f6;border:none;border-radius:8px;color:white;font-family:Syne,sans-serif;font-size:13px;font-weight:700;cursor:pointer;margin-top:16px">📋 Copiar todos los datos</button>'
+    + '</div>';
+
+  document.getElementById('modal-socio').style.display = 'flex';
+}
+
+function closeTarjeta() {
+  document.getElementById('modal-socio').style.display = 'none';
+}
+
+function copyTarjetaCompleta(key, btn) {
+  var s = SOCIOS_DATA[key];
+  var texto = s.nombre
+    + '\nCUIT: ' + s.cuit
+    + '\nCondición IVA: ' + s.condicion
+    + '\nDomicilio: ' + s.domicilio
+    + '\nEmail: ' + s.email;
+  copyText(texto, function() {
+    var orig = btn.textContent;
+    btn.textContent = '✅ ¡Copiado!';
+    setTimeout(function() { btn.textContent = orig; }, 2000);
+  });
+}
 
 // INIT
 // ══════════════════════════════════
