@@ -378,7 +378,7 @@ html,body{height:100%;font-family:var(--sans);background:var(--bg);color:var(--t
       <div class="hcard-desc">Dashboard de tenencias de clientes por comitente.</div>
       <div class="hcard-arrow">↗</div>
     </button>
-    <button class="hcard" onclick="window.open('https://qtm-dashboards.streamlit.app/','_blank')">
+    <button class="hcard" onclick="window.open('https://cedearv2-qtmauto.streamlit.app','_blank')">
       <div class="hcard-icon">🌐</div>
       <div class="hcard-title">CEDEARs</div>
       <div class="hcard-desc">Dashboard de CEDEARs y ETFs. Análisis y rendimientos.</div>
@@ -616,10 +616,12 @@ html,body{height:100%;font-family:var(--sans);background:var(--bg);color:var(--t
         <div style="flex:1;padding:16px 20px;display:flex;flex-direction:column;gap:10px;min-height:0">
           <div class="output-box" id="ind-bubble" style="flex:1;border-radius:12px;border-top-left-radius:4px">El mensaje aparecerá acá</div>
         </div>
-        <div style="padding:12px 20px;border-top:1px solid var(--border);display:flex;gap:8px">
+        <div style="padding:12px 20px;border-top:1px solid var(--border);display:flex;gap:8px;flex-wrap:wrap">
           <button class="btn-primary" id="ind-copy" onclick="indCopy()">📋 Copiar</button>
+          <button class="btn-primary" id="ind-send" onclick="indSendToSheet()" style="background:var(--green);flex:1">📤 Enviar a Sheet</button>
           <button class="btn-sec" onclick="indClear()">Limpiar</button>
         </div>
+        <div id="ind-send-msg" style="display:none;padding:6px 20px 10px;font-family:var(--mono);font-size:11px"></div>
       </div>
     </div>
   </div>
@@ -1649,6 +1651,11 @@ function indBuild() {
   const vals = {};
   document.querySelectorAll('#ind-fields [data-field]').forEach(el => { vals[el.dataset.field] = el.value; });
   document.getElementById('ind-bubble').textContent = cfg.build(vals);
+  // Mostrar botón enviar solo en mensajes con registro
+  var sendBtn = document.getElementById('ind-send');
+  if (sendBtn) sendBtn.style.display = MSGS_CON_ENVIO.includes(indMsg) ? '' : 'none';
+  var sendMsg = document.getElementById('ind-send-msg');
+  if (sendMsg) sendMsg.style.display = 'none';
   // Condicional: campo cuits solo visible si tipo = TERCEROS
   const tipoEl = document.querySelector('#ind-fields [data-field="tipo"]');
   const cuitsWrap = document.querySelector('#ind-fields [data-field="cuits"]');
@@ -2870,6 +2877,108 @@ function copyTarjetaCompleta(key, btn) {
     var orig = btn.textContent;
     btn.textContent = '✅ ¡Copiado!';
     setTimeout(function() { btn.textContent = orig; }, 2000);
+  });
+}
+
+
+// ══════════════════════════════════
+// ENVIAR ORDEN A GOOGLE SHEET
+// ══════════════════════════════════
+const MSGS_CON_ENVIO = ['tom_ind','compra_ind','venta_ind','transferencia'];
+
+function indSendToSheet() {
+  if (!MSGS_CON_ENVIO.includes(indMsg)) {
+    alert('Este tipo de mensaje no registra en la Sheet.');
+    return;
+  }
+
+  // Leer campos actuales
+  var vals = {};
+  document.querySelectorAll('#ind-fields [data-field]').forEach(function(el) {
+    vals[el.dataset.field] = el.value || '';
+  });
+
+  // Obtener mail del usuario logueado
+  var session = localStorage.getItem('qtm_auth_v2');
+  var mailOperador = '';
+  try { mailOperador = JSON.parse(session).email; } catch(e) {}
+
+  // Detectar nombre del operador desde el mail
+  var operador = mailOperador.split('@')[0];
+
+  // Obtener comitente — puede venir del buscador (hidden input)
+  var comitente = vals.comit || '';
+  var comitenteHidden = document.querySelector('#ind-fields [data-field="comit"]');
+  if (comitenteHidden) comitente = comitenteHidden.value || comitente;
+
+  // Mapear campos según tipo de mensaje
+  var payload = {
+    mail: mailOperador,
+    operador: operador,
+  };
+
+  if (indMsg === 'tom_ind') {
+    payload.tipo = 'Caución tomadora ' + (vals.moneda || 'ARS');
+    payload.cliente = comitente;
+    payload.comitente = comitente;
+    payload.importe = vals.monto || '';
+    payload.moneda = vals.moneda || 'ARS';
+    payload.observaciones = 'Plazo: ' + (vals.plazo || '') + ' · TNA: ' + (vals.tna || '');
+  } else if (indMsg === 'compra_ind') {
+    payload.tipo = 'Compra';
+    payload.cliente = comitente;
+    payload.comitente = comitente;
+    payload.importe = vals.valor || '';
+    payload.moneda = 'ARS';
+    payload.observaciones = (vals.ticker || '') + ' · ' + (vals.plazo || '');
+  } else if (indMsg === 'venta_ind') {
+    payload.tipo = 'Venta';
+    payload.cliente = comitente;
+    payload.comitente = comitente;
+    payload.importe = vals.valor || '';
+    payload.moneda = 'ARS';
+    payload.observaciones = (vals.ticker || '') + ' · ' + (vals.plazo || '');
+  } else if (indMsg === 'transferencia') {
+    payload.tipo = 'Transferencia · ' + (vals.operacion || '');
+    payload.cliente = vals.nombre || '';
+    payload.comitente = vals.nombre || '';
+    payload.importe = vals.importe || '';
+    payload.moneda = 'ARS';
+    payload.observaciones = 'Medio: ' + (vals.medio || '') + ' · Banco: ' + (vals.banco || '') + ' · Plazo: ' + (vals.plazo || '');
+  }
+
+  // Mostrar estado
+  var msgEl = document.getElementById('ind-send-msg');
+  var btn = document.getElementById('ind-send');
+  msgEl.style.display = 'block';
+  msgEl.style.color = 'var(--gold2)';
+  msgEl.textContent = '⏳ Registrando en Sheet...';
+  btn.disabled = true;
+  btn.textContent = '⏳ Enviando...';
+
+  fetch(SCRIPT_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify(payload)
+  })
+  .then(function() {
+    btn.textContent = '✅ Registrado';
+    btn.style.background = 'var(--accent)';
+    msgEl.style.color = 'var(--green)';
+    msgEl.textContent = '✅ Orden registrada en Sheet por ' + mailOperador;
+    setTimeout(function() {
+      btn.disabled = false;
+      btn.textContent = '📤 Enviar a Sheet';
+      btn.style.background = 'var(--green)';
+      msgEl.style.display = 'none';
+    }, 3000);
+  })
+  .catch(function(err) {
+    btn.disabled = false;
+    btn.textContent = '📤 Enviar a Sheet';
+    msgEl.style.color = 'var(--red)';
+    msgEl.textContent = '❌ Error: ' + err.message;
   });
 }
 
