@@ -17,6 +17,12 @@
       "d": "Tablero Cheques - HUB",
       "l": "https://stately-phoenix-0a8c4a.netlify.app/cheques_qtm",
       "o": "Web control de cheques negociados MAV"
+    },
+    {
+      "e": "QTM",
+      "d": "Financiamiento - registro SGR google sheet",
+      "l": "https://docs.google.com/spreadsheets/d/1O3GihF0glfCNQGfE0ujB6DWWnrZAFenc2jzTCnf7LKo/edit?gid=879143229#gid=879143229",
+      "o": "Google Sheet de Financiamiento SGR QTM"
     }
   ],
   "deleted": [
