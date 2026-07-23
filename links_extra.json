@@ -5,6 +5,12 @@
       "d": "Registro usuario Connect",
       "l": "https://connect.cohen.com.ar/comoregistrarme",
       "o": "Procedimiento de Cohen para registrar usuario Cohen Connect"
+    },
+    {
+      "e": "QTM",
+      "d": "depósito echeq",
+      "l": "https://qtmcapital.com.ar/echeq/",
+      "o": "Procedimiento que explica los tiempos y el proceso de acreditación de Echeq en cuenta comitente"
     }
   ],
   "deleted": [
