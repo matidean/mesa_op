@@ -11,6 +11,12 @@
       "d": "depósito echeq",
       "l": "https://qtmcapital.com.ar/echeq/",
       "o": "Procedimiento que explica los tiempos y el proceso de acreditación de Echeq en cuenta comitente"
+    },
+    {
+      "e": "QTM",
+      "d": "Tablero Cheques - HUB",
+      "l": "https://stately-phoenix-0a8c4a.netlify.app/cheques_qtm",
+      "o": "Web control de cheques negociados MAV"
     }
   ],
   "deleted": [
