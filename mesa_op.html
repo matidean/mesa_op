@@ -957,207 +957,230 @@ html,body{height:100%;font-family:var(--sans);background:var(--bg);color:var(--t
 
 
   <!-- ── PANEL ROLLEO PAGARÉS ── -->
-  <div class="panel" id="panel-pagares">
-    <div style="flex:1;overflow-y:auto;padding:0">
-      <div style="max-width:1080px;margin:0 auto;padding:20px 16px">
-
-        <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:16px">
-          <div>
-            <div style="font-family:var(--display);font-size:20px;font-weight:800;color:var(--text)">📜 Rolleo de Pagarés</div>
-            <div style="font-family:var(--mono);font-size:11px;color:var(--text3);margin-top:2px">Los *asteriscos* se ven en negrita al pegar en WhatsApp</div>
-          </div>
-          <label style="display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:13px;color:var(--text2)">
-            Cantidad de rolleos
-            <input type="number" id="rl-cant" min="1" max="20" value="1" style="width:60px;text-align:center;background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:var(--mono);padding:6px 8px">
-          </label>
-        </div>
-
-        <div id="rl-list"></div>
-
-        <div style="margin-top:16px">
-          <button id="rl-clear" class="btn-sec">Limpiar todo</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
+  <div class="panel" id="panel-pagares" style="padding:0;overflow:hidden">
+    <iframe
+      id="pagares-iframe"
+      srcdoc="<!DOCTYPE html>
+<html lang=&quot;es&quot;>
+<head>
+<meta charset=&quot;UTF-8&quot;>
+<meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;>
+<title>Rolleo de pagarés</title>
 <style>
-.rl-row{display:grid;grid-template-columns:1.05fr 1fr;gap:16px;align-items:start;margin-bottom:22px;padding-bottom:22px;border-bottom:1px solid var(--border)}
-@media(max-width:820px){.rl-row{grid-template-columns:1fr}}
-.rl-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:16px}
-.rl-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}
-.rl-head h2{font-family:var(--display);font-size:15px;font-weight:700;color:var(--text);margin:0}
-.rl-tipo{display:flex;gap:4px;flex-wrap:wrap}
-.rl-tipo button{padding:5px 10px;font-size:12px;border-radius:999px;background:var(--bg3);border:1px solid var(--border);color:var(--text2);cursor:pointer;font-family:var(--mono)}
-.rl-tipo button.on{background:var(--accent);color:white;border-color:var(--accent)}
-.rl-sec{margin-top:12px;padding-top:12px;border-top:1px dashed var(--border)}
-.rl-label{display:block;font-size:11px;font-family:var(--mono);color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin:8px 0 4px}
-.rl-input{width:100%;padding:7px 10px;border:1px solid var(--border);border-radius:7px;font-family:var(--mono);font-size:12px;background:var(--bg3);color:var(--text)}
-.rl-input:focus{outline:none;border-color:var(--accent)}
-.rl-row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.rl-pre{display:flex;align-items:center;border:1px solid var(--border);border-radius:7px;overflow:hidden;background:var(--bg3)}
-.rl-pre span{padding:7px 8px;background:var(--bg2);color:var(--text3);font-size:12px;font-family:var(--mono);white-space:nowrap;border-right:1px solid var(--border)}
-.rl-pre input{border:none!important;border-radius:0!important;background:transparent}
-.rl-chk{display:flex;gap:8px;align-items:center;font-size:13px;font-family:var(--mono);color:var(--text2);margin:6px 0 0;cursor:pointer}
-.rl-chk input{accent-color:var(--accent)}
-.rl-section-title{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);margin:0 0 4px}
-.rl-out{width:100%;min-height:460px;padding:12px;border:1px solid var(--border);border-radius:8px;font-family:var(--mono);font-size:13px;line-height:1.6;resize:vertical;background:var(--bg3);color:var(--text2)}
-.rl-faltan{font-family:var(--mono);font-size:11px;color:var(--gold2)}
-.rl-faltan.ok{color:var(--green)}
+  :root{--bg:#f5f6f8;--card:#fff;--txt:#1d2433;--mut:#6b7385;--line:#dde1e8;--acc:#1f5eff;--ok:#16a34a;--warn:#b45309}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--txt);font:15px/1.45 system-ui,Segoe UI,Roboto,sans-serif}
+  .brand{background:#050a14;padding:12px 16px}
+  .brand-in{max-width:1080px;margin:0 auto}
+  .brand img{height:46px;display:block}
+  .wrap{max-width:1080px;margin:0 auto;padding:20px 16px}
+  .top{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+  h1{font-size:20px;margin:0}
+  .cant{white-space:nowrap;display:flex;align-items:center;gap:8px;font-size:14px}
+  .cant input{width:64px;text-align:center}
+  .rrow{display:grid;grid-template-columns:1.05fr 1fr;gap:16px;align-items:start}
+  .rrow+.rrow{margin-top:22px;padding-top:22px;border-top:2px solid var(--line)}
+  @media(max-width:820px){.rrow{grid-template-columns:1fr}}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px}
+  .rhead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:4px}
+  .rhead h2{font-size:15px;margin:0}
+  .tipo{display:flex;gap:4px;flex-wrap:wrap}
+  .tipo button{padding:5px 10px;font-size:13px;border-radius:999px}
+  .tipo button.on{background:#050a14;color:#fff;border-color:#050a14}
+  h3{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--mut);margin:0 0 2px}
+  .sec{margin-top:12px;padding-top:12px;border-top:1px dashed var(--line)}
+  label{display:block;font-size:13px;color:var(--mut);margin:8px 0 4px}
+  input[type=text],input[type=number]{width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:7px;font:inherit;background:#fff}
+  input:focus{outline:2px solid var(--acc);border-color:transparent}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .pre{display:flex;align-items:center;border:1px solid var(--line);border-radius:7px;overflow:hidden;background:#fff}
+  .pre span{padding:8px;background:#eef1f6;color:var(--mut);font-size:13px;white-space:nowrap}
+  .pre input{border:0!important;border-radius:0!important}
+  .chk{display:flex;gap:8px;align-items:center;font-size:14px;color:var(--txt);margin:6px 0 0}
+  textarea{width:100%;min-height:500px;padding:12px;border:1px solid var(--line);border-radius:7px;font:14px/1.5 ui-monospace,Consolas,monospace;resize:vertical;background:#fbfcfd}
+  .btns{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;align-items:center}
+  button{padding:9px 14px;border-radius:7px;border:1px solid var(--line);background:#fff;font:inherit;cursor:pointer;color:var(--txt)}
+  button.pri{background:var(--acc);color:#fff;border-color:var(--acc)}
+  button.done{background:var(--ok);border-color:var(--ok);color:#fff}
+  .faltan{font-size:13px;color:var(--warn)}
+  .faltan.ok{color:var(--ok)}
+  .hint{font-size:13px;color:var(--mut);margin:0 0 16px}
+  .foot{margin-top:18px}
 </style>
-
+</head>
+<body>
+<header class=&quot;brand&quot;><div class=&quot;brand-in&quot;><img src=&quot;data:image/png;base64,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&quot; alt=&quot;QTM Capital&quot;></div></header>
+<div class=&quot;wrap&quot;>
+<!-- ===== SOLAPA ROLLEO (inicio) ===== -->
+<section id=&quot;tab-rolleo&quot;>
+  <div class=&quot;top&quot;>
+    <h1>Rolleo de pagarés</h1>
+    <label class=&quot;cant&quot;>Cantidad de rolleos <input type=&quot;number&quot; id=&quot;rl-cant&quot; min=&quot;1&quot; max=&quot;20&quot; value=&quot;1&quot;></label>
+  </div>
+  <p class=&quot;hint&quot;>Cada rolleo arma su propio mensaje. Los *asteriscos* se ven en negrita cuando lo pegás en WhatsApp.</p>
+  <div id=&quot;rl-list&quot;></div>
+  <div class=&quot;foot&quot;><button id=&quot;rl-clear&quot;>Limpiar todo</button></div>
+</section>
 <script>
 (function(){
-  const $id = id => document.getElementById(id);
+  const $ = id => document.getElementById(id);
   const TIPOS = ['ARS','Dólar Linked','Hard Dólar'];
-  const nuevo = () => ({tipo:'ARS',ca:'',cb:'',misma:false,tv:'',tr:'',tu:'',vmav:'',vmonto:'',rmav:'',rmonto:''});
-  let RL = [nuevo()];
+  const nuevo = () => ({tipo:'ARS', ca:'', cb:'', misma:false, tv:'', tr:'', tu:'', vmav:'', vmonto:'', rmav:'', rmonto:''});
+  let R = [nuevo()];
+  const esc = s => String(s).replace(/&amp;/g,'&amp;amp;').replace(/&quot;/g,'&amp;quot;').replace(/</g,'&amp;lt;');
 
-  function escRL(s){ return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
-
-  function fmtMontoRL(s,tipo){
-    const mon = tipo==='ARS' ? '$' : 'US$';
-    s=(s||'').trim(); if(!s) return mon+'…';
-    let n=s.replace(/[^\d,\.]/g,'');
-    if(n.includes(',')) n=n.replace(/\./g,'').replace(',','.');
-    else if(/^\d{1,3}(\.\d{3})+$/.test(n)) n=n.replace(/\./g,'');
-    const v=parseFloat(n);
-    if(isNaN(v)) return mon+s;
-    return mon+v.toLocaleString('es-AR',{minimumFractionDigits:0,maximumFractionDigits:2});
+  function fmtMonto(s, tipo){
+    const mon = tipo === 'ARS' ? '$' : 'US$';
+    s = (s||'').trim(); if(!s) return mon + '…';
+    let n = s.replace(/[^\d,\.]/g,'');
+    if (n.includes(',')) n = n.replace(/\./g,'').replace(',', '.');
+    else if (/^\d{1,3}(\.\d{3})+$/.test(n)) n = n.replace(/\./g,'');
+    const v = parseFloat(n);
+    if (isNaN(v)) return mon + s;
+    return mon + v.toLocaleString('es-AR',{minimumFractionDigits:0,maximumFractionDigits:2});
   }
-  const fmtTasaRL = s => { s=(s||'').trim().replace('%','').replace('.',','); return (s||'…')+'%'; };
-  const fmtMavRL = s => { s=(s||'').trim().replace(/^#?\s*MAV\s*-?\s*/i,''); return '#MAV-'+(s||'…'); };
-  const valRL = s => (s||'').trim()||'…';
+  const fmtTasa = s => { s=(s||'').trim().replace('%','').replace('.',','); return (s||'…') + '%'; };
+  const fmtMav = s => { s=(s||'').trim().replace(/^#?\s*MAV\s*-?\s*/i,''); return '#MAV-' + (s||'…'); };
+  const val = s => (s||'').trim() || '…';
 
-  function renderRL(){
-    $id('rl-list').innerHTML = RL.map((r,i) => `
-      <div class="rl-row" data-i="${i}">
-        <div class="rl-card">
-          <div class="rl-head">
-            <h2>Rolleo pagaré ${i+1}</h2>
-            <div class="rl-tipo">${TIPOS.map(t=>`<button type="button" data-tipo="${t}" class="${r.tipo===t?'on':''}">${t}</button>`).join('')}</div>
-          </div>
-          <div class="rl-sec">
-            <div class="rl-section-title">Tasas</div>
-            <label class="rl-chk"><input type="checkbox" data-k="misma" ${r.misma?'checked':''}> Misma tasa para todas las operaciones</label>
-            ${r.misma
-              ? `<div class="rl-label">Tasa única %</div><input class="rl-input" type="text" data-k="tu" value="${escRL(r.tu)}" placeholder="33">`
-              : `<div class="rl-row2">
-                   <div><div class="rl-label">Tasa venta (nuevo) %</div><input class="rl-input" type="text" data-k="tv" value="${escRL(r.tv)}" placeholder="33"></div>
-                   <div><div class="rl-label">Tasa recompra (viejo) %</div><input class="rl-input" type="text" data-k="tr" value="${escRL(r.tr)}" placeholder="28"></div>
-                 </div>`}
-          </div>
-          <div class="rl-sec">
-            <div class="rl-section-title">Comitentes</div>
-            <div class="rl-label">Comitente que compra el nuevo pagaré</div>
-            <input class="rl-input" type="text" data-k="ca" value="${escRL(r.ca)}" placeholder="N° comitente - Nombre">
-            <div class="rl-label">Comitente que vende el nuevo pagaré</div>
-            <input class="rl-input" type="text" data-k="cb" value="${escRL(r.cb)}" placeholder="N° comitente - Nombre">
-          </div>
-          <div class="rl-sec">
-            <div class="rl-section-title">Venta nuevo pagaré</div>
-            <div class="rl-row2">
-              <div><div class="rl-label">Código MAV</div><div class="rl-pre"><span>#MAV-</span><input class="rl-input" type="text" data-k="vmav" value="${escRL(r.vmav)}" placeholder="2209-60011"></div></div>
-              <div><div class="rl-label">Monto ${r.tipo==='ARS'?'$':'US$'}</div><input class="rl-input" type="text" data-k="vmonto" value="${escRL(r.vmonto)}" placeholder="12.300.000"></div>
-            </div>
-          </div>
-          <div class="rl-sec">
-            <div class="rl-section-title">Recompra pagaré viejo</div>
-            <div class="rl-row2">
-              <div><div class="rl-label">Código MAV</div><div class="rl-pre"><span>#MAV-</span><input class="rl-input" type="text" data-k="rmav" value="${escRL(r.rmav)}" placeholder="2209-60011"></div></div>
-              <div><div class="rl-label">Monto ${r.tipo==='ARS'?'$':'US$'}</div><input class="rl-input" type="text" data-k="rmonto" value="${escRL(r.rmonto)}" placeholder="10.000.000"></div>
-            </div>
+  function render(){
+    $('rl-list').innerHTML = R.map((r,i) => `
+     <div class=&quot;rrow&quot; data-i=&quot;${i}&quot;>
+      <div class=&quot;card&quot;>
+        <div class=&quot;rhead&quot;>
+          <h2>Rolleo pagaré ${i+1}</h2>
+          <div class=&quot;tipo&quot;>${TIPOS.map(t => `<button type=&quot;button&quot; data-tipo=&quot;${t}&quot; class=&quot;${r.tipo===t?'on':''}&quot;>${t}</button>`).join('')}</div>
+        </div>
+
+        <div class=&quot;sec&quot;>
+          <h3>Tasas</h3>
+          <label class=&quot;chk&quot;><input type=&quot;checkbox&quot; data-k=&quot;misma&quot; ${r.misma?'checked':''}> Misma tasa para todas las operaciones</label>
+          ${r.misma
+            ? `<label>Tasa única %</label><input type=&quot;text&quot; data-k=&quot;tu&quot; value=&quot;${esc(r.tu)}&quot; placeholder=&quot;33&quot; inputmode=&quot;decimal&quot;>`
+            : `<div class=&quot;row&quot;>
+                 <div><label>Tasa venta (nuevo) %</label><input type=&quot;text&quot; data-k=&quot;tv&quot; value=&quot;${esc(r.tv)}&quot; placeholder=&quot;33&quot; inputmode=&quot;decimal&quot;></div>
+                 <div><label>Tasa recompra (viejo) %</label><input type=&quot;text&quot; data-k=&quot;tr&quot; value=&quot;${esc(r.tr)}&quot; placeholder=&quot;28&quot; inputmode=&quot;decimal&quot;></div>
+               </div>`}
+        </div>
+
+        <div class=&quot;sec&quot;>
+          <h3>Comitentes</h3>
+          <label>Comitente que compra el nuevo pagaré</label><input type=&quot;text&quot; data-k=&quot;ca&quot; value=&quot;${esc(r.ca)}&quot; placeholder=&quot;N° comitente - Nombre&quot;>
+          <label>Comitente que vende el nuevo pagaré</label><input type=&quot;text&quot; data-k=&quot;cb&quot; value=&quot;${esc(r.cb)}&quot; placeholder=&quot;N° comitente - Nombre&quot;>
+        </div>
+
+        <div class=&quot;sec&quot;>
+          <h3>Venta nuevo pagaré</h3>
+          <div class=&quot;row&quot;>
+            <div><label>Código MAV</label><div class=&quot;pre&quot;><span>#MAV-</span><input type=&quot;text&quot; data-k=&quot;vmav&quot; value=&quot;${esc(r.vmav)}&quot; placeholder=&quot;2209-60011&quot;></div></div>
+            <div><label>Monto ${r.tipo==='ARS'?'$':'US$'}</label><input type=&quot;text&quot; data-k=&quot;vmonto&quot; value=&quot;${esc(r.vmonto)}&quot; placeholder=&quot;12.300.000&quot; inputmode=&quot;decimal&quot;></div>
           </div>
         </div>
-        <div class="rl-card">
-          <div class="rl-section-title" style="margin-bottom:8px">Mensaje rolleo ${i+1}</div>
-          <textarea class="rl-out" id="rl-out-${i}" readonly></textarea>
-          <div style="display:flex;gap:8px;margin-top:10px;align-items:center;flex-wrap:wrap">
-            <button class="btn-primary" data-copy="${i}">📋 Copiar mensaje ${i+1}</button>
-            <span class="rl-faltan" id="rl-faltan-${i}"></span>
+
+        <div class=&quot;sec&quot;>
+          <h3>Recompra pagaré viejo</h3>
+          <div class=&quot;row&quot;>
+            <div><label>Código MAV</label><div class=&quot;pre&quot;><span>#MAV-</span><input type=&quot;text&quot; data-k=&quot;rmav&quot; value=&quot;${esc(r.rmav)}&quot; placeholder=&quot;2209-60011&quot;></div></div>
+            <div><label>Monto ${r.tipo==='ARS'?'$':'US$'}</label><input type=&quot;text&quot; data-k=&quot;rmonto&quot; value=&quot;${esc(r.rmonto)}&quot; placeholder=&quot;10.000.000&quot; inputmode=&quot;decimal&quot;></div>
           </div>
         </div>
-      </div>`).join('');
-    buildRL();
+      </div>
+      <div class=&quot;card side&quot;>
+        <h3>Mensaje rolleo ${i+1}</h3>
+        <textarea id=&quot;rl-out-${i}&quot; readonly></textarea>
+        <div class=&quot;btns&quot;>
+          <button class=&quot;pri&quot; data-copy=&quot;${i}&quot;>Copiar mensaje ${i+1}</button>
+          <span class=&quot;faltan&quot; id=&quot;rl-faltan-${i}&quot;></span>
+        </div>
+      </div>
+     </div>`).join('');
+    build();
   }
 
-  function buildRL(){
-    RL.forEach((r,i) => {
+  function build(){
+    R.forEach((r,i) => {
       const tasa = r.misma
-        ? `En *CI* todo porfa y a una tasa del *${fmtTasaRL(r.tu)}* *todas las operaciones*`
-        : `En *CI* todo porfa y a una tasa del *${fmtTasaRL(r.tv)}* la venta del nuevo pagaré y la recompra al *${fmtTasaRL(r.tr)}*`;
-      $id('rl-out-'+i).value =
-        `*ROLLEO ${i+1} PAGARÉ ${r.tipo.toUpperCase()}*\n\n` +
-        `Tenemos que hacer un roleo de pagarés. Tenemos las dos puntas acá en Cohen.\n${tasa}\n` +
-        `(carguemos por las dudas al 0 inicialmente para evitar que se meta alguien)\n\n` +
-        `*VENTA NUEVO PAGARÉ*\n*La comitente:*\n${valRL(r.ca)}\n*compra a la comitente:*\n${valRL(r.cb)}\n` +
-        `*el pagaré:* ${fmtMavRL(r.vmav)} / ${fmtMontoRL(r.vmonto,r.tipo)}\n\n` +
-        `*RECOMPRA PAGARÉ VIEJO*\n*La comitente:*\n${valRL(r.cb)}\n*compra a la comitente:*\n${valRL(r.ca)}\n` +
-        `*el pagaré:* ${fmtMavRL(r.rmav)} / ${fmtMontoRL(r.rmonto,r.tipo)}`;
+        ? `En *CI* todo porfa y a una tasa del *${fmtTasa(r.tu)}* *todas las operaciones*`
+        : `En *CI* todo porfa y a una tasa del *${fmtTasa(r.tv)}* la venta del nuevo pagaré y la recompra al *${fmtTasa(r.tr)}*`;
+      $('rl-out-'+i).value = `*ROLLEO ${i+1} PAGARÉ ${r.tipo.toUpperCase()}*
 
-      const req = ['ca','cb','vmav','vmonto','rmav','rmonto'].concat(r.misma?['tu']:['tv','tr']);
-      const f = req.filter(k=>!(r[k]||'').trim()).length;
-      const el = $id('rl-faltan-'+i);
+Tenemos que hacer un roleo de pagarés. Tenemos las dos puntas acá en Cohen.
+${tasa}
+(carguemos por las dudas al 0 inicialmente para evitar que se meta alguien)
+
+*VENTA NUEVO PAGARÉ*
+*La comitente:*
+${val(r.ca)}
+*compra a la comitente:*
+${val(r.cb)}
+*el pagaré:* ${fmtMav(r.vmav)} / ${fmtMonto(r.vmonto, r.tipo)}
+
+*RECOMPRA PAGARÉ VIEJO*
+*La comitente:*
+${val(r.cb)}
+*compra a la comitente:*
+${val(r.ca)}
+*el pagaré:* ${fmtMav(r.rmav)} / ${fmtMonto(r.rmonto, r.tipo)}`;
+
+      // control de campos vacíos
+      const req = ['ca','cb','vmav','vmonto','rmav','rmonto'].concat(r.misma ? ['tu'] : ['tv','tr']);
+      const f = req.filter(k => !(r[k]||'').trim()).length;
+      const el = $('rl-faltan-'+i);
       el.textContent = f ? `Faltan ${f} campo${f>1?'s':''}` : 'Todo completo ✓';
-      el.className = 'rl-faltan'+(f?'':' ok');
+      el.className = 'faltan' + (f ? '' : ' ok');
     });
   }
 
-  // Inicializar eventos del panel (una sola vez al cargar el DOM)
-  document.addEventListener('DOMContentLoaded', function(){
-    var list = $id('rl-list');
-    if (!list) return;
-
-    list.addEventListener('input', e => {
-      const k=e.target.dataset.k; if(!k||k==='misma') return;
-      const i=+e.target.closest('[data-i]').dataset.i;
-      RL[i][k]=e.target.value; buildRL();
-    });
-    list.addEventListener('change', e => {
-      if(e.target.dataset.k!=='misma') return;
-      const r=RL[+e.target.closest('[data-i]').dataset.i];
-      r.misma=e.target.checked;
-      if(r.misma&&!r.tu) r.tu=r.tv;
-      renderRL();
-    });
-    list.addEventListener('click', e => {
-      const t=e.target.dataset.tipo; if(!t) return;
-      RL[+e.target.closest('[data-i]').dataset.i].tipo=t; renderRL();
-    });
-    list.addEventListener('click', async e => {
-      const i=e.target.dataset.copy; if(i===undefined) return;
-      const b=e.target, ta=$id('rl-out-'+i);
-      try{ await navigator.clipboard.writeText(ta.value); }
-      catch(err){ ta.select(); document.execCommand('copy'); }
-      b.textContent='¡Copiado!';
-      setTimeout(()=>{ b.textContent='📋 Copiar mensaje '+(+i+1); }, 1500);
-    });
-
-    var cantEl = $id('rl-cant');
-    if (cantEl) cantEl.addEventListener('input', () => {
-      let n=parseInt($id('rl-cant').value,10);
-      if(!n||n<1) return;
-      n=Math.min(n,20);
-      while(RL.length<n) RL.push(nuevo());
-      RL.length=n; renderRL();
-    });
-    var clearEl = $id('rl-clear');
-    if (clearEl) clearEl.addEventListener('click', () => {
-      RL=[nuevo()]; $id('rl-cant').value=1; renderRL();
-    });
+  // eventos
+  $('rl-list').addEventListener('input', e => {
+    const k = e.target.dataset.k; if (!k || k === 'misma') return;
+    const i = +e.target.closest('[data-i]').dataset.i;
+    R[i][k] = e.target.value; build();
   });
-
-  // initRL: llamado al entrar al tab — simplemente renderiza
-  function initRL(){
-    renderRL();
-  }
-
-  // Exponer globalmente para que switchTab lo llame
-  window.initRL = initRL;
+  $('rl-list').addEventListener('change', e => {
+    if (e.target.dataset.k !== 'misma') return;
+    const r = R[+e.target.closest('[data-i]').dataset.i];
+    r.misma = e.target.checked;
+    if (r.misma &amp;&amp; !r.tu) r.tu = r.tv;
+    render();
+  });
+  $('rl-list').addEventListener('click', e => {
+    const t = e.target.dataset.tipo; if (!t) return;
+    R[+e.target.closest('[data-i]').dataset.i].tipo = t; render();
+  });
+  $('rl-cant').addEventListener('input', () => {
+    let n = parseInt($('rl-cant').value, 10);
+    if (!n || n < 1) return;
+    n = Math.min(n, 20);
+    while (R.length < n) R.push(nuevo());
+    R.length = n;
+    render();
+  });
+  $('rl-list').addEventListener('click', async e => {
+    const i = e.target.dataset.copy; if (i === undefined) return;
+    const b = e.target, ta = $('rl-out-'+i);
+    try { await navigator.clipboard.writeText(ta.value); }
+    catch(err){ ta.select(); document.execCommand('copy'); }
+    b.textContent = '¡Copiado!'; b.classList.add('done');
+    setTimeout(()=>{ b.textContent='Copiar mensaje '+(+i+1); b.classList.remove('done'); }, 1500);
+  });
+  $('rl-clear').addEventListener('click', () => {
+    R = [nuevo()]; $('rl-cant').value = 1; render();
+  });
+  render();
 })();
 </script>
+<!-- ===== SOLAPA ROLLEO (fin) ===== -->
+</div>
+</body>
+</html>
+"
+      style="width:100%;height:100%;border:none;background:#0a0e17"
+      title="Rolleo de Pagarés"
+    ></iframe>
+  </div>
 
-</div><!-- /section-screen -->
+  </div><!-- /section-screen -->
 
 
 <!-- MODAL ADMIN LINKS -->
